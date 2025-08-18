@@ -47,6 +47,24 @@ char menu_informacoes(void) {
     return op;
 }
 
+void menu_sobre_projeto(void) {
+    system("cls");
+    printf("+------------------------------------------------+\n");
+    printf("|                  SIG-Fantasy:                  |\n");
+    printf("|                                                |\n");
+    printf("|                 Sobre o projeto                |\n");
+    printf("+------------------------------------------------+\n");
+    printf("|Programa desenvolvido com o fim de servir como  |\n");
+    printf("|projeto para disciplina de Programacao(DCT1106).|\n");
+    printf("|Este programa serve como um sistema de gerencia |\n");
+    printf("|para uma loja de fantasias/roupas. O sistema    |\n");
+    printf("|permite que os clientes comprem ou aluguem      |\n");
+    printf("|os produtos da loja, alem de guardar os pedidos |\n");
+    printf("+------------------------------------------------+\n");
+    printf("\nPressione Enter para voltar...\n");
+    getchar();
+    getchar();
+}
 void modulo_informacoes(void) {
     char op;
 
@@ -55,8 +73,7 @@ void modulo_informacoes(void) {
         switch (op)
         {
         case '1':
-            printf("voce escolheu a opcao '1'");
-            sleep(1);
+            menu_sobre_projeto();
             break;
         case '2':
             printf("voce escolheu a opcao '2'");
