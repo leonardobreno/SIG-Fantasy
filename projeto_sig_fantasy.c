@@ -29,6 +29,53 @@ char menuprincipal(void) {
     return op;
 }
 
+char menu_informacoes(void) {
+    char op;
+    system("cls");
+    printf("+------------------------------------------------+\n");
+    printf("|                  SIG-Fantasy:                  |\n");
+    printf("|                                                |\n");
+    printf("|                 Modulo Informações             |\n");
+    printf("+------------------------------------------------+\n");
+    printf("|           -> 1 - Sobre o projeto               |\n");
+    printf("|           -> 2 - Equipe desenvolvedora         |\n");
+    printf("|           -> 3 -     Voltar                    |\n");
+    printf("+------------------------------------------------+\n");
+
+    printf("Escolha uma opção: ");
+    scanf(" %c", &op);
+    return op;
+}
+
+void modulo_informacoes(void) {
+    char op;
+
+    do{
+        op = menu_informacoes();
+        switch (op)
+        {
+        case '1':
+            printf("voce escolheu a opcao '1'");
+            sleep(1);
+            break;
+        case '2':
+            printf("voce escolheu a opcao '2'");
+            sleep(1);
+            break;
+        
+        case '3':
+            printf("Voltando ao menu principal...\n");
+            sleep(1);
+            break;
+        default:
+            printf("Opção inválida!\n");
+            sleep(1);
+        }
+
+    } while (op != '3');
+    
+}
+
 char menucliente(void) {
     char op;
     system("clear||cls");
@@ -221,6 +268,9 @@ int main(void) {
                 break;
             case '2':
                 modulofantasia();
+                break;
+            case '4':
+                modulo_informacoes();
                 break;
             case '6':
                 printf("Fechando o programa...\n");
