@@ -65,6 +65,29 @@ void menu_sobre_projeto(void) {
     getchar();
     getchar();
 }
+
+void menu_equipe(void) {
+    system("cls");
+    printf("+------------------------------------------------+\n");
+    printf("|                  SIG-Fantasy:                  |\n");
+    printf("|                                                |\n");
+    printf("|                 Equipe do projeto              |\n");
+    printf("+------------------------------------------------+\n");
+    printf("|        Este projeto foi desenvolvido por:      |\n");
+    printf("|                 Leonardo Breno da Silva Santos,|\n");
+    printf("|                 Pedro Lucas da Silva Araújo    |\n");
+    printf("|                                                |\n");
+    printf("|        E-mails: leonardodbreno@gmail.com,      |\n");
+    printf("|                 pedro.araujo.716@ufrn.edu.br   |\n");
+    printf("|                                                |\n");
+    printf("|        GitHub: https://github.com/leonardobreno|\n");
+    printf("|                https://github.com/Pedro1349    |\n");
+    printf("+------------------------------------------------+\n");
+    printf("\nPressione Enter para voltar...\n");
+    getchar();
+    getchar();
+}
+
 void modulo_informacoes(void) {
     char op;
 
@@ -76,8 +99,7 @@ void modulo_informacoes(void) {
             menu_sobre_projeto();
             break;
         case '2':
-            printf("voce escolheu a opcao '2'");
-            sleep(1);
+            menu_equipe();
             break;
         
         case '3':
