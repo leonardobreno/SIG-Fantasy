@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 
-char menuprincipal(void) {
+char menu_principal(void) {
     char op;
     setlocale(LC_ALL, "Portuguese");
 
@@ -29,7 +29,7 @@ char menuprincipal(void) {
     return op;
 }
 
-char saida_programa() {
+char saida_programa(void) {
     int confirmacao = 0;
     char opcao;
     while (confirmacao == 0){
@@ -144,7 +144,7 @@ void modulo_informacoes(void) {
     
 }
 
-char menucliente(void) {
+char menu_cliente(void) {
     char op;
     system("clear||cls");
     printf("+------------------------------------------------+\n");
@@ -160,7 +160,7 @@ char menucliente(void) {
     return op;
 }
 
-void menucadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
+void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
     printf("+------------------------------------------------+\n");
     printf("|                  Cadastro                      |\n");
@@ -177,7 +177,7 @@ void menucadastro_cliente(char nome[], char cpf[], char celular[], char email[])
     sleep(1);
 }
 
-void menualterar_cliente(char nome[], char cpf[], char celular[], char email[]) {
+void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
     printf("+------------------------------------------------+\n");
     printf("|                  Alteração                     |\n");
@@ -194,7 +194,7 @@ void menualterar_cliente(char nome[], char cpf[], char celular[], char email[]) 
     sleep(1);
 }
 
-void menulista_cliente(char nome[], char cpf[], char celular[], char email[]) {
+void menu_lista_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
     printf("+------------------------------------------------+\n");
     printf("|                Lista de clientes               |\n");
@@ -208,7 +208,7 @@ void menulista_cliente(char nome[], char cpf[], char celular[], char email[]) {
     getchar();
 }
 
-void modulocliente(void) {
+void modulo_cliente(void) {
     char op;
     char nome[50] = "";
     char cpf[20] = "";
@@ -216,16 +216,16 @@ void modulocliente(void) {
     char email[50] = "";
 
     do {
-        op = menucliente();
+        op = menu_cliente();
         switch(op) {
             case '1':
-                menucadastro_cliente(nome, cpf, celular, email);
+                menu_cadastro_cliente(nome, cpf, celular, email);
                 break;
             case '2':
-                menualterar_cliente(nome, cpf, celular, email);
+                menu_alterar_cliente(nome, cpf, celular, email);
                 break;
             case '3':
-                menulista_cliente(nome, cpf, celular, email);
+                menu_lista_cliente(nome, cpf, celular, email);
                 break;
             case '4':
                 printf("Voltando ao menu principal...\n");
@@ -238,15 +238,15 @@ void modulocliente(void) {
     } while(op != '4');
 }
 
-char menufantasia(void) {
+char menu_fantasia(void) {
     char op;
     system("clear||cls");
     printf("+------------------------------------------------+\n");
     printf("|                Modulo Fantasias                |\n");
     printf("+------------------------------------------------+\n");
-    printf("|          -> 1 - Cadastrar fantasia            |\n");
-    printf("|          -> 2 - Alterar fantasia              |\n");
-    printf("|          -> 3 - Listar fantasia               |\n");
+    printf("|          -> 1 - Cadastrar fantasia             |\n");
+    printf("|          -> 2 - Alterar fantasia               |\n");
+    printf("|          -> 3 - Listar fantasia                |\n");
     printf("|          -> 4 - Voltar                         |\n");
     printf("+------------------------------------------------+\n");
     printf("Escolha uma opção: ");
@@ -254,7 +254,7 @@ char menufantasia(void) {
     return op;
 }
 
-void menucadastro_fantasia(char nome[], char tamanho[], char cor[]) {
+void menu_cadastro_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
     printf("+------------------------------------------------+\n");
     printf("|                Cadastro Fantasia               |\n");
@@ -269,10 +269,10 @@ void menucadastro_fantasia(char nome[], char tamanho[], char cor[]) {
     sleep(1);
 }
 
-void menualterar_fantasia(char nome[], char tamanho[], char cor[]) {
+void menu_alterar_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
     printf("+------------------------------------------------+\n");
-    printf("|                Alterar Fantasia               |\n");
+    printf("|                Alterar Fantasia                |\n");
     printf("+------------------------------------------------+\n");
     printf("Digite o novo nome da fantasia: ");
     scanf(" %[^\n]", nome);
@@ -284,10 +284,10 @@ void menualterar_fantasia(char nome[], char tamanho[], char cor[]) {
     sleep(1);
 }
 
-void menulista_fantasia(char nome[], char tamanho[], char cor[]) {
+void menu_lista_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
     printf("+------------------------------------------------+\n");
-    printf("|                Lista de Fantasias             |\n");
+    printf("|                Lista de Fantasias              |\n");
     printf("+------------------------------------------------+\n");
     printf("Nome: %s\n", nome);
     printf("Tamanho: %s\n", tamanho);
@@ -297,23 +297,23 @@ void menulista_fantasia(char nome[], char tamanho[], char cor[]) {
     getchar();
 }
 
-void modulofantasia(void) {
+void modulo_fantasia(void) {
     char op;
     char nome[50] = "";
     char tamanho[10] = "";
     char cor[20] = "";
 
     do {
-        op = menufantasia();
+        op = menu_fantasia();
         switch(op) {
             case '1':
-                menucadastro_fantasia(nome, tamanho, cor);
+                menu_cadastro_fantasia(nome, tamanho, cor);
                 break;
             case '2':
-                menualterar_fantasia(nome, tamanho, cor);
+                menu_alterar_fantasia(nome, tamanho, cor);
                 break;
             case '3':
-                menulista_fantasia(nome, tamanho, cor);
+                menu_lista_fantasia(nome, tamanho, cor);
                 break;
             case '4':
                 printf("Voltando ao menu principal...\n");
@@ -329,13 +329,13 @@ void modulofantasia(void) {
 int main(void) {
     char opc;
     do {
-        opc = menuprincipal();
+        opc = menu_principal();
         switch(opc) {
             case '1':
-                modulocliente();
+                modulo_cliente();
                 break;
             case '2':
-                modulofantasia();
+                modulo_fantasia();
                 break;
             case '4':
                 modulo_informacoes();
