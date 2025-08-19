@@ -29,6 +29,35 @@ char menuprincipal(void) {
     return op;
 }
 
+char saida_programa() {
+    int confirmacao = 0;
+    char opcao;
+    while (confirmacao == 0){
+        printf("Tem certeza que deseja sair do programa? (s/n)\n");
+        scanf(" %c", &opcao);
+        if (opcao == 's' || opcao == 'S')
+        {
+            printf("Fechando o programa...\n");
+            opcao = '6';
+            confirmacao = 1;
+            sleep(1);
+
+        } else if (opcao == 'n' || opcao == 'N')
+        {
+            printf("Cancelando a saida...");
+            confirmacao = 1;
+            sleep(1);
+        } else
+        {
+            printf("opcao invalida\n");
+            opcao = 'n';
+            sleep(1);
+        }
+    
+    }
+    return opcao;
+}
+
 char menu_informacoes(void) {
     char op;
     system("cls");
@@ -312,8 +341,7 @@ int main(void) {
                 modulo_informacoes();
                 break;
             case '6':
-                printf("Fechando o programa...\n");
-                sleep(1);
+                opc = saida_programa();
                 break;
             default:
                 printf("Opção inválida. Tente novamente.\n");
