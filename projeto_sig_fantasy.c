@@ -4,6 +4,53 @@
 #include <unistd.h>
 #include <string.h>
 
+// Assinaturas das funções
+char menu_principal(void);
+char saida_programa(void);
+
+char menu_informacoes(void);
+void menu_sobre_projeto(void);
+void menu_equipe(void);
+void modulo_informacoes(void);
+
+char menu_cliente(void);
+void modulo_cliente(void);
+void menu_cadastro_cliente(char[], char[], char[], char[]);
+void menu_alterar_cliente(char[], char[], char[], char[]);
+void menu_lista_cliente(char[], char[], char[], char[]);
+
+char menu_fantasia(void);
+void modulo_fantasia(void);
+void menu_cadastro_fantasia(char[], char[], char[]);
+void menu_alterar_fantasia(char[], char[], char[]);
+void menu_lista_fantasia(char[], char[], char[]);
+
+int main(void) {
+    char opc;
+    do {
+        opc = menu_principal();
+        switch(opc) {
+            case '1':
+                modulo_cliente();
+                break;
+            case '2':
+                modulo_fantasia();
+                break;
+            case '4':
+                modulo_informacoes();
+                break;
+            case '6':
+                opc = saida_programa();
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+                sleep(1);
+        }
+    } while(opc != '6');
+
+    return 0;
+}
+
 char menu_principal(void) {
     char op;
 
@@ -328,28 +375,3 @@ void modulo_fantasia(void) {
     } while(op != '4');
 }
 
-int main(void) {
-    char opc;
-    do {
-        opc = menu_principal();
-        switch(opc) {
-            case '1':
-                modulo_cliente();
-                break;
-            case '2':
-                modulo_fantasia();
-                break;
-            case '4':
-                modulo_informacoes();
-                break;
-            case '6':
-                opc = saida_programa();
-                break;
-            default:
-                printf("Opção inválida. Tente novamente.\n");
-                sleep(1);
-        }
-    } while(opc != '6');
-
-    return 0;
-}
