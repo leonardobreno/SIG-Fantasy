@@ -53,24 +53,29 @@ int main(void) {
 
 char menu_principal(void) {
     char op;
-
-    
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                                                                 ║\n");
+    printf("║   ╔═══╗  ╔╗  ╔═══╗         ╔═══╗ ╔═══╗   ╠╗    ║ ╔══════╗ ╔═══╗  ╔═══╗ ║   ║    ║\n");
+    printf("║   ║      ║║  ║             ║     ║ ╔╗ ║  ║╚╗   ║ ╚══╗╔══╝ ║ ╔╗ ║ ║     ╚╗ ╔╝    ║\n");
+    printf("║   ╚═══╗  ║║  ║ ╔═╗ ╔═════╗ ╠══╗  ║ ╚╝ ║  ║ ╚═╗ ║    ║║    ║ ╚╝ ║ ╚═══╗  ╚╦╝     ║\n");
+    printf("║       ║  ║║  ║   ║ ╚═════╝ ║     ║ ╔╗ ║  ║   ╚╗║    ║║    ║ ╔╗ ║     ║   ║      ║\n");
+    printf("║   ╚═══╝  ╚╝  ╚═══╝         ║     ╠═╝╚═╣  ║    ╚╣    ║║    ╠═╝╚═╣ ╚═══╝   ║      ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     setlocale(LC_ALL, "Portuguese");
 
-    system("clear||cls");
-
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                  SIG-Fantasy:                  ║\n");
-    printf("║                                                ║\n");
-    printf("║            Loja de fantasias e roupas          ║\n");
-    printf("╠════════════════════════════════════════════════╣\n");
-    printf("║           -> 1 • Modulo Clientes               ║\n");
-    printf("║           -> 2 • Modulo Fantasias              ║\n");
-    printf("║           -> 3 • Modulo Pedidos                ║\n");
-    printf("║           -> 4 • Modulo Informações            ║\n");
-    printf("║           -> 5 • Modulo Relatórios             ║\n");
-    printf("║           -> 6 •     Sair                      ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                     SIG-Fantasy:                                ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                             Loja de fantasias e roupas                          ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                              -> 1 • Modulo Clientes                             ║\n");
+    printf("║                              -> 2 • Modulo Fantasias                            ║\n");
+    printf("║                              -> 3 • Modulo Pedidos                              ║\n");
+    printf("║                              -> 4 • Modulo Informações                          ║\n");
+    printf("║                              -> 5 • Modulo Relatórios                           ║\n");
+    printf("║                              -> 6 •      Sair                                   ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
     printf("Carregando...\n");
@@ -110,15 +115,15 @@ char saida_programa(void) {
 char menu_informacoes(void) {
     char op;
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                  SIG-Fantasy:                  ║\n");
-    printf("║                                                ║\n");
-    printf("║                 Modulo Informações             ║\n");
-    printf("╠════════════════════════════════════════════════╣\n");
-    printf("║           -> 1 • Sobre o projeto               ║\n");
-    printf("║           -> 2 • Equipe desenvolvedora         ║\n");
-    printf("║           -> 3 •     Voltar                    ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                       SIG-Fantasy:                              ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                                    Modulo Informações                           ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                                 -> 1 • Sobre o projeto                          ║\n");
+    printf("║                                 -> 2 • Equipe desenvolvedora                    ║\n");
+    printf("║                                 -> 3 •     Voltar                               ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
@@ -127,18 +132,18 @@ char menu_informacoes(void) {
 
 void menu_sobre_projeto(void) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                  SIG-Fantasy:                  ║\n");
-    printf("║                                                ║\n");
-    printf("║                 Sobre o projeto                ║\n");
-    printf("╠════════════════════════════════════════════════╣\n");
-    printf("║Programa desenvolvido com o fim de servir como  ║\n");
-    printf("║projeto para disciplina de Programacao(DCT1106).║\n");
-    printf("║Este programa serve como um sistema de gerencia ║\n");
-    printf("║para uma loja de fantasias/roupas. O sistema    ║\n");
-    printf("║permite que os clientes comprem ou aluguem      ║\n");
-    printf("║os produtos da loja, alem de guardar os pedidos ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                    SIG-Fantasy:                                 ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                                  Sobre o projeto                                ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                   Programa desenvolvido com o fim de servir como                ║\n");
+    printf("║                   projeto para disciplina de Programacao(DCT1106)               ║\n");
+    printf("║                   Este programa serve como um sistema de gerencia               ║\n");
+    printf("║                   para uma loja de fantasias/roupas. O sistema                  ║\n");
+    printf("║                   permite que os clientes comprem ou aluguem                    ║\n");
+    printf("║                   os produtos da loja, alem de guardar os pedidos               ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
     getchar();
     getchar();
@@ -146,21 +151,21 @@ void menu_sobre_projeto(void) {
 
 void menu_equipe(void) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                  SIG-Fantasy:                  ║\n");
-    printf("║                                                ║\n");
-    printf("║                 Equipe do projeto              ║\n");
-    printf("╠════════════════════════════════════════════════╣\n");
-    printf("║     Este projeto foi desenvolvido por:         ║\n");
-    printf("║           Leonardo Breno da Silva Santos,      ║\n");
-    printf("║            Pedro Lucas da Silva Araújo         ║\n");
-    printf("║                                                ║\n");
-    printf("║     E-mails: leonardodbreno@gmail.com,         ║\n");
-    printf("║              pedro.araujo.716@ufrn.edu.br      ║\n");
-    printf("║                                                ║\n");
-    printf("║     GitHub: https://github.com/leonardobreno   ║\n");
-    printf("║               https://github.com/Pedro1349     ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                      SIG-Fantasy:                               ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                                   Equipe do projeto                             ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                        Este projeto foi desenvolvido por:                       ║\n");
+    printf("║                                 Leonardo Breno da Silva Santos,                 ║\n");
+    printf("║                                 Pedro Lucas da Silva Araújo                     ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                        E-mails: leonardodbreno@gmail.com,                       ║\n");
+    printf("║                                 pedro.araujo.716@ufrn.edu.br                    ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                        GitHub: https://github.com/leonardobreno                 ║\n");
+    printf("║                                https://github.com/Pedro1349                     ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
     getchar();
     getchar();
@@ -196,14 +201,14 @@ void modulo_informacoes(void) {
 char menu_cliente(void) {
     char op;
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                Modulo Clientes                 ║\n");
-    printf("╠════════════════════════════════════════════════╣\n");
-    printf("║          -> 1 • Cadastrar cliente              ║\n");
-    printf("║          -> 2 • Alterar cliente                ║\n");
-    printf("║          -> 3 • Listar cliente                 ║\n");
-    printf("║          -> 4 • Voltar                         ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                  Modulo Clientes                                ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                             -> 1 • Cadastrar cliente                            ║\n");
+    printf("║                             -> 2 • Alterar cliente                              ║\n");
+    printf("║                             -> 3 • Listar cliente                               ║\n");
+    printf("║                             -> 4    • Voltar                                    ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
     return op;
@@ -211,9 +216,9 @@ char menu_cliente(void) {
 
 void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                   Cadastro                     ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                     Cadastro                                    ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite seu nome: ");
     scanf(" %[^\n]", nome);
     printf("Digite seu CPF: ");
@@ -228,9 +233,9 @@ void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]
 
 void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                   Alteração                    ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                      Alteração                                  ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite seu novo nome: ");
     scanf(" %[^\n]", nome);
     printf("Digite seu novo CPF: ");
@@ -245,9 +250,9 @@ void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[])
 
 void menu_lista_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                Lista de clientes               ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                  Lista de clientes                              ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Nome: %s\n", nome);
     printf("CPF: %s\n", cpf);
     printf("Celular: %s\n", celular);
@@ -290,14 +295,14 @@ void modulo_cliente(void) {
 char menu_fantasia(void) {
     char op;
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                Modulo Fantasias                ║\n");
-    printf("╠════════════════════════════════════════════════╣\n");
-    printf("║          -> 1 • Cadastrar fantasia             ║\n");
-    printf("║          -> 2 • Alterar fantasia               ║\n");
-    printf("║          -> 3 • Listar fantasia                ║\n");
-    printf("║          -> 4 • Voltar                         ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                    Modulo Fantasias                             ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                               -> 1 • Cadastrar fantasia                         ║\n");
+    printf("║                               -> 2 • Alterar fantasia                           ║\n");
+    printf("║                               -> 3 • Listar fantasia                            ║\n");
+    printf("║                               -> 4 • Voltar                                     ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
     return op;
@@ -305,9 +310,9 @@ char menu_fantasia(void) {
 
 void menu_cadastro_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                Cadastro Fantasia               ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Cadastro Fantasia                             ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o nome da fantasia: ");
     scanf(" %[^\n]", nome);
     printf("Digite o tamanho: ");
@@ -320,9 +325,9 @@ void menu_cadastro_fantasia(char nome[], char tamanho[], char cor[]) {
 
 void menu_alterar_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                Alterar Fantasia                ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                    Alterar Fantasia                             ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o novo nome da fantasia: ");
     scanf(" %[^\n]", nome);
     printf("Digite o novo tamanho: ");
@@ -335,9 +340,9 @@ void menu_alterar_fantasia(char nome[], char tamanho[], char cor[]) {
 
 void menu_lista_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
-    printf("╔════════════════════════════════════════════════╗\n");
-    printf("║                Lista de Fantasias              ║\n");
-    printf("╚════════════════════════════════════════════════╝\n");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Lista de Fantasias                            ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Nome: %s\n", nome);
     printf("Tamanho: %s\n", tamanho);
     printf("Cor: %s\n", cor);
