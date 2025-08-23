@@ -204,10 +204,11 @@ char menu_cliente(void) {
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                  Modulo Clientes                                ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                             -> 1 • Cadastrar cliente                            ║\n");
-    printf("║                             -> 2 • Alterar cliente                              ║\n");
-    printf("║                             -> 3 • Listar cliente                               ║\n");
-    printf("║                             -> 4    • Voltar                                    ║\n");
+    printf("║                             -> 1 • Listar cliente                               ║\n");
+    printf("║                             -> 2 • Cadastrar cliente                            ║\n");
+    printf("║                             -> 3 • Alterar cliente                              ║\n");
+    printf("║                             -> 4 • Deletar cliente                              ║\n");
+    printf("║                             -> 5    • Voltar                                    ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
@@ -257,9 +258,13 @@ void menu_lista_cliente(char nome[], char cpf[], char celular[], char email[]) {
     printf("CPF: %s\n", cpf);
     printf("Celular: %s\n", celular);
     printf("Email: %s\n", email);
-    printf("\nPressione Enter para voltar...\n");
-    getchar();
-    getchar();
+}
+
+void menu_deletar_cliente(char nome[], char cpf[], char celular[], char email[]) {
+    nome[0] = '\0';
+    cpf[0] = '\0';
+    celular[0] = '\0';
+    email[0] = '\0';
 }
 
 void modulo_cliente(void) {
@@ -273,15 +278,46 @@ void modulo_cliente(void) {
         op = menu_cliente();
         switch(op) {
             case '1':
-                menu_cadastro_cliente(nome, cpf, celular, email);
+                menu_lista_cliente(nome, cpf, celular, email);
+                printf("\nPressione Enter para voltar...\n");
+                getchar();
+                getchar();
                 break;
             case '2':
-                menu_alterar_cliente(nome, cpf, celular, email);
+                menu_cadastro_cliente(nome, cpf, celular, email);
                 break;
             case '3':
-                menu_lista_cliente(nome, cpf, celular, email);
+                menu_alterar_cliente(nome, cpf, celular, email);
                 break;
             case '4':
+                char op_delete = '2';
+                system("clear||cls");
+                menu_lista_cliente(nome, cpf, celular, email);
+                printf("Deseja excluir esse cliente?\n");
+                printf("1 - Sim\n");
+                printf("2 - Nao\n");
+                op_delete = getchar();
+                op_delete = getchar();
+                switch (op_delete){
+                case '1':
+                    menu_deletar_cliente(nome, cpf, celular, email);
+                    printf("Cliente excluido com sucesso!\n");
+                    sleep(1);
+                    break;
+                
+                case '2':
+                    printf("Abortando exclusao...\n");
+                    sleep(1);
+                    break;
+                
+                default:
+                    printf("Opção inválida!\n");
+                    sleep(1);
+                    break;
+                }
+                sleep(1);
+                break;
+            case '5':
                 printf("Voltando ao menu principal...\n");
                 sleep(1);
                 break;
@@ -289,7 +325,7 @@ void modulo_cliente(void) {
                 printf("Opção inválida!\n");
                 sleep(1);
         }
-    } while(op != '4');
+    } while(op != '5');
 }
 
 char menu_fantasia(void) {
