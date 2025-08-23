@@ -18,12 +18,14 @@ void modulo_cliente(void);
 void menu_cadastro_cliente(char[], char[], char[], char[]);
 void menu_alterar_cliente(char[], char[], char[], char[]);
 void menu_lista_cliente(char[], char[], char[], char[]);
+void menu_deletar_cliente(char[], char[], char[], char[]);
 
 char menu_fantasia(void);
 void modulo_fantasia(void);
 void menu_cadastro_fantasia(char[], char[], char[]);
 void menu_alterar_fantasia(char[], char[], char[]);
 void menu_lista_fantasia(char[], char[], char[]);
+void menu_deletar_fantasia(char[], char[], char[]);
 
 int main(void) {
     char opc;
@@ -334,10 +336,11 @@ char menu_fantasia(void) {
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                    Modulo Fantasias                             ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                               -> 1 • Cadastrar fantasia                         ║\n");
-    printf("║                               -> 2 • Alterar fantasia                           ║\n");
-    printf("║                               -> 3 • Listar fantasia                            ║\n");
-    printf("║                               -> 4 • Voltar                                     ║\n");
+    printf("║                               -> 1 • Listar fantasia                            ║\n");    
+    printf("║                               -> 2 • Cadastrar fantasia                         ║\n");
+    printf("║                               -> 3 • Alterar fantasia                           ║\n");
+    printf("║                               -> 4 • Excluir fantasia                           ║\n");
+    printf("║                               -> 5 • Voltar                                     ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
@@ -382,9 +385,12 @@ void menu_lista_fantasia(char nome[], char tamanho[], char cor[]) {
     printf("Nome: %s\n", nome);
     printf("Tamanho: %s\n", tamanho);
     printf("Cor: %s\n", cor);
-    printf("\nPressione Enter para voltar...\n");
-    getchar();
-    getchar();
+}
+
+void menu_deletar_fantasia(char nome[], char tamanho[], char cor[]) {
+    nome[0] = '\0';
+    tamanho[0] = '\0';
+    cor[0] = '\0';
 }
 
 void modulo_fantasia(void) {
@@ -397,15 +403,46 @@ void modulo_fantasia(void) {
         op = menu_fantasia();
         switch(op) {
             case '1':
-                menu_cadastro_fantasia(nome, tamanho, cor);
+                menu_lista_fantasia(nome, tamanho, cor);
+                printf("\nPressione Enter para voltar...\n");
+                getchar();
+                getchar();                
                 break;
             case '2':
-                menu_alterar_fantasia(nome, tamanho, cor);
+                menu_cadastro_fantasia(nome, tamanho, cor);
                 break;
             case '3':
-                menu_lista_fantasia(nome, tamanho, cor);
+                menu_alterar_fantasia(nome, tamanho, cor);
                 break;
             case '4':
+                char op_delete = '2';
+                system("clear||cls");
+                menu_lista_fantasia(nome, tamanho, cor);
+                printf("Deseja excluir essa fantasia?\n");
+                printf("1 - Sim\n");
+                printf("2 - Nao\n");
+                op_delete = getchar();
+                op_delete = getchar();
+                switch (op_delete){
+                case '1':
+                    menu_deletar_fantasia(nome, tamanho, cor);
+                    printf("Fantasia excluida com sucesso!\n");
+                    sleep(1);
+                    break;
+                
+                case '2':
+                    printf("Abortando exclusao...\n");
+                    sleep(1);
+                    break;
+                
+                default:
+                    printf("Opção inválida!\n");
+                    sleep(1);
+                    break;
+                }
+                sleep(1);
+                break;
+            case '5':
                 printf("Voltando ao menu principal...\n");
                 sleep(1);
                 break;
@@ -413,6 +450,6 @@ void modulo_fantasia(void) {
                 printf("Opção inválida!\n");
                 sleep(1);
         }
-    } while(op != '4');
+    } while(op != '5');
 }
 
