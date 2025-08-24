@@ -305,7 +305,7 @@ void modulo_cliente(void) {
             case '4':
                 system("clear||cls");
                 menu_lista_cliente(nome, cpf, celular, email);
-                printf("Deseja excluir esse cliente?\n");
+                printf("\nDeseja excluir esse cliente?\n");
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
                 op_delete = getchar();
@@ -313,6 +313,7 @@ void modulo_cliente(void) {
                 switch (op_delete){
                 case '1':
                     menu_deletar_cliente(nome, cpf, celular, email);
+                    system("clear||cls");
                     printf("Cliente excluido com sucesso!\n");
                     sleep(1);
                     break;
@@ -428,7 +429,7 @@ void modulo_fantasia(void) {
             case '4':
                 system("clear||cls");
                 menu_lista_fantasia(nome, tamanho, cor);
-                printf("Deseja excluir essa fantasia?\n");
+                printf("\nDeseja excluir essa fantasia?\n");
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
                 op_delete = getchar();
@@ -436,6 +437,7 @@ void modulo_fantasia(void) {
                 switch (op_delete){
                 case '1':
                     menu_deletar_fantasia(nome, tamanho, cor);
+                    system("clear||cls");
                     printf("Fantasia excluida com sucesso!\n");
                     sleep(1);
                     break;
@@ -558,7 +560,7 @@ void modulo_pedido(void) {
             case '4':
                 system("clear||cls");
                 menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
-                printf("Deseja excluir esse pedido?\n");
+                printf("\nDeseja excluir esse pedido?\n");
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
                 op_delete = getchar();
@@ -566,6 +568,7 @@ void modulo_pedido(void) {
                 switch (op_delete){
                 case '1':
                     menu_deletar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
+                    system("clear||cls");
                     printf("Pedido excluido com sucesso!\n");
                     sleep(1);
                     break;
