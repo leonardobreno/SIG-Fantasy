@@ -29,7 +29,7 @@ void menu_deletar_fantasia(char[], char[], char[]);
 
 char menu_pedido(void);
 void modulo_pedido(void);
-void menu_lista_pedido(int, int, float, char[]);
+void menu_lista_pedido(int*, int*, float*, char[]);
 
 int main(void) {
     char opc;
@@ -282,6 +282,7 @@ void modulo_cliente(void) {
     char cpf[20] = "";
     char celular[20] = "";
     char email[50] = "";
+    char op_delete = '2';
 
     do {
         op = menu_cliente();
@@ -299,7 +300,6 @@ void modulo_cliente(void) {
                 menu_alterar_cliente(nome, cpf, celular, email);
                 break;
             case '4':
-                char op_delete = '2';
                 system("clear||cls");
                 menu_lista_cliente(nome, cpf, celular, email);
                 printf("Deseja excluir esse cliente?\n");
@@ -405,6 +405,7 @@ void modulo_fantasia(void) {
     char nome[50] = "";
     char tamanho[10] = "";
     char cor[20] = "";
+    char op_delete = '2';
 
     do {
         op = menu_fantasia();
@@ -422,7 +423,6 @@ void modulo_fantasia(void) {
                 menu_alterar_fantasia(nome, tamanho, cor);
                 break;
             case '4':
-                char op_delete = '2';
                 system("clear||cls");
                 menu_lista_fantasia(nome, tamanho, cor);
                 printf("Deseja excluir essa fantasia?\n");
@@ -477,15 +477,32 @@ char menu_pedido(void) {
     return op;
 }
 
-void menu_lista_pedido(int id_fantasia, int id_cliente, float preco, char data_pedido[]) {
+void menu_lista_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                   Lista de Fantasias                            ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Id da fantasia: %d\n", id_fantasia);
-    printf("Id do cliente: %d\n", id_cliente);
-    printf("Preco do pedido: %f\n", preco);
+    printf("Id da fantasia: %d\n", *id_fantasia);
+    printf("Id do cliente: %d\n", *id_cliente);
+    printf("Preco do pedido: %f\n", *preco);
     printf("Data do pedido: %s\n", data_pedido);
+}
+
+void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Cadastro pedido                               ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Digite o id da fantasia: ");
+    scanf(" %d", id_fantasia);
+    printf("Digite o id do cliente: ");
+    scanf(" %d", id_cliente);
+    printf("Digite o preco do pedido: ");
+    scanf(" %f", preco);
+    printf("Digite a data do pedido: ");
+    scanf(" %[^\n]", data_pedido);
+    printf("\nCadastro realizado!\n");
+    sleep(1);
 }
 
 void modulo_pedido(void) {
@@ -493,18 +510,19 @@ void modulo_pedido(void) {
     int id_fantasia = 0;
     int id_cliente = 0;
     float preco = 0;
-    char data_pedido[10] = "";
+    char data_pedido[60] = "";
 
     do {
         op = menu_pedido();
         switch(op) {
             case '1':
-                menu_lista_pedido(id_fantasia, id_cliente, preco, data_pedido);
+                menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 printf("\nPressione Enter para voltar...\n");
                 getchar();
                 getchar();                   
                 break;
             case '2':
+                menu_cadastro_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 break;
             case '3':
                 break;
