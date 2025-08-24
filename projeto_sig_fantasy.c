@@ -505,6 +505,23 @@ void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char 
     sleep(1);
 }
 
+void menu_alterar_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Alterar pedido                                ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Digite o id da fantasia: ");
+    scanf(" %d", id_fantasia);
+    printf("Digite o id do cliente: ");
+    scanf(" %d", id_cliente);
+    printf("Digite o preco do pedido: ");
+    scanf(" %f", preco);
+    printf("Digite a data do pedido: ");
+    scanf(" %[^\n]", data_pedido);
+    printf("\nCadastro realizado!\n");
+    sleep(1);
+}
+
 void modulo_pedido(void) {
     char op;
     int id_fantasia = 0;
@@ -525,6 +542,7 @@ void modulo_pedido(void) {
                 menu_cadastro_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 break;
             case '3':
+                menu_alterar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 break;
             case '4':
                 break;
