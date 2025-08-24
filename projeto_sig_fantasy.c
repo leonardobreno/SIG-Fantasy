@@ -470,3 +470,31 @@ char menu_pedido(void) {
     return op;
 }
 
+void modulo_pedido(void) {
+    char op;
+    int id_fantasia;
+    int id_cliente;
+    float valor;
+    char data_pedido[10];
+
+    do {
+        op = menu_pedido();
+        switch(op) {
+            case '1':              
+                break;
+            case '2':
+                break;
+            case '3':
+                break;
+            case '4':
+                break;
+            case '5':
+                printf("Voltando ao menu principal...\n");
+                sleep(1);
+                break;
+            default:
+                printf("Opção inválida!\n");
+                sleep(1);
+        }
+    } while(op != '5');
+}
