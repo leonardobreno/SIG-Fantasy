@@ -30,6 +30,9 @@ void menu_deletar_fantasia(char[], char[], char[]);
 char menu_pedido(void);
 void modulo_pedido(void);
 void menu_lista_pedido(int*, int*, float*, char[]);
+void menu_cadastro_pedido(int*, int*, float*, char[]);
+void menu_alterar_pedido(int*, int*, float*, char[]);
+void menu_deletar_pedido(int*, int*, float*, char[]);
 
 int main(void) {
     char opc;
@@ -522,12 +525,20 @@ void menu_alterar_pedido(int* id_fantasia, int* id_cliente, float* preco, char d
     sleep(1);
 }
 
+void menu_deletar_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
+    *id_fantasia = 0;
+    *id_cliente = 0;
+    *preco = 0;
+    data_pedido[0] = '\0';
+}
+
 void modulo_pedido(void) {
     char op;
     int id_fantasia = 0;
     int id_cliente = 0;
     float preco = 0;
     char data_pedido[60] = "";
+    char op_delete = '2';
 
     do {
         op = menu_pedido();
@@ -545,6 +556,31 @@ void modulo_pedido(void) {
                 menu_alterar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 break;
             case '4':
+                system("clear||cls");
+                menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
+                printf("Deseja excluir esse pedido?\n");
+                printf("1 - Sim\n");
+                printf("2 - Nao\n");
+                op_delete = getchar();
+                op_delete = getchar();
+                switch (op_delete){
+                case '1':
+                    menu_deletar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
+                    printf("Pedido excluido com sucesso!\n");
+                    sleep(1);
+                    break;
+                
+                case '2':
+                    printf("Abortando exclusao...\n");
+                    sleep(1);
+                    break;
+                
+                default:
+                    printf("Opção inválida!\n");
+                    sleep(1);
+                    break;
+                }
+                sleep(1);            
                 break;
             case '5':
                 printf("Voltando ao menu principal...\n");
