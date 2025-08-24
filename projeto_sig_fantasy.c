@@ -453,3 +453,20 @@ void modulo_fantasia(void) {
     } while(op != '5');
 }
 
+char menu_pedido(void) {
+    char op;
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                    Modulo Pedidos                               ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                               -> 1 • Listar pedido                              ║\n");    
+    printf("║                               -> 2 • Cadastrar pedido                           ║\n");
+    printf("║                               -> 3 • Alterar pedido                             ║\n");
+    printf("║                               -> 4 • Excluir pedido                             ║\n");
+    printf("║                               -> 5 • Voltar                                     ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Escolha uma opção: ");
+    scanf(" %c", &op);
+    return op;
+}
+
