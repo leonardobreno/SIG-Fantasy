@@ -652,3 +652,22 @@ void modulo_pedido(void) {
         }
     } while(op != '5');
 }
+
+char menu_funcionario(void) {
+    char op;
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                Modulo Funcionario                               ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                             -> 1 • Listar funcionario                           ║\n");
+    printf("║                             -> 2 • Cadastrar funcionario                        ║\n");
+    printf("║                             -> 3 • Alterar funcionario                          ║\n");
+    printf("║                             -> 4 • Deletar funcionario                          ║\n");
+    printf("║                             -> 5    • Voltar                                    ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Escolha uma opção: ");
+    scanf(" %c", &op);
+    limpar_buffer();
+
+    return op;
+}
