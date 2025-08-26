@@ -7,6 +7,7 @@
 // Assinaturas das funções
 char menu_principal(void);
 char saida_programa(void);
+void limpar_buffer(void);
 
 char menu_informacoes(void);
 void menu_sobre_projeto(void);
@@ -90,6 +91,7 @@ char menu_principal(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
+    limpar_buffer();
     printf("Carregando...\n");
     sleep(1);
     return op;
@@ -101,6 +103,7 @@ char saida_programa(void) {
     while (confirmacao == 0){
         printf("Tem certeza que deseja sair do programa? (s/n)\n");
         scanf(" %c", &opcao);
+        limpar_buffer();
         if (opcao == 's' || opcao == 'S')
         {
             printf("Fechando o programa...\n");
@@ -124,6 +127,11 @@ char saida_programa(void) {
     return opcao;
 }
 
+void limpar_buffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
 char menu_informacoes(void) {
     char op;
     system("clear||cls");
@@ -138,7 +146,8 @@ char menu_informacoes(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
     printf("Escolha uma opção: ");
-    scanf(" %c", &op);
+    op = getchar();
+    limpar_buffer();
     return op;
 }
 
@@ -158,7 +167,7 @@ void menu_sobre_projeto(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
     getchar();
-    getchar();
+    limpar_buffer();
 }
 
 void menu_equipe(void) {
@@ -180,7 +189,7 @@ void menu_equipe(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
     getchar();
-    getchar();
+    limpar_buffer();
 }
 
 void modulo_informacoes(void) {
@@ -224,6 +233,8 @@ char menu_cliente(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
+    limpar_buffer();
+
     return op;
 }
 
@@ -234,12 +245,20 @@ void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite seu nome: ");
     scanf(" %[^\n]", nome);
+    limpar_buffer();
+
     printf("Digite seu CPF: ");
     scanf(" %[^\n]", cpf);
+    limpar_buffer();
+
     printf("Digite seu numero de celular: ");
     scanf(" %[^\n]", celular);
+    limpar_buffer();
+
     printf("Digite seu Email: ");
     scanf(" %[^\n]", email);
+    limpar_buffer();
+
     printf("\nCadastro realizado!\n");
     sleep(1);
 }
@@ -251,12 +270,20 @@ void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[])
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite seu novo nome: ");
     scanf(" %[^\n]", nome);
+    limpar_buffer();
+
     printf("Digite seu novo CPF: ");
     scanf(" %[^\n]", cpf);
+    limpar_buffer();
+
     printf("Digite seu novo celular: ");
     scanf(" %[^\n]", celular);
+    limpar_buffer();
+
     printf("Digite seu novo email: ");
     scanf(" %[^\n]", email);
+    limpar_buffer();
+
     printf("\nCadastro alterado!\n");
     sleep(1);
 }
@@ -294,7 +321,7 @@ void modulo_cliente(void) {
                 menu_lista_cliente(nome, cpf, celular, email);
                 printf("\nPressione Enter para voltar...\n");
                 getchar();
-                getchar();
+                limpar_buffer();
                 break;
             case '2':
                 menu_cadastro_cliente(nome, cpf, celular, email);
@@ -309,7 +336,7 @@ void modulo_cliente(void) {
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
                 op_delete = getchar();
-                op_delete = getchar();
+                limpar_buffer();
                 switch (op_delete){
                 case '1':
                     menu_deletar_cliente(nome, cpf, celular, email);
@@ -355,6 +382,7 @@ char menu_fantasia(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
+    limpar_buffer();
     return op;
 }
 
@@ -365,10 +393,16 @@ void menu_cadastro_fantasia(char nome[], char tamanho[], char cor[]) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o nome da fantasia: ");
     scanf(" %[^\n]", nome);
+    limpar_buffer();
+
     printf("Digite o tamanho: ");
     scanf(" %[^\n]", tamanho);
+    limpar_buffer();
+
     printf("Digite a cor: ");
     scanf(" %[^\n]", cor);
+    limpar_buffer();
+
     printf("\nCadastro realizado!\n");
     sleep(1);
 }
@@ -380,10 +414,16 @@ void menu_alterar_fantasia(char nome[], char tamanho[], char cor[]) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o novo nome da fantasia: ");
     scanf(" %[^\n]", nome);
+    limpar_buffer();
+
     printf("Digite o novo tamanho: ");
     scanf(" %[^\n]", tamanho);
+    limpar_buffer();
+
     printf("Digite a nova cor: ");
     scanf(" %[^\n]", cor);
+    limpar_buffer();
+
     printf("\nCadastro alterado!\n");
     sleep(1);
 }
@@ -418,7 +458,7 @@ void modulo_fantasia(void) {
                 menu_lista_fantasia(nome, tamanho, cor);
                 printf("\nPressione Enter para voltar...\n");
                 getchar();
-                getchar();                
+                limpar_buffer();                
                 break;
             case '2':
                 menu_cadastro_fantasia(nome, tamanho, cor);
@@ -433,7 +473,7 @@ void modulo_fantasia(void) {
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
                 op_delete = getchar();
-                op_delete = getchar();
+                limpar_buffer();
                 switch (op_delete){
                 case '1':
                     menu_deletar_fantasia(nome, tamanho, cor);
@@ -479,6 +519,7 @@ char menu_pedido(void) {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
+    limpar_buffer();
     return op;
 }
 
@@ -500,12 +541,20 @@ void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char 
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o id da fantasia: ");
     scanf(" %d", id_fantasia);
+    limpar_buffer();
+
     printf("Digite o id do cliente: ");
     scanf(" %d", id_cliente);
+    limpar_buffer();
+
     printf("Digite o preco do pedido: ");
     scanf(" %f", preco);
+    limpar_buffer();
+
     printf("Digite a data do pedido: ");
     scanf(" %[^\n]", data_pedido);
+    limpar_buffer();
+
     printf("\nCadastro realizado!\n");
     sleep(1);
 }
@@ -517,12 +566,20 @@ void menu_alterar_pedido(int* id_fantasia, int* id_cliente, float* preco, char d
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o id da fantasia: ");
     scanf(" %d", id_fantasia);
+    limpar_buffer();
+
     printf("Digite o id do cliente: ");
     scanf(" %d", id_cliente);
+    limpar_buffer();
+
     printf("Digite o preco do pedido: ");
     scanf(" %f", preco);
+    limpar_buffer();
+
     printf("Digite a data do pedido: ");
     scanf(" %[^\n]", data_pedido);
+    limpar_buffer();
+
     printf("\nCadastro realizado!\n");
     sleep(1);
 }
@@ -549,7 +606,7 @@ void modulo_pedido(void) {
                 menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 printf("\nPressione Enter para voltar...\n");
                 getchar();
-                getchar();                   
+                limpar_buffer();                  
                 break;
             case '2':
                 menu_cadastro_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
@@ -564,7 +621,7 @@ void modulo_pedido(void) {
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
                 op_delete = getchar();
-                op_delete = getchar();
+                limpar_buffer();
                 switch (op_delete){
                 case '1':
                     menu_deletar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
