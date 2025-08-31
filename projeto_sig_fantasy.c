@@ -62,6 +62,11 @@ int main(void) {
             case '5':
                 modulo_informacoes();
                 break;
+            case '6':
+                printf("\nModulo em processo de criacao.");
+                printf("\nVoltando ao menu...");
+                sleep(2);
+                break;
             case '0':
                 opc = saida_programa();
                 break;
