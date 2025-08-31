@@ -37,6 +37,7 @@ void menu_deletar_pedido(int*, int*, float*, char[]);
 
 char menu_funcionario(void);
 void menu_lista_funcionario(char[], char[], char[], char[], float*);
+void menu_cadastro_funcionario(char[], char[], char[], char[], float*);
 
 int main(void) {
     char opc;
@@ -678,11 +679,40 @@ char menu_funcionario(void) {
 void menu_lista_funcionario(char nome[], char cpf[], char celular[], char email[], float* salario) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Lista de Fantasias                            ║\n");
+    printf("║                                   Lista de funcionarios                         ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Nome do funcionario: %s\n", nome);
     printf("Cpf do funcionario: %s\n", cpf);
     printf("Telefone do funcionario: %s\n", celular);
     printf("Email do funcionario: %s\n", email);
     printf("Salario do funcionario: %f\n", *salario);
+}
+
+void menu_cadastro_funcionario(char nome[], char cpf[], char celular[], char email[], float* salario) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Cadastro funcionario                          ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Digite o nome do funcionario: ");
+    scanf(" %[^\n]", nome);
+    limpar_buffer();
+
+    printf("Digite o cpf do funcionario: ");
+    scanf(" %[^\n]", cpf);
+    limpar_buffer();
+
+    printf("Digite o celular do funcionario: ");
+    scanf(" %[^\n]", celular);
+    limpar_buffer();
+
+    printf("Digite o email do funcionario: ");
+    scanf(" %[^\n]", email);
+    limpar_buffer();
+
+    printf("Digite o salario do funcionario: ");
+    scanf(" %f", salario);
+    limpar_buffer();
+
+    printf("\nCadastro realizado!\n");
+    sleep(1);
 }
