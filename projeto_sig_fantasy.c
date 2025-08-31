@@ -39,6 +39,7 @@ char menu_funcionario(void);
 void menu_lista_funcionario(char[], char[], char[], char[], float*);
 void menu_cadastro_funcionario(char[], char[], char[], char[], float*);
 void menu_alterar_funcionario(char[], char[], char[], char[], float*);
+void menu_deletar_funcionario(char[], char[], char[], char[], float*);
 
 int main(void) {
     char opc;
@@ -745,4 +746,12 @@ void menu_alterar_funcionario(char nome[], char cpf[], char celular[], char emai
 
     printf("\nFuncionario alterado!\n");
     sleep(1);
+}
+
+void menu_deletar_funcionario(char nome[], char cpf[], char celular[], char email[], float* salario) {
+    nome[0] = '\0';
+    cpf[0] = '\0';
+    celular[0] = '\0';
+    email[0] = '\0';
+    *salario = 0;
 }
