@@ -35,6 +35,9 @@ void menu_cadastro_pedido(int*, int*, float*, char[]);
 void menu_alterar_pedido(int*, int*, float*, char[]);
 void menu_deletar_pedido(int*, int*, float*, char[]);
 
+char menu_funcionario(void);
+void menu_lista_funcionario(char[], char[], char[], char[], float*);
+
 int main(void) {
     char opc;
     do {
@@ -670,4 +673,16 @@ char menu_funcionario(void) {
     limpar_buffer();
 
     return op;
+}
+
+void menu_lista_funcionario(char nome[], char cpf[], char celular[], char email[], float* salario) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Lista de Fantasias                            ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Nome do funcionario: %s\n", nome);
+    printf("Cpf do funcionario: %s\n", cpf);
+    printf("Telefone do funcionario: %s\n", celular);
+    printf("Email do funcionario: %s\n", email);
+    printf("Salario do funcionario: %f\n", *salario);
 }
