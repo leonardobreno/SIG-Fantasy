@@ -38,6 +38,7 @@ void menu_deletar_pedido(int*, int*, float*, char[]);
 char menu_funcionario(void);
 void menu_lista_funcionario(char[], char[], char[], char[], float*);
 void menu_cadastro_funcionario(char[], char[], char[], char[], float*);
+void menu_alterar_funcionario(char[], char[], char[], char[], float*);
 
 int main(void) {
     char opc;
@@ -568,19 +569,19 @@ void menu_alterar_pedido(int* id_fantasia, int* id_cliente, float* preco, char d
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                   Alterar Pedido                                ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Digite o id da fantasia: ");
+    printf("Digite o novo id da fantasia: ");
     scanf(" %d", id_fantasia);
     limpar_buffer();
 
-    printf("Digite o id do cliente: ");
+    printf("Digite o novo id do cliente: ");
     scanf(" %d", id_cliente);
     limpar_buffer();
 
-    printf("Digite o preco do pedido: ");
+    printf("Digite o novo preco do pedido: ");
     scanf(" %f", preco);
     limpar_buffer();
 
-    printf("Digite a data do pedido: ");
+    printf("Digite a nova data do pedido: ");
     scanf(" %[^\n]", data_pedido);
     limpar_buffer();
 
@@ -722,23 +723,23 @@ void menu_alterar_funcionario(char nome[], char cpf[], char celular[], char emai
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                   Alterar Funcionario                           ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Digite o nome do funcionario: ");
+    printf("Digite o novo nome do funcionario: ");
     scanf(" %[^\n]", nome);
     limpar_buffer();
 
-    printf("Digite o cpf do funcionario: ");
+    printf("Digite o novo cpf do funcionario: ");
     scanf(" %[^\n]", cpf);
     limpar_buffer();
 
-    printf("Digite o celular do funcionario: ");
+    printf("Digite o novo celular do funcionario: ");
     scanf(" %[^\n]", celular);
     limpar_buffer();
 
-    printf("Digite o email do funcionario: ");
+    printf("Digite o novo email do funcionario: ");
     scanf(" %[^\n]", email);
     limpar_buffer();
 
-    printf("Digite o salario do funcionario: ");
+    printf("Digite o novo salario do funcionario: ");
     scanf(" %f", salario);
     limpar_buffer();
 
