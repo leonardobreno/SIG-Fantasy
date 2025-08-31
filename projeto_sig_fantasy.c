@@ -16,16 +16,16 @@ void modulo_informacoes(void);
 
 char menu_cliente(void);
 void modulo_cliente(void);
+void menu_lista_cliente(char[], char[], char[], char[]);
 void menu_cadastro_cliente(char[], char[], char[], char[]);
 void menu_alterar_cliente(char[], char[], char[], char[]);
-void menu_lista_cliente(char[], char[], char[], char[]);
 void menu_deletar_cliente(char[], char[], char[], char[]);
 
 char menu_fantasia(void);
 void modulo_fantasia(void);
+void menu_lista_fantasia(char[], char[], char[]);
 void menu_cadastro_fantasia(char[], char[], char[]);
 void menu_alterar_fantasia(char[], char[], char[]);
-void menu_lista_fantasia(char[], char[], char[]);
 void menu_deletar_fantasia(char[], char[], char[]);
 
 char menu_pedido(void);
@@ -242,10 +242,21 @@ char menu_cliente(void) {
     return op;
 }
 
+void menu_lista_cliente(char nome[], char cpf[], char celular[], char email[]) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                  Lista de clientes                              ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Nome: %s\n", nome);
+    printf("CPF: %s\n", cpf);
+    printf("Celular: %s\n", celular);
+    printf("Email: %s\n", email);
+}
+
 void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                     Cadastro                                    ║\n");
+    printf("║                                  Cadastro Cliente                               ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite seu nome: ");
     scanf(" %[^\n]", nome);
@@ -270,7 +281,7 @@ void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]
 void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                      Alteração                                  ║\n");
+    printf("║                                     Alterar Cliente                             ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite seu novo nome: ");
     scanf(" %[^\n]", nome);
@@ -288,19 +299,8 @@ void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[])
     scanf(" %[^\n]", email);
     limpar_buffer();
 
-    printf("\nCadastro alterado!\n");
+    printf("\nCliente alterado!\n");
     sleep(1);
-}
-
-void menu_lista_cliente(char nome[], char cpf[], char celular[], char email[]) {
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                  Lista de clientes                              ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Nome: %s\n", nome);
-    printf("CPF: %s\n", cpf);
-    printf("Celular: %s\n", celular);
-    printf("Email: %s\n", email);
 }
 
 void menu_deletar_cliente(char nome[], char cpf[], char celular[], char email[]) {
@@ -390,6 +390,16 @@ char menu_fantasia(void) {
     return op;
 }
 
+void menu_lista_fantasia(char nome[], char tamanho[], char cor[]) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Lista de Fantasias                            ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Nome: %s\n", nome);
+    printf("Tamanho: %s\n", tamanho);
+    printf("Cor: %s\n", cor);
+}
+
 void menu_cadastro_fantasia(char nome[], char tamanho[], char cor[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
@@ -428,18 +438,8 @@ void menu_alterar_fantasia(char nome[], char tamanho[], char cor[]) {
     scanf(" %[^\n]", cor);
     limpar_buffer();
 
-    printf("\nCadastro alterado!\n");
+    printf("\nFantasia alterada!\n");
     sleep(1);
-}
-
-void menu_lista_fantasia(char nome[], char tamanho[], char cor[]) {
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Lista de Fantasias                            ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Nome: %s\n", nome);
-    printf("Tamanho: %s\n", tamanho);
-    printf("Cor: %s\n", cor);
 }
 
 void menu_deletar_fantasia(char nome[], char tamanho[], char cor[]) {
@@ -530,7 +530,7 @@ char menu_pedido(void) {
 void menu_lista_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Lista de Fantasias                            ║\n");
+    printf("║                                   Lista de Pedidos                              ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Id da fantasia: %d\n", *id_fantasia);
     printf("Id do cliente: %d\n", *id_cliente);
@@ -541,7 +541,7 @@ void menu_lista_pedido(int* id_fantasia, int* id_cliente, float* preco, char dat
 void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Cadastro pedido                               ║\n");
+    printf("║                                   Cadastro Pedido                               ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o id da fantasia: ");
     scanf(" %d", id_fantasia);
@@ -566,7 +566,7 @@ void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char 
 void menu_alterar_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Alterar pedido                                ║\n");
+    printf("║                                   Alterar Pedido                                ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o id da fantasia: ");
     scanf(" %d", id_fantasia);
@@ -584,7 +584,7 @@ void menu_alterar_pedido(int* id_fantasia, int* id_cliente, float* preco, char d
     scanf(" %[^\n]", data_pedido);
     limpar_buffer();
 
-    printf("\nCadastro realizado!\n");
+    printf("\nPedido alterado!\n");
     sleep(1);
 }
 
@@ -691,7 +691,7 @@ void menu_lista_funcionario(char nome[], char cpf[], char celular[], char email[
 void menu_cadastro_funcionario(char nome[], char cpf[], char celular[], char email[], float* salario) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Cadastro funcionario                          ║\n");
+    printf("║                                   Cadastro Funcionario                          ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o nome do funcionario: ");
     scanf(" %[^\n]", nome);
@@ -714,5 +714,34 @@ void menu_cadastro_funcionario(char nome[], char cpf[], char celular[], char ema
     limpar_buffer();
 
     printf("\nCadastro realizado!\n");
+    sleep(1);
+}
+
+void menu_alterar_funcionario(char nome[], char cpf[], char celular[], char email[], float* salario) {
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                   Alterar Funcionario                           ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Digite o nome do funcionario: ");
+    scanf(" %[^\n]", nome);
+    limpar_buffer();
+
+    printf("Digite o cpf do funcionario: ");
+    scanf(" %[^\n]", cpf);
+    limpar_buffer();
+
+    printf("Digite o celular do funcionario: ");
+    scanf(" %[^\n]", celular);
+    limpar_buffer();
+
+    printf("Digite o email do funcionario: ");
+    scanf(" %[^\n]", email);
+    limpar_buffer();
+
+    printf("Digite o salario do funcionario: ");
+    scanf(" %f", salario);
+    limpar_buffer();
+
+    printf("\nFuncionario alterado!\n");
     sleep(1);
 }
