@@ -15,31 +15,32 @@ void menu_equipe(void);
 void modulo_informacoes(void);
 
 char menu_cliente(void);
-void modulo_cliente(void);
 void menu_lista_cliente(char[], char[], char[], char[]);
 void menu_cadastro_cliente(char[], char[], char[], char[]);
 void menu_alterar_cliente(char[], char[], char[], char[]);
 void menu_deletar_cliente(char[], char[], char[], char[]);
+void modulo_cliente(void);
 
 char menu_fantasia(void);
-void modulo_fantasia(void);
 void menu_lista_fantasia(char[], char[], char[]);
 void menu_cadastro_fantasia(char[], char[], char[]);
 void menu_alterar_fantasia(char[], char[], char[]);
 void menu_deletar_fantasia(char[], char[], char[]);
+void modulo_fantasia(void);
 
 char menu_pedido(void);
-void modulo_pedido(void);
 void menu_lista_pedido(int*, int*, float*, char[]);
 void menu_cadastro_pedido(int*, int*, float*, char[]);
 void menu_alterar_pedido(int*, int*, float*, char[]);
 void menu_deletar_pedido(int*, int*, float*, char[]);
+void modulo_pedido(void);
 
 char menu_funcionario(void);
 void menu_lista_funcionario(char[], char[], char[], char[], float*);
 void menu_cadastro_funcionario(char[], char[], char[], char[], float*);
 void menu_alterar_funcionario(char[], char[], char[], char[], float*);
 void menu_deletar_funcionario(char[], char[], char[], char[], float*);
+void modulo_funcionario(void);
 
 int main(void) {
     char opc;
@@ -53,19 +54,22 @@ int main(void) {
                 modulo_fantasia();
                 break;
             case '3':
+                modulo_funcionario();
+                break;
+            case '4':
                 modulo_pedido();
                 break;                
-            case '4':
+            case '5':
                 modulo_informacoes();
                 break;
-            case '6':
+            case '0':
                 opc = saida_programa();
                 break;
             default:
                 printf("Opção inválida. Tente novamente.\n");
                 sleep(1);
         }
-    } while(opc != '6');
+    } while(opc != '0');
 
     return 0;
 }
@@ -90,10 +94,11 @@ char menu_principal(void) {
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
     printf("║                              -> 1 • Modulo Clientes                             ║\n");
     printf("║                              -> 2 • Modulo Fantasias                            ║\n");
-    printf("║                              -> 3 • Modulo Pedidos                              ║\n");
-    printf("║                              -> 4 • Modulo Informações                          ║\n");
-    printf("║                              -> 5 • Modulo Relatórios                           ║\n");
-    printf("║                              -> 6 •      Sair                                   ║\n");
+    printf("║                              -> 3 • Modulo Funcionarios                         ║\n");
+    printf("║                              -> 4 • Modulo Pedidos                              ║\n");
+    printf("║                              -> 5 • Modulo Informações                          ║\n");
+    printf("║                              -> 6 • Modulo Relatórios                           ║\n");
+    printf("║                              -> 0 •      Sair                                   ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
@@ -113,7 +118,7 @@ char saida_programa(void) {
         if (opcao == 's' || opcao == 'S')
         {
             printf("Fechando o programa...\n");
-            opcao = '6';
+            opcao = '0';
             confirmacao = 1;
             sleep(1);
 
@@ -326,7 +331,6 @@ void modulo_cliente(void) {
             case '1':
                 menu_lista_cliente(nome, cpf, celular, email);
                 printf("\nPressione Enter para voltar...\n");
-                getchar();
                 limpar_buffer();
                 break;
             case '2':
@@ -463,7 +467,6 @@ void modulo_fantasia(void) {
             case '1':
                 menu_lista_fantasia(nome, tamanho, cor);
                 printf("\nPressione Enter para voltar...\n");
-                getchar();
                 limpar_buffer();                
                 break;
             case '2':
@@ -611,7 +614,6 @@ void modulo_pedido(void) {
             case '1':
                 menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
                 printf("\nPressione Enter para voltar...\n");
-                getchar();
                 limpar_buffer();                  
                 break;
             case '2':
@@ -754,4 +756,66 @@ void menu_deletar_funcionario(char nome[], char cpf[], char celular[], char emai
     celular[0] = '\0';
     email[0] = '\0';
     *salario = 0;
+}
+
+void modulo_funcionario(void) {
+    char op;
+    char nome[60] = "";
+    char cpf[60] = "";
+    char celular[60] = "";
+    char email[60] = "";
+    float salario = 0;
+    char op_delete = '2';
+
+    do {
+        op = menu_funcionario();
+        switch(op) {
+            case '1':
+                menu_lista_funcionario(nome, cpf, celular, email, &salario);
+                printf("\nPressione Enter para voltar...\n");
+                limpar_buffer();                  
+                break;
+            case '2':
+                menu_cadastro_funcionario(nome, cpf, celular, email, &salario);
+                break;
+            case '3':
+                menu_alterar_funcionario(nome, cpf, celular, email, &salario);
+                break;
+            case '4':
+                system("clear||cls");
+                menu_lista_funcionario(nome, cpf, celular, email, &salario);
+                printf("\nDeseja excluir esse funcionario?\n");
+                printf("1 - Sim\n");
+                printf("2 - Nao\n");
+                op_delete = getchar();
+                limpar_buffer();
+                switch (op_delete){
+                case '1':
+                    menu_deletar_funcionario(nome, cpf, celular, email, &salario);
+                    system("clear||cls");
+                    printf("Funcionario excluido com sucesso!\n");
+                    sleep(1);
+                    break;
+                
+                case '2':
+                    printf("Abortando exclusao...\n");
+                    sleep(1);
+                    break;
+                
+                default:
+                    printf("Opção inválida!\n");
+                    sleep(1);
+                    break;
+                }
+                sleep(1);            
+                break;
+            case '5':
+                printf("Voltando ao menu principal...\n");
+                sleep(1);
+                break;
+            default:
+                printf("Opção inválida!\n");
+                sleep(1);
+        }
+    } while(op != '5');
 }
