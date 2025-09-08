@@ -185,7 +185,6 @@ void menu_sobre_projeto(void) {
     printf("║                   os produtos da loja, alem de guardar os pedidos               ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
-    getchar();
     limpar_buffer();
 }
 
@@ -207,7 +206,6 @@ void menu_equipe(void) {
     printf("║                                https://github.com/Pedro1349                     ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
-    getchar();
     limpar_buffer();
 }
 
@@ -396,7 +394,7 @@ char menu_fantasia(void) {
     printf("║                               -> 2 • Cadastrar fantasia                         ║\n");
     printf("║                               -> 3 • Alterar fantasia                           ║\n");
     printf("║                               -> 4 • Excluir fantasia                           ║\n");
-    printf("║                               -> 5 • Voltar                                     ║\n");
+    printf("║                               -> 5    • Voltar                                  ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
@@ -532,7 +530,7 @@ char menu_pedido(void) {
     printf("║                               -> 2 • Cadastrar pedido                           ║\n");
     printf("║                               -> 3 • Alterar pedido                             ║\n");
     printf("║                               -> 4 • Excluir pedido                             ║\n");
-    printf("║                               -> 5 • Voltar                                     ║\n");
+    printf("║                               -> 5    • Voltar                                  ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
