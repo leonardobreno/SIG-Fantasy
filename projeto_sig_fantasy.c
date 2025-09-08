@@ -145,7 +145,10 @@ char saida_programa(void) {
 
 void limpar_buffer(void) {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    c = getchar();
+    while ((c != '\n' && c != EOF)) {
+        c = getchar();
+    };
 }
 
 char menu_informacoes(void) {
