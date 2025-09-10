@@ -1,5 +1,5 @@
 
-
+// Assinaturas da funcoes relacionadas ao modulo de informacoes
 char menu_informacoes(void);
 void menu_sobre_projeto(void);
 void menu_equipe(void);
