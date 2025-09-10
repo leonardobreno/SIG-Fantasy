@@ -4,10 +4,11 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "Utilidades/utilidades.h"
+
 // Assinaturas das funções
 char menu_principal(void);
 char saida_programa(void);
-void limpar_buffer(void);
 
 char menu_informacoes(void);
 void menu_sobre_projeto(void);
@@ -141,14 +142,6 @@ char saida_programa(void) {
     
     }
     return opcao;
-}
-
-void limpar_buffer(void) {
-    int c;
-    c = getchar();
-    while ((c != '\n' && c != EOF)) {
-        c = getchar();
-    };
 }
 
 char menu_informacoes(void) {
