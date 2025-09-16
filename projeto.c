@@ -44,6 +44,5 @@ int main(void) {
                 sleep(1);
         }
     } while(opc != '0');
-
     return 0;
 }
