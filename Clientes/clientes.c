@@ -30,7 +30,7 @@ char menu_cliente(void) {
     return op;
 }
 
-void menu_pesquisar_cliente(char cpf_procurar[]) {
+int menu_pesquisar_cliente(char cpf_procurar[]) {
     int comparacao = strcmp(cpf_procurar, cpf);
     if (comparacao == 0){
         system("clear||cls");
@@ -42,12 +42,14 @@ void menu_pesquisar_cliente(char cpf_procurar[]) {
         printf("CPF_pesquisado: %s\n", cpf_procurar);
         printf("Celular: %s\n", celular);
         printf("Email: %s\n", email);
+        return 1;
     }
     else
     {
         system("clear||cls");
         printf("CPF_pesquisado: %s\n", cpf_procurar);
         printf("\nNao tem nenhum usuario com esse cpf.");
+        return 0;
     }
     
 }
@@ -112,7 +114,8 @@ void menu_deletar_cliente(char nome[], char cpf[], char celular[], char email[])
 void modulo_cliente(void) {
     char op;
     char op_delete = '2';
-    char cpf_procurar[50];
+    char cpf_procurar[50] = "";
+    int cliente_achado;
 
     do {
         op = menu_cliente();
@@ -133,34 +136,43 @@ void modulo_cliente(void) {
                 break;
             case '4':
                 system("clear||cls");
-                limpar_buffer();
                 printf("\nDigite o valor do cpf do cliente que deseja procurar: ");
                 scanf("%[^\n]", cpf_procurar);
-                menu_pesquisar_cliente(cpf_procurar);
-                printf("\nDeseja excluir esse cliente?\n");
-                printf("1 - Sim\n");
-                printf("2 - Nao\n");
-                op_delete = getchar();
-                limpar_buffer();
-                switch (op_delete){
-                case '1':
-                    menu_deletar_cliente(nome, cpf, celular, email);
-                    system("clear||cls");
-                    printf("Cliente excluido com sucesso!\n");
+                cliente_achado = menu_pesquisar_cliente(cpf_procurar);
+                if (cliente_achado == 1)
+                {
+                    limpar_buffer();
+                    printf("\nDeseja excluir esse cliente?\n");
+                    printf("1 - Sim\n");
+                    printf("2 - Nao\n");
+                    op_delete = getchar();
+                    limpar_buffer();
+                    switch (op_delete){
+                    case '1':
+                        menu_deletar_cliente(nome, cpf, celular, email);
+                        system("clear||cls");
+                        printf("Cliente excluido com sucesso!\n");
+                        sleep(1);
+                        break;
+                    
+                    case '2':
+                        printf("Abortando exclusao...\n");
+                        sleep(1);
+                        break;
+                    
+                    default:
+                        printf("Opção inválida!\n");
+                        sleep(1);
+                        break;
+                    }
                     sleep(1);
-                    break;
-                
-                case '2':
-                    printf("Abortando exclusao...\n");
-                    sleep(1);
-                    break;
-                
-                default:
-                    printf("Opção inválida!\n");
-                    sleep(1);
-                    break;
                 }
-                sleep(1);
+                else
+                {
+                    sleep(1);
+                }
+                
+                
                 break;
             case '5':
                 printf("Voltando ao menu principal...\n");
