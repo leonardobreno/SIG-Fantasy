@@ -6,13 +6,18 @@
 
 #include "../Utilidades/utilidades.h"
 
+char nome[50] = "";
+char cpf[20] = "";
+char celular[20] = "";
+char email[50] = "";
+
 char menu_cliente(void) {
     char op;
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                  Modulo Clientes                                ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                             -> 1 • Listar cliente                               ║\n");
+    printf("║                             -> 1 • Pesquisar cliente                            ║\n");
     printf("║                             -> 2 • Cadastrar cliente                            ║\n");
     printf("║                             -> 3 • Alterar cliente                              ║\n");
     printf("║                             -> 4 • Deletar cliente                              ║\n");
@@ -25,15 +30,26 @@ char menu_cliente(void) {
     return op;
 }
 
-void menu_lista_cliente(char nome[], char cpf[], char celular[], char email[]) {
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                  Lista de clientes                              ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Nome: %s\n", nome);
-    printf("CPF: %s\n", cpf);
-    printf("Celular: %s\n", celular);
-    printf("Email: %s\n", email);
+void menu_pesquisar_cliente(char cpf_procurar[]) {
+    int comparacao = strcmp(cpf_procurar, cpf);
+    if (comparacao == 0){
+        system("clear||cls");
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                                   Cliente Pesquisado                            ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("Nome: %s\n", nome);
+        printf("CPF: %s\n", cpf);
+        printf("CPF_pesquisado: %s\n", cpf_procurar);
+        printf("Celular: %s\n", celular);
+        printf("Email: %s\n", email);
+    }
+    else
+    {
+        system("clear||cls");
+        printf("CPF_pesquisado: %s\n", cpf_procurar);
+        printf("\nNao tem nenhum usuario com esse cpf.");
+    }
+    
 }
 
 void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
@@ -95,17 +111,17 @@ void menu_deletar_cliente(char nome[], char cpf[], char celular[], char email[])
 
 void modulo_cliente(void) {
     char op;
-    char nome[50] = "";
-    char cpf[20] = "";
-    char celular[20] = "";
-    char email[50] = "";
     char op_delete = '2';
+    char cpf_procurar[50];
 
     do {
         op = menu_cliente();
         switch(op) {
             case '1':
-                menu_lista_cliente(nome, cpf, celular, email);
+                printf("\nDigite o valor do cpf do cliente que deseja procurar: ");
+                scanf("%[^\n]", cpf_procurar);
+                menu_pesquisar_cliente(cpf_procurar);
+                getchar();
                 printf("\nPressione Enter para voltar...\n");
                 limpar_buffer();
                 break;
@@ -117,7 +133,10 @@ void modulo_cliente(void) {
                 break;
             case '4':
                 system("clear||cls");
-                menu_lista_cliente(nome, cpf, celular, email);
+                limpar_buffer();
+                printf("\nDigite o valor do cpf do cliente que deseja procurar: ");
+                scanf("%[^\n]", cpf_procurar);
+                menu_pesquisar_cliente(cpf_procurar);
                 printf("\nDeseja excluir esse cliente?\n");
                 printf("1 - Sim\n");
                 printf("2 - Nao\n");
