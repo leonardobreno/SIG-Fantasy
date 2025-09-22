@@ -6,6 +6,11 @@
 
 #include "../Utilidades/utilidades.h"
 
+int id_fantasia = 0;
+int id_cliente = 0;
+float preco = 0;
+char data_pedido[60] = "";
+
 char menu_pedido(void) {
     char op;
     system("clear||cls");
@@ -24,15 +29,28 @@ char menu_pedido(void) {
     return op;
 }
 
-void menu_lista_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Lista de Pedidos                              ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Id da fantasia: %d\n", *id_fantasia);
-    printf("Id do cliente: %d\n", *id_cliente);
-    printf("Preco do pedido: %f\n", *preco);
-    printf("Data do pedido: %s\n", data_pedido);
+int menu_pesquisar_pedido(char data_pesquisar[]) {
+    int comparacao = strcmp(data_pesquisar, data_pedido);
+    if (comparacao == 0)
+    {
+        system("clear||cls");
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                                    Pedido Pesquisado                            ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("Id da fantasia: %d\n", id_fantasia);
+        printf("Id do cliente: %d\n", id_cliente);
+        printf("Preco do pedido: %f\n", preco);
+        printf("Data do pedido: %s\n", data_pedido);
+        return 1;
+    }
+    else
+    {
+        system("clear||cls");
+        printf("data_pesquisada: %s\n", data_pesquisar);
+        printf("\nNao tem nenhum pedido nessa data.");
+        return 0;
+    }
+    
 }
 
 void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
@@ -94,17 +112,18 @@ void menu_deletar_pedido(int* id_fantasia, int* id_cliente, float* preco, char d
 
 void modulo_pedido(void) {
     char op;
-    int id_fantasia = 0;
-    int id_cliente = 0;
-    float preco = 0;
-    char data_pedido[60] = "";
     char op_delete = '2';
+    char data_procurar[50] = "";
+    int pedido_achado;
 
     do {
         op = menu_pedido();
         switch(op) {
             case '1':
-                menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
+                printf("\nDigite a data do pedido que deseja pesquisar: ");
+                scanf("%[^\n]", data_procurar);
+                menu_pesquisar_pedido(data_procurar);
+                getchar();
                 printf("\nPressione Enter para voltar...\n");
                 limpar_buffer();                  
                 break;
@@ -116,31 +135,40 @@ void modulo_pedido(void) {
                 break;
             case '4':
                 system("clear||cls");
-                menu_lista_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
-                printf("\nDeseja excluir esse pedido?\n");
-                printf("1 - Sim\n");
-                printf("2 - Nao\n");
-                op_delete = getchar();
-                limpar_buffer();
-                switch (op_delete){
-                case '1':
-                    menu_deletar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
-                    system("clear||cls");
-                    printf("Pedido excluido com sucesso!\n");
-                    sleep(1);
-                    break;
-                
-                case '2':
-                    printf("Abortando exclusao...\n");
-                    sleep(1);
-                    break;
-                
-                default:
-                    printf("Opção inválida!\n");
-                    sleep(1);
-                    break;
+                printf("\nDigite a data do pedido que deseja pesquisar: ");
+                scanf("%[^\n]", data_procurar);
+                pedido_achado = menu_pesquisar_pedido(data_procurar);
+                getchar();
+                if (pedido_achado == 1)
+                {
+                    printf("\nDeseja excluir esse pedido?\n");
+                    printf("1 - Sim\n");
+                    printf("2 - Nao\n");
+                    op_delete = getchar();
+                    limpar_buffer();
+                    switch (op_delete){
+                    case '1':
+                        menu_deletar_pedido(&id_fantasia, &id_cliente, &preco, data_pedido);
+                        system("clear||cls");
+                        printf("Pedido excluido com sucesso!\n");
+                        sleep(1);
+                        break;
+                    
+                    case '2':
+                        printf("Abortando exclusao...\n");
+                        sleep(1);
+                        break;
+                    
+                    default:
+                        printf("Opção inválida!\n");
+                        sleep(1);
+                        break;
+                    }
+                    sleep(1);  
                 }
-                sleep(1);            
+                else {
+                    sleep(1);
+                }      
                 break;
             case '5':
                 printf("Voltando ao menu principal...\n");
