@@ -10,7 +10,7 @@ O SIG-Fantasy é um sistema de gestão de produção e envio de fantasias!
 # Como compilar?
 1- Clone o projeto
 
-2- Execute o Make run
+2- Execute o make run
 
 # Projeto criado por:
 Leonardo Breno da Silva Santos
