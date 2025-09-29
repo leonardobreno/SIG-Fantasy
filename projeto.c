@@ -1,9 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <unistd.h>
-#include <string.h>
-
+#include <stdio.h>   
+    // Entrada e saída
+#include <stdlib.h>  
+    // Funções utilitárias
+#include <unistd.h>  
+    // Funções do Linux/Unix
+#include <string.h>  
+    // Manipulação de strings
+    
 #include "Utilidades/utilidades.h"
 #include "Informacoes/informacoes.h"
 #include "Pedidos/pedidos.h"

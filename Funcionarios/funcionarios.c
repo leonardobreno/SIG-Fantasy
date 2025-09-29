@@ -1,16 +1,29 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <unistd.h>
-#include <string.h>
-
+#include <stdio.h>   
+    // Entrada e saída
+#include <stdlib.h>  
+    // Funções utilitárias
+#include <unistd.h>  
+    // Funções do Linux/Unix
+#include <string.h>  
+    // Manipulação de strings
 #include "../Utilidades/utilidades.h"
 
 char nome_func[60] = "";
 char cpf_func[60] = "";
 char celular_func[60] = "";
 char email_func[60] = "";
-float salario_func = 0;
+char salario_func[60] = "";
+
+void cad_funcinario(char nome_func[], char cpf_func[], char cel_func[], char email_func[], char salario_func[]){
+    FILE *funcionarios = fopen("Funcionarios/funcionarios.txt", "a");
+    if(funcionarios != NULL){
+        fprintf(funcionarios, "%s, %s, %s, %s, %s\n", nome_func, cpf_func, cel_func, email_func, salario_func);
+        fclose(funcionarios);
+    }
+    else{
+        printf("arquivo nao encontrado!\n");
+    }
+}
 
 char menu_funcionario(void) {
     char op;
@@ -43,7 +56,7 @@ int menu_pesquisar_funcionario(char cpf_pesquisar[]) {
         printf("Cpf do funcionario: %s\n", cpf_func);
         printf("Telefone do funcionario: %s\n", celular_func);
         printf("Email do funcionario: %s\n", email_func);
-        printf("Salario do funcionario: %f\n", salario_func);
+        printf("Salario do funcionario: %s\n", salario_func);
         return 1;
     }
     else
@@ -56,7 +69,7 @@ int menu_pesquisar_funcionario(char cpf_pesquisar[]) {
     
 }
 
-void menu_cadastro_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], float* salario_func) {
+void menu_cadastro_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], char salario_func[]){
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                   Cadastro Funcionario                          ║\n");
@@ -78,14 +91,16 @@ void menu_cadastro_funcionario(char nome_func[], char cpf_func[], char celular_f
     limpar_buffer();
 
     printf("Digite o salario do funcionario: ");
-    scanf(" %f", salario_func);
+    scanf(" %[^\n]", salario_func);
     limpar_buffer();
+
+    cad_funcinario(nome_func, cpf_func, celular_func, email_func, salario_func);
 
     printf("\nCadastro realizado!\n");
     sleep(1);
 }
 
-void menu_alterar_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], float* salario_func) {
+void menu_alterar_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], char salario_func[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                   Alterar Funcionario                           ║\n");
@@ -107,19 +122,19 @@ void menu_alterar_funcionario(char nome_func[], char cpf_func[], char celular_fu
     limpar_buffer();
 
     printf("Digite o novo salario do funcionario: ");
-    scanf(" %f", salario_func);
+    scanf(" %[^\n]", salario_func);
     limpar_buffer();
 
     printf("\nFuncionario alterado!\n");
     sleep(1);
 }
 
-void menu_deletar_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], float* salario_func) {
+void menu_deletar_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], char salario_func[]) {
     nome_func[0] = '\0';
     cpf_func[0] = '\0';
     celular_func[0] = '\0';
     email_func[0] = '\0';
-    *salario_func = 0;
+    salario_func[0] = "\0";
 }
 
 void modulo_funcionario(void) {
@@ -140,10 +155,10 @@ void modulo_funcionario(void) {
                 limpar_buffer();                  
                 break;
             case '2':
-                menu_cadastro_funcionario(nome_func, cpf_func, celular_func, email_func, &salario_func);
+                menu_cadastro_funcionario(nome_func, cpf_func, celular_func, email_func, salario_func);
                 break;
             case '3':
-                menu_alterar_funcionario(nome_func, cpf_func, celular_func, email_func, &salario_func);
+                menu_alterar_funcionario(nome_func, cpf_func, celular_func, email_func, salario_func);
                 break;
             case '4':
                 system("clear||cls");
@@ -160,7 +175,7 @@ void modulo_funcionario(void) {
                     limpar_buffer();
                     switch (op_delete){
                     case '1':
-                        menu_deletar_funcionario(nome_func, cpf_func, celular_func, email_func, &salario_func);
+                        menu_deletar_funcionario(nome_func, cpf_func, celular_func, email_func, salario_func);
                         system("clear||cls");
                         printf("Funcionario excluido com sucesso!\n");
                         sleep(1);

@@ -1,8 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <unistd.h>
-#include <string.h>
+#include <stdio.h>   
+    // Entrada e saída
+#include <stdlib.h>  
+    // Funções utilitárias
+#include <unistd.h>  
+    // Funções do Linux/Unix
+#include <string.h>  
+    // Manipulação de strings
 
 void limpar_buffer(void) {
     int c;
@@ -23,7 +26,7 @@ char menu_principal(void) {
     printf("║       ║  ║║  ║   ║ ╚═════╝ ║     ║ ╔╗ ║  ║   ╚╗║    ║║    ║ ╔╗ ║     ║   ║      ║\n");
     printf("║   ╚═══╝  ╚╝  ╚═══╝         ║     ╠═╝╚═╣  ║    ╚╣    ║║    ╠═╝╚═╣ ╚═══╝   ║      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    setlocale(LC_ALL, "Portuguese");
+
 
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                     SIG-Fantasy:                                ║\n");

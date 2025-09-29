@@ -1,9 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <unistd.h>
-#include <string.h>
-
+#include <stdio.h>   
+    // Entrada e saída
+#include <stdlib.h>  
+    // Funções utilitárias
+#include <unistd.h>  
+    // Funções do Linux/Unix
+#include <string.h>  
+    // Manipulação de strings
 #include "../Utilidades/utilidades.h"
 
 char nome_fantasia[50] = "";
@@ -27,6 +29,18 @@ char menu_fantasia(void) {
     limpar_buffer();
     return op;
 }
+
+void cad_fantasia(char nome_fantasia[], char tamanho[], char cor[]){
+    FILE *fantasias = fopen("Fantasias/fantasias.csv", "a");
+    if(fantasias != NULL){
+        fprintf(fantasias, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
+        fclose(fantasias);
+    }else{
+        printf("arquivo nao encontrado!\n");
+    }
+    
+}
+
 
 int menu_pesquisar_fantasia(char fantasia_pesquisar[]) {
     int comparacao = strcmp(fantasia_pesquisar, nome_fantasia);
@@ -67,6 +81,8 @@ void menu_cadastro_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
     printf("Digite a cor: ");
     scanf(" %[^\n]", cor);
     limpar_buffer();
+
+    cad_fantasia(nome_fantasia, tamanho, cor);
 
     printf("\nCadastro realizado!\n");
     sleep(1);
