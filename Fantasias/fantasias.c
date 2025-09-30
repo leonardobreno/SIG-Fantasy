@@ -31,7 +31,7 @@ char menu_fantasia(void) {
 }
 
 void cad_fantasia(char nome_fantasia[], char tamanho[], char cor[]){
-    FILE *fantasias = fopen("Fantasias/fantasias.csv", "a");
+    FILE *fantasias = fopen("Fantasias/fantasias.txt", "a");
     if(fantasias != NULL){
         fprintf(fantasias, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
         fclose(fantasias);

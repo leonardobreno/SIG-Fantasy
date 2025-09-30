@@ -8,9 +8,9 @@
     // Manipulação de strings
 #include "../Utilidades/utilidades.h"
 
-int id_fantasia = 0;
-int id_cliente = 0;
-float preco = 0;
+char id_fantasia[60] = "";
+char id_cliente[60] = "";
+char preco[60] = "";
 char data_pedido[60] = "";
 
 char menu_pedido(void) {
@@ -31,6 +31,17 @@ char menu_pedido(void) {
     return op;
 }
 
+void cad_pedido(char id_fantasia[], char id_cliente[], char preco[], char data_pedido[]){
+    FILE *pedidos = fopen("Pedidos/pedidos.txt", "a");
+    if(pedidos != NULL){
+        fprintf(pedidos, "%s, %s, %s, %s\n", id_fantasia, id_cliente, preco, data_pedido);
+        fclose(pedidos);
+    }
+    else{
+        printf("arquivo nao encontrado!\n");
+    }
+}
+
 int menu_pesquisar_pedido(char data_pesquisar[]) {
     int comparacao = strcmp(data_pesquisar, data_pedido);
     if (comparacao == 0)
@@ -39,9 +50,9 @@ int menu_pesquisar_pedido(char data_pesquisar[]) {
         printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
         printf("║                                    Pedido Pesquisado                            ║\n");
         printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-        printf("Id da fantasia: %d\n", id_fantasia);
-        printf("Id do cliente: %d\n", id_cliente);
-        printf("Preco do pedido: %f\n", preco);
+        printf("Id da fantasia: %s\n", id_fantasia);
+        printf("Id do cliente: %s\n", id_cliente);
+        printf("Preco do pedido: %s\n", preco);
         printf("Data do pedido: %s\n", data_pedido);
         return 1;
     }
@@ -55,26 +66,28 @@ int menu_pesquisar_pedido(char data_pesquisar[]) {
     
 }
 
-void menu_cadastro_pedido(int* id_fantasia, int* id_cliente, float* preco, char data_pedido[]) {
+void menu_cadastro_pedido(char id_fantasia[], char id_cliente[], char preco[], char data_pedido[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                   Cadastro Pedido                               ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Digite o id da fantasia: ");
-    scanf(" %d", id_fantasia);
+    scanf("%[^\n]", id_fantasia);
     limpar_buffer();
 
     printf("Digite o id do cliente: ");
-    scanf(" %d", id_cliente);
+    scanf("%[^\n]", id_cliente);
     limpar_buffer();
 
     printf("Digite o preco do pedido: ");
-    scanf(" %f", preco);
+    scanf("%[^\n]", preco);
     limpar_buffer();
 
     printf("Digite a data do pedido: ");
     scanf(" %[^\n]", data_pedido);
     limpar_buffer();
+
+    cad_pedido(id_fantasia, id_cliente, preco, data_pedido);
 
     printf("\nCadastro realizado!\n");
     sleep(1);

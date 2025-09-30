@@ -32,6 +32,18 @@ char menu_cliente(void) {
     return op;
 }
 
+void cad_cliente(char nome[], char cpf[], char celular[], char email[]){
+    FILE *clientes = fopen("Clientes/clientes.txt", "a");
+    if(clientes != NULL){
+        fprintf(clientes, "%s, %s, %s, %s\n", nome, cpf, celular, email);
+        fclose(clientes);
+    }
+    else{
+        printf("arquivo nao encontrado!\n");
+    }
+}
+
+
 int menu_pesquisar_cliente(char cpf_procurar[]) {
     int comparacao = strcmp(cpf_procurar, cpf);
     if (comparacao == 0){
@@ -76,6 +88,8 @@ void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]
     printf("Digite seu Email: ");
     scanf(" %[^\n]", email);
     limpar_buffer();
+    
+    cad_cliente(nome, cpf, celular, email);
 
     printf("\nCadastro realizado!\n");
     sleep(1);
