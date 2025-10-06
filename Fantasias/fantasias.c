@@ -43,10 +43,29 @@ void cad_fantasia(char nome_fantasia[], char tamanho[], char cor[]){
 
 
 int menu_pesquisar_fantasia(char fantasia_pesquisar[]) {
-    int comparacao = strcmp(fantasia_pesquisar, nome_fantasia);
-    if (comparacao == 0)
-    {
-        system("clear||cls");
+    FILE *busca = fopen("Fantasias/fantasias.txt", "r");
+    int encontrado = 0;
+    char nome_temp[50], tamanho_temp[20], cor_temp[20];
+
+    if (busca == NULL) {
+        printf("Erro ao abrir arquivo fantasias\n");
+        return 0;
+    }
+
+    while (fscanf(busca, " %49[^,], %19[^,], %19[^\n]\n", nome_temp, tamanho_temp, cor_temp) == 3) {
+        if (strcmp(fantasia_pesquisar, nome_temp) == 0) {
+            encontrado = 1;
+            strcpy(nome_fantasia, nome_temp);
+            strcpy(tamanho, tamanho_temp);
+            strcpy(cor, cor_temp);
+            break;
+        }
+    }
+
+    fclose(busca);
+    system("clear||cls");
+
+    if (encontrado) {
         printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
         printf("║                                   Fantasia Pesquisada                           ║\n");
         printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
@@ -54,16 +73,13 @@ int menu_pesquisar_fantasia(char fantasia_pesquisar[]) {
         printf("Tamanho: %s\n", tamanho);
         printf("Cor: %s\n", cor);
         return 1;
-    }
-    else
-    {
-        system("clear||cls");
-        printf("Nome_pesquisado: %s\n", fantasia_pesquisar);
-        printf("\nNao tem nenhuma fantasia com esse nome.");
+    } else {
+        printf("Nome pesquisado: %s\n", fantasia_pesquisar);
+        printf("\nNão há nenhuma fantasia com esse nome.\n");
         return 0;
     }
-    
 }
+
 
 void menu_cadastro_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
     system("clear||cls");
@@ -89,30 +105,114 @@ void menu_cadastro_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
 }
 
 void menu_alterar_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
+    char fantasia_pesquisar[50];
+    FILE *busca = fopen("Fantasias/fantasias.txt", "r");
+    FILE *alterar = fopen("Fantasias/alterar.txt", "w");
+    int encontrado = 0;
+
+    if (busca == NULL || alterar == NULL) {
+        printf("Erro ao abrir o arquivo de fantasias!\n");
+        return;
+    }
+
     system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                    Alterar Fantasia                             ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Digite o novo nome da fantasia: ");
-    scanf(" %[^\n]", nome_fantasia);
+    printf("Digite o nome da fantasia que deseja alterar: ");
+    scanf(" %[^\n]", fantasia_pesquisar);
     limpar_buffer();
 
-    printf("Digite o novo tamanho: ");
-    scanf(" %[^\n]", tamanho);
-    limpar_buffer();
+    while (fscanf(busca, " %49[^,], %19[^,], %19[^\n]\n", nome_fantasia, tamanho, cor) == 3) {
+        if (strcmp(fantasia_pesquisar, nome_fantasia) == 0) {
+            system("clear||cls");
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                 Alterar Fantasia                                ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
-    printf("Digite a nova cor: ");
-    scanf(" %[^\n]", cor);
-    limpar_buffer();
+            printf("Fantasia encontrada!\n\n");
+            printf("Nome atual: %s\n", nome_fantasia);
+            printf("Tamanho atual: %s\n", tamanho);
+            printf("Cor atual: %s\n\n", cor);
 
-    printf("\nFantasia alterada!\n");
+            printf("Digite o novo nome da fantasia: ");
+            scanf(" %[^\n]", nome_fantasia);
+            limpar_buffer();
+
+            printf("Digite o novo tamanho: ");
+            scanf(" %[^\n]", tamanho);
+            limpar_buffer();
+
+            printf("Digite a nova cor: ");
+            scanf(" %[^\n]", cor);
+            limpar_buffer();
+
+            fprintf(alterar, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
+            encontrado = 1;
+        } else {
+            fprintf(alterar, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
+        }
+    }
+
+    fclose(busca);
+    fclose(alterar);
+
+    remove("Fantasias/fantasias.txt");
+    rename("Fantasias/alterar.txt", "Fantasias/fantasias.txt");
+
+    system("clear||cls");
+
+    if (encontrado) {
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                         Fantasia alterada com sucesso!                          ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    } else {
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                        Nenhuma fantasia encontrada!                             ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    }
+
     sleep(1);
 }
 
-void menu_deletar_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
+void menu_deletar_fantasia(char fantasia_pesquisar[]) {
+    FILE *busca = fopen("Fantasias/fantasias.txt", "r");
+    FILE *excluir = fopen("Fantasias/alterar.txt", "w");
+    int encontrado = 0;
+
+    if (busca == NULL || excluir == NULL) {
+        printf("Erro ao abrir arquivo de fantasias!\n");
+        return;
+    }
+
+    while (fscanf(busca, " %49[^,], %9[^,], %19[^\n]\n", nome_fantasia, tamanho, cor) == 3) {
+        if (strcmp(fantasia_pesquisar, nome_fantasia) != 0) {
+            fprintf(excluir, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
+        } else {
+            encontrado = 1;
+        }
+    }
+
+    fclose(busca);
+    fclose(excluir);
+
+    remove("Fantasias/fantasias.txt");
+    rename("Fantasias/alterar.txt", "Fantasias/fantasias.txt");
+
+    system("clear||cls");
+
+    if (encontrado) {
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                           Fantasia excluída com sucesso!                        ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    } else {
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                         Nenhuma fantasia encontrada!                            ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    }
+
     nome_fantasia[0] = '\0';
     tamanho[0] = '\0';
     cor[0] = '\0';
+
+    sleep(1);
 }
 
 void modulo_fantasia(void) {
@@ -154,7 +254,7 @@ void modulo_fantasia(void) {
                     limpar_buffer();
                     switch (op_delete){
                     case '1':
-                        menu_deletar_fantasia(nome_fantasia, tamanho, cor);
+                        menu_deletar_fantasia(nome_procurar);
                         system("clear||cls");
                         printf("Fantasia excluida com sucesso!\n");
                         sleep(1);
