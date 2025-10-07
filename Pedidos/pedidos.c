@@ -1,296 +1,221 @@
-#include <stdio.h>     
-#include <stdlib.h>   
-#include <unistd.h>    
-#include <string.h>    
+#include <stdio.h>   
+    // Entrada e saída
+#include <stdlib.h>  
+    // Funções utilitárias
+#include <unistd.h>  
+    // Funções do Linux/Unix
+#include <string.h>  
+    // Manipulação de strings
 #include "../Utilidades/utilidades.h"
 
+char nome[50] = "";
+char cpf[20] = "";
+char celular[20] = "";
+char email[50] = "";
 
-char id_pedido[10] = "";
-char id_fantasia[60] = "";
-char id_cliente[60] = ""; 
-char preco[60] = "";
-char data_pedido[60] = "";
-
-
-char menu_pedido(void);
-int obter_proximo_id(void);
-void cad_pedido(char id[], char id_fantasia[], char id_cliente[], char preco[], char data_pedido[]);
-int menu_pesquisar_pedido(char id_pesquisar[]);
-void menu_cadastro_pedido(void);
-void menu_alterar_pedido(void);
-void menu_deletar_pedido(char id_pesquisar[]);
-void modulo_pedido(void);
-
-
-char menu_pedido(void) {
+char menu_cliente(void) {
     char op;
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                  Modulo Pedidos                                 ║\n");
+    printf("║                                  Modulo Clientes                                ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                                -> 1 • Listar pedido                           ║\n");
-    printf("║                                -> 2 • Cadastrar pedido                        ║\n");
-    printf("║                                -> 3 • Alterar pedido                          ║\n");
-    printf("║                                -> 4 • Excluir pedido                          ║\n");
-    printf("║                                -> 5 • Voltar                                  ║\n");
+    printf("║                             -> 1 • Pesquisar cliente                            ║\n");
+    printf("║                             -> 2 • Cadastrar cliente                            ║\n");
+    printf("║                             -> 3 • Alterar cliente                              ║\n");
+    printf("║                             -> 4 • Deletar cliente                              ║\n");
+    printf("║                             -> 5    • Voltar                                    ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
     limpar_buffer();
+
     return op;
 }
 
-
-int obter_proximo_id(void) {
-    FILE *pedidos = fopen("Pedidos/pedidos.txt", "r");
-    if (pedidos == NULL) {
-        return 1;
+void cad_cliente(char nome[], char cpf[], char celular[], char email[]){
+    FILE *clientes = fopen("Clientes/clientes.txt", "a");
+    if(clientes != NULL){
+        fprintf(clientes, "%s, %s, %s, %s\n", nome, cpf, celular, email);
+        fclose(clientes);
     }
-
-    char id_temp[10];
-    int ultimo_id = 0;
-
-
-    while (fscanf(pedidos, " %9[^,],%*[^,],%*[^,],%*[^,],%*[^\n]\n", id_temp) == 1) {
-        int id_atual = atoi(id_temp);
-        if (id_atual > ultimo_id) {
-            ultimo_id = id_atual;
-        }
-    }
-    fclose(pedidos);
-    return ultimo_id + 1;
-}
-
-
-void cad_pedido(char id[], char id_fantasia[], char id_cliente[], char preco[], char data_pedido[]){
-    system("mkdir -p Pedidos"); 
-    FILE *pedidos = fopen("Pedidos/pedidos.txt", "a");
-    if (pedidos != NULL) {
-        fprintf(pedidos, "%s,%s,%s,%s,%s\n", id, id_fantasia, id_cliente, preco, data_pedido);
-        fclose(pedidos);
-    } else {
-        printf("Erro: nao foi possivel abrir o arquivo de pedidos!\n");
-        sleep(2);
+    else{
+        printf("arquivo nao encontrado!\n");
     }
 }
 
-int menu_pesquisar_pedido(char id_pesquisar[]) {
-    FILE *busca = fopen("Pedidos/pedidos.txt", "r");
+
+int menu_pesquisar_cliente(char cpf_procurar[]) {
+    FILE *busca = fopen("Clientes/clientes.txt", "r");
+    char nome_tempo[60], cpf_tempo[60], cel_tempo[60], email_tempo[60];
     int encontrado = 0;
-    char id_temp[10], fantasia_temp[60], cliente_temp[60], preco_temp[60], data_temp[60];
 
     if (busca == NULL) {
-        printf("Arquivo de pedidos não encontrado ou vazio!\n");
+        printf("Erro ao abrir arquivo clientes\n");
         return 0;
     }
 
-    while (fscanf(busca, " %9[^,],%59[^,],%59[^,],%59[^,],%59[^\n]\n", id_temp, fantasia_temp, cliente_temp, preco_temp, data_temp) == 5) {
-        if (strcmp(id_pesquisar, id_temp) == 0) {
+    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,]\n",
+                  nome_tempo, cpf_tempo, cel_tempo, email_tempo) == 4) {
+        if (strcmp(cpf_procurar, cpf_tempo) == 0) {
+            strcpy(nome, nome_tempo);
+            strcpy(cpf, cpf_tempo);
+            strcpy(celular, cel_tempo);
+            strcpy(email, email_tempo);
             encontrado = 1;
-            strcpy(id_pedido, id_temp);
-            strcpy(id_fantasia, fantasia_temp);
-            strcpy(id_cliente, cliente_temp);
-            strcpy(preco, preco_temp);
-            strcpy(data_pedido, data_temp);
             break;
         }
     }
+
     fclose(busca);
+
     system("clear||cls");
 
     if (encontrado) {
         printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                                 Pedido Encontrado                               ║\n");
+        printf("║                                  Funcionario Pesquisado                          ║\n");
         printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-        printf("ID do Pedido: %s\n", id_pedido);
-        printf("ID da Fantasia: %s\n", id_fantasia);
-        printf("CPF do Cliente: %s\n", id_cliente);
-        printf("Preço do Pedido: R$ %s\n", preco);
-        printf("Data do Pedido: %s\n", data_pedido);
+        printf("Nome do funcionario: %s\n", nome);
+        printf("Cpf do funcionario: %s\n", cpf);
+        printf("Telefone do funcionario: %s\n", celular);
+        printf("Email do funcionario: %s\n", email);
         return 1;
     } else {
-        printf("ID pesquisado: %s\n", id_pesquisar);
-        printf("\nNenhum pedido encontrado com este ID.\n");
+        printf("Cpf pesquisado: %s\n", cpf_procurar);
+        printf("\nNao tem nenhum cliente com esse cpf.\n");
         return 0;
     }
 }
 
-void menu_cadastro_pedido() {
-    char novo_id[10];
-    sprintf(novo_id, "%d", obter_proximo_id());
 
+void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                Cadastro de Pedido                               ║\n");
+    printf("║                                  Cadastro Cliente                               ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("ID do Pedido gerado: %s\n", novo_id);
-
-    printf("Digite o ID da fantasia: ");
-    scanf(" %59[^\n]", id_fantasia);
+    printf("Digite seu nome: ");
+    scanf(" %[^\n]", nome);
     limpar_buffer();
 
-    printf("Digite o CPF do cliente: ");
-    scanf(" %59[^\n]", id_cliente);
+    printf("Digite seu CPF: ");
+    scanf(" %[^\n]", cpf);
     limpar_buffer();
 
-    printf("Digite o preço do pedido: ");
-    scanf(" %59[^\n]", preco);
+    printf("Digite seu numero de celular: ");
+    scanf(" %[^\n]", celular);
     limpar_buffer();
 
-    printf("Digite a data do pedido (DD/MM/AAAA): ");
-    scanf(" %59[^\n]", data_pedido);
+    printf("Digite seu Email: ");
+    scanf(" %[^\n]", email);
     limpar_buffer();
+    
+    cad_cliente(nome, cpf, celular, email);
 
-    cad_pedido(novo_id, id_fantasia, id_cliente, preco, data_pedido);
-
-    printf("\nCadastro realizado com sucesso!\n");
+    printf("\nCadastro realizado!\n");
     sleep(1);
 }
 
-void menu_alterar_pedido() {
-    char id_pesquisar[10];
-    FILE *busca = fopen("Pedidos/pedidos.txt", "r");
-    FILE *alterar = fopen("Pedidos/alterar.txt", "w");
+void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[]) {
+    char nome[60], celular[60], email[60], salario[60];
+    char cpf_procurar[60], cpf_cliente[60];
+    FILE *busca = fopen("Clientes/clientes.txt", "r");
+    FILE *alterar = fopen("Clientes/alteracao.txt", "w");
     int encontrado = 0;
-    char id_temp[10], fantasia_temp[60], cliente_temp[60], preco_temp[60], data_temp[60];
 
     if (busca == NULL || alterar == NULL) {
-        printf("Erro ao abrir arquivos!\n");
+        printf("Erro ao abrir o arquivo de clientes!\n");
         return;
     }
 
     system("clear||cls");
-    printf("Digite o ID do pedido que deseja alterar: ");
-    scanf(" %9[^\n]", id_pesquisar);
+    printf("Digite o CPF do cliente que deseja alterar: ");
+    scanf(" %[^\n]", cpf_procurar);
     limpar_buffer();
 
-    while (fscanf(busca, " %9[^,],%59[^,],%59[^,],%59[^,],%59[^\n]\n", id_temp, fantasia_temp, cliente_temp, preco_temp, data_temp) == 5) {
-        if (strcmp(id_pesquisar, id_temp) == 0) {
+    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,], %59[^\n]\n",
+                  nome, cpf_cliente, celular, email) == 4) {
+
+        if (strcmp(cpf_procurar, cpf_cliente) == 0) {
+            system("clear||cls");
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                Alterar Funcionario                              ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+            printf("Funcionario encontrado!\n\n");
+            printf("Nome: %s\n", nome);
+            printf("CPF: %s\n", cpf_cliente);
+            printf("Celular atual: %s\n", celular);
+            printf("Email atual: %s\n", email);
+
+            printf("Digite o novo celular: ");
+            scanf(" %[^\n]", celular);
+            limpar_buffer();
+
+            printf("Digite o novo email: ");
+            scanf(" %[^\n]", email);
+            limpar_buffer();
+
+            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome, cpf_cliente, celular, email);
             encontrado = 1;
-            printf("\nPedido encontrado! Insira os novos dados:\n");
-            
-            printf("Novo ID da fantasia: ");
-            scanf(" %59[^\n]", fantasia_temp);
-            limpar_buffer();
-
-            printf("Novo CPF do cliente: ");
-            scanf(" %59[^\n]", cliente_temp);
-            limpar_buffer();
-
-            printf("Novo preço do pedido: ");
-            scanf(" %59[^\n]", preco_temp);
-            limpar_buffer();
-
-            printf("Nova data do pedido (DD/MM/AAAA): ");
-            scanf(" %59[^\n]", data_temp);
-            limpar_buffer();
+        } else {
+            // mantém os dados do funcionário não alterado
+            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome, cpf_cliente, celular, email);
         }
-        fprintf(alterar, "%s,%s,%s,%s,%s\n", id_temp, fantasia_temp, cliente_temp, preco_temp, data_temp);
     }
 
     fclose(busca);
     fclose(alterar);
-    remove("Pedidos/pedidos.txt");
-    rename("Pedidos/alterar.txt", "Pedidos/pedidos.txt");
+
+    remove("Clientes/clientes.txt");
+    rename("Clientes/alteracao.txt", "Clientes/clientes.txt");
 
     system("clear||cls");
+
     if (encontrado) {
-        printf("Pedido alterado com sucesso!\n");
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                         Cliente alterado com sucesso!                           ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     } else {
-        printf("Nenhum pedido encontrado com o ID %s!\n", id_pesquisar);
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                          Nenhum cliente encontrado!                             ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     }
-    sleep(2);
+
+    sleep(1);
 }
 
-void menu_deletar_pedido(char id_pesquisar[]) {
-    FILE *busca = fopen("Pedidos/pedidos.txt", "r");
-    FILE *excluir = fopen("Pedidos/temp_excluir.txt", "w");
-    char id_temp[10], linha[256]; 
+void menu_deletar_cliente(char cpf_procurar[]) {
+    char nome[60], cpf[60], celular[60], email[60];
+    FILE *busca = fopen("Clientes/clientes.txt", "r");
+    FILE *alterar = fopen("Clientes/alterar.txt", "w");
     int encontrado = 0;
 
-    if (busca == NULL || excluir == NULL) {
-        printf("Erro ao abrir arquivos!\n");
+    if (!busca || !alterar) {
+        printf("Erro ao abrir o arquivo de clientes!\n");
         return;
     }
 
-    while (fgets(linha, sizeof(linha), busca)) {
-        sscanf(linha, "%[^,]", id_temp);
-        if (strcmp(id_pesquisar, id_temp) != 0) {
-            fputs(linha, excluir);
-        } else {
+    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,]\n",
+                  nome, cpf, celular, email) == 4) {
+        if (strcmp(cpf_procurar, cpf) == 0) {
             encontrado = 1;
+        } else {
+            fprintf(alterar, "%s, %s, %s, %s\n", nome, cpf, celular, email);
         }
     }
 
     fclose(busca);
-    fclose(excluir);
+    fclose(alterar);
 
-    remove("Pedidos/pedidos.txt");
-    rename("Pedidos/temp_excluir.txt", "Pedidos/pedidos.txt");
+    remove("Clientes/clientes.txt");
+    rename("Clientes/alterar.txt", "Clientes/clientes.txt");
 
     system("clear||cls");
+
     if (encontrado) {
-        printf("Pedido com ID %s excluído com sucesso!\n", id_pesquisar);
+        printf("Cliente excluído com sucesso!\n");
     } else {
-        printf("Nenhum pedido encontrado com o ID %s!\n", id_pesquisar);
+        printf("Nenhum cliente encontrado com esse CPF!\n");
     }
-    sleep(2);
-}
 
-
-
-void modulo_pedido(void) {
-    char op;
-    char id_procurar[10];
-    int pedido_achado;
-
-    do {
-        op = menu_pedido();
-        switch(op) {
-            case '1':
-                printf("\nDigite o ID do pedido que deseja pesquisar: ");
-                scanf(" %9[^\n]", id_procurar);
-                limpar_buffer();
-                menu_pesquisar_pedido(id_procurar);
-                printf("\nPressione Enter para voltar...\n");
-                getchar();
-                break;
-            case '2':
-                menu_cadastro_pedido();
-                break;
-            case '3':
-                menu_alterar_pedido();
-                break;
-            case '4':
-                printf("\nDigite o ID do pedido que deseja excluir: ");
-                scanf(" %9[^\n]", id_procurar);
-                limpar_buffer();
-                
-                pedido_achado = menu_pesquisar_pedido(id_procurar);
-                if (pedido_achado) {
-                    char op_delete;
-                    printf("\nDeseja realmente excluir este pedido? (1 - Sim / 2 - Nao): ");
-                    scanf(" %c", &op_delete);
-                    limpar_buffer();
-
-                    if (op_delete == '1') {
-                        menu_deletar_pedido(id_procurar);
-                    } else {
-                        printf("\nOperação de exclusão cancelada.\n");
-                        sleep(1);
-                    }
-                } else {
-                    printf("\nPressione Enter para continuar...");
-                    getchar();
-                }
-                break;
-            case '5':
-                printf("Voltando ao menu principal...\n");
-                sleep(1);
-                break;
-            default:
-                printf("Opção inválida!\n");
-                sleep(1);
-        }
-    } while (op != '5');
+    sleep(1);
 }
