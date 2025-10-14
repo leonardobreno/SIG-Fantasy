@@ -1,8 +1,16 @@
-//Assinatura das funções do modulo clientes
-char menu_cliente(void);
-int menu_pesquisar_cliente(char[]);
-void menu_cadastro_cliente(char[], char[], char[], char[]);
-void menu_alterar_cliente(char[], char[], char[], char[]);
-void menu_deletar_cliente(char[], char[], char[], char[]);
-void modulo_cliente(void);
-void cad_cliente(char nome[], char cpf[], char celular[], char email[]);
+// clientes.h
+
+#ifndef CLIENTES_H
+#define CLIENTES_H
+
+typedef struct {
+    char nome[51];
+    char cpf[15];
+    char celular[20];
+    char email[51];
+    int ativo;
+} Cliente;
+
+void gerenciar_clientes(void);
+
+#endif // CLIENTES_H

@@ -1,221 +1,280 @@
-#include <stdio.h>   
-    // Entrada e saída
-#include <stdlib.h>  
-    // Funções utilitárias
-#include <unistd.h>  
-    // Funções do Linux/Unix
-#include <string.h>  
-    // Manipulação de strings
-#include "../Utilidades/utilidades.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-char nome[50] = "";
-char cpf[20] = "";
-char celular[20] = "";
-char email[50] = "";
+typedef struct {
+    char nome[51];
+    char cpf[15];
+    char celular[20];
+    char email[51];
+    int ativo;
+} Cliente;
 
-char menu_cliente(void) {
+Cliente* clientes = NULL;
+int num_clientes = 0;
+int capacidade_clientes = 0;
+
+void salvar_clientes_binario();
+void carregar_clientes_binario();
+void liberar_memoria_clientes();
+void menu_cadastro_cliente();
+void menu_pesquisar_cliente();
+void menu_alterar_cliente();
+void menu_deletar_cliente();
+char menu_cliente(void);
+void limpar_buffer();
+void gerenciar_clientes();
+
+void gerenciar_clientes() {
+    carregar_clientes_binario();
     char op;
+    do {
+        op = menu_cliente();
+        switch (op) {
+            case '1':
+                menu_pesquisar_cliente();
+                break;
+            case '2':
+                menu_cadastro_cliente();
+                break;
+            case '3':
+                menu_alterar_cliente();
+                break;
+            case '4':
+                menu_deletar_cliente();
+                break;
+            case '5':
+                printf("Voltando ao menu principal...\n");
+                break;
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+                sleep(1);
+        }
+    } while (op != '5');
+    liberar_memoria_clientes();
+}
+
+void salvar_clientes_binario() {
+    FILE* arquivo = fopen("clientes.dat", "wb");
+    if (arquivo == NULL) {
+        printf("Erro fatal: Nao foi possivel abrir o arquivo para escrita!\n");
+        return;
+    }
+    fwrite(clientes, sizeof(Cliente), num_clientes, arquivo);
+    fclose(arquivo);
+}
+
+void carregar_clientes_binario() {
+    FILE* arquivo = fopen("clientes.dat", "rb");
+    if (arquivo == NULL) {
+        printf("Arquivo de dados nao encontrado. Iniciando com base de dados vazia.\n");
+        return;
+    }
+
+    fseek(arquivo, 0, SEEK_END);
+    long tamanho_arquivo = ftell(arquivo);
+    rewind(arquivo);
+
+    num_clientes = tamanho_arquivo / sizeof(Cliente);
+    capacidade_clientes = num_clientes;
+
+    clientes = (Cliente*) malloc(num_clientes * sizeof(Cliente));
+    if (clientes == NULL) {
+        printf("Erro fatal: Falha ao alocar memoria!\n");
+        fclose(arquivo);
+        return;
+    }
+    fread(clientes, sizeof(Cliente), num_clientes, arquivo);
+    fclose(arquivo);
+}
+
+void liberar_memoria_clientes() {
+    if (clientes != NULL) {
+        free(clientes);
+        clientes = NULL;
+        num_clientes = 0;
+        capacidade_clientes = 0;
+    }
+}
+
+void menu_cadastro_cliente() {
     system("clear||cls");
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                  Modulo Clientes                                ║\n");
-    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                             -> 1 • Pesquisar cliente                            ║\n");
-    printf("║                             -> 2 • Cadastrar cliente                            ║\n");
-    printf("║                             -> 3 • Alterar cliente                              ║\n");
-    printf("║                             -> 4 • Deletar cliente                              ║\n");
-    printf("║                             -> 5    • Voltar                                    ║\n");
+    printf("║                                    Cadastro Cliente                               ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Escolha uma opção: ");
-    scanf(" %c", &op);
+
+    Cliente novo_cliente;
+
+    printf("Digite o nome: ");
+    scanf(" %50[^\n]", novo_cliente.nome);
     limpar_buffer();
 
-    return op;
+    printf("Digite o CPF: ");
+    scanf(" %14[^\n]", novo_cliente.cpf);
+    limpar_buffer();
+
+    printf("Digite o numero de celular: ");
+    scanf(" %19[^\n]", novo_cliente.celular);
+    limpar_buffer();
+
+    printf("Digite o Email: ");
+    scanf(" %50[^\n]", novo_cliente.email);
+    limpar_buffer();
+
+    novo_cliente.ativo = 1;
+
+    Cliente* temp = realloc(clientes, (num_clientes + 1) * sizeof(Cliente));
+    if (temp == NULL) {
+        printf("Erro: Nao foi possivel alocar memoria para o novo cliente!\n");
+        return;
+    }
+    clientes = temp;
+
+    clientes[num_clientes] = novo_cliente;
+    num_clientes++;
+    capacidade_clientes++;
+
+    salvar_clientes_binario();
+
+    printf("\nCadastro realizado com sucesso!\n");
+    sleep(1);
 }
 
-void cad_cliente(char nome[], char cpf[], char celular[], char email[]){
-    FILE *clientes = fopen("Clientes/clientes.txt", "a");
-    if(clientes != NULL){
-        fprintf(clientes, "%s, %s, %s, %s\n", nome, cpf, celular, email);
-        fclose(clientes);
-    }
-    else{
-        printf("arquivo nao encontrado!\n");
-    }
-}
-
-
-int menu_pesquisar_cliente(char cpf_procurar[]) {
-    FILE *busca = fopen("Clientes/clientes.txt", "r");
-    char nome_tempo[60], cpf_tempo[60], cel_tempo[60], email_tempo[60];
+void menu_pesquisar_cliente() {
+    char cpf_procurar[15];
     int encontrado = 0;
 
-    if (busca == NULL) {
-        printf("Erro ao abrir arquivo clientes\n");
-        return 0;
-    }
+    system("clear||cls");
+    printf("Digite o CPF do cliente que deseja pesquisar: ");
+    scanf(" %14[^\n]", cpf_procurar);
+    limpar_buffer();
 
-    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,]\n",
-                  nome_tempo, cpf_tempo, cel_tempo, email_tempo) == 4) {
-        if (strcmp(cpf_procurar, cpf_tempo) == 0) {
-            strcpy(nome, nome_tempo);
-            strcpy(cpf, cpf_tempo);
-            strcpy(celular, cel_tempo);
-            strcpy(email, email_tempo);
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0 && clientes[i].ativo == 1) {
+            system("clear||cls");
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                  Cliente Encontrado                             ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+            printf("Nome: %s\n", clientes[i].nome);
+            printf("CPF: %s\n", clientes[i].cpf);
+            printf("Celular: %s\n", clientes[i].celular);
+            printf("Email: %s\n", clientes[i].email);
             encontrado = 1;
             break;
         }
     }
 
-    fclose(busca);
-
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                                  Funcionario Pesquisado                          ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-        printf("Nome do funcionario: %s\n", nome);
-        printf("Cpf do funcionario: %s\n", cpf);
-        printf("Telefone do funcionario: %s\n", celular);
-        printf("Email do funcionario: %s\n", email);
-        return 1;
-    } else {
-        printf("Cpf pesquisado: %s\n", cpf_procurar);
-        printf("\nNao tem nenhum cliente com esse cpf.\n");
-        return 0;
+    if (!encontrado) {
+        printf("\nNenhum cliente ativo encontrado com o CPF: %s\n", cpf_procurar);
     }
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
 }
 
-
-void menu_cadastro_cliente(char nome[], char cpf[], char celular[], char email[]) {
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                  Cadastro Cliente                               ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Digite seu nome: ");
-    scanf(" %[^\n]", nome);
-    limpar_buffer();
-
-    printf("Digite seu CPF: ");
-    scanf(" %[^\n]", cpf);
-    limpar_buffer();
-
-    printf("Digite seu numero de celular: ");
-    scanf(" %[^\n]", celular);
-    limpar_buffer();
-
-    printf("Digite seu Email: ");
-    scanf(" %[^\n]", email);
-    limpar_buffer();
-    
-    cad_cliente(nome, cpf, celular, email);
-
-    printf("\nCadastro realizado!\n");
-    sleep(1);
-}
-
-void menu_alterar_cliente(char nome[], char cpf[], char celular[], char email[]) {
-    char nome[60], celular[60], email[60], salario[60];
-    char cpf_procurar[60], cpf_cliente[60];
-    FILE *busca = fopen("Clientes/clientes.txt", "r");
-    FILE *alterar = fopen("Clientes/alteracao.txt", "w");
-    int encontrado = 0;
-
-    if (busca == NULL || alterar == NULL) {
-        printf("Erro ao abrir o arquivo de clientes!\n");
-        return;
-    }
+void menu_alterar_cliente() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
 
     system("clear||cls");
     printf("Digite o CPF do cliente que deseja alterar: ");
-    scanf(" %[^\n]", cpf_procurar);
+    scanf(" %14[^\n]", cpf_procurar);
     limpar_buffer();
 
-    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,], %59[^\n]\n",
-                  nome, cpf_cliente, celular, email) == 4) {
-
-        if (strcmp(cpf_procurar, cpf_cliente) == 0) {
-            system("clear||cls");
-            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-            printf("║                                Alterar Funcionario                              ║\n");
-            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-            printf("Funcionario encontrado!\n\n");
-            printf("Nome: %s\n", nome);
-            printf("CPF: %s\n", cpf_cliente);
-            printf("Celular atual: %s\n", celular);
-            printf("Email atual: %s\n", email);
-
-            printf("Digite o novo celular: ");
-            scanf(" %[^\n]", celular);
-            limpar_buffer();
-
-            printf("Digite o novo email: ");
-            scanf(" %[^\n]", email);
-            limpar_buffer();
-
-            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome, cpf_cliente, celular, email);
-            encontrado = 1;
-        } else {
-            // mantém os dados do funcionário não alterado
-            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome, cpf_cliente, celular, email);
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0 && clientes[i].ativo == 1) {
+            encontrado_idx = i;
+            break;
         }
     }
 
-    fclose(busca);
-    fclose(alterar);
-
-    remove("Clientes/clientes.txt");
-    rename("Clientes/alteracao.txt", "Clientes/clientes.txt");
-
-    system("clear||cls");
-
-    if (encontrado) {
+    if (encontrado_idx != -1) {
+        system("clear||cls");
         printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                         Cliente alterado com sucesso!                           ║\n");
+        printf("║                                    Alterar Cliente                                ║\n");
         printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("Cliente encontrado! (Deixe em branco e pressione Enter para nao alterar)\n\n");
+        
+        printf("Nome: %s\n", clientes[encontrado_idx].nome);
+        printf("CPF: %s\n", clientes[encontrado_idx].cpf);
+
+        char novo_celular[20], novo_email[51];
+
+        printf("Celular atual: %s\n", clientes[encontrado_idx].celular);
+        printf("Digite o novo celular: ");
+        scanf(" %19[^\n]", novo_celular);
+        limpar_buffer();
+
+        printf("Email atual: %s\n", clientes[encontrado_idx].email);
+        printf("Digite o novo email: ");
+        scanf(" %50[^\n]", novo_email);
+        limpar_buffer();
+
+        if (strlen(novo_celular) > 0) {
+            strcpy(clientes[encontrado_idx].celular, novo_celular);
+        }
+        if (strlen(novo_email) > 0) {
+            strcpy(clientes[encontrado_idx].email, novo_email);
+        }
+        
+        salvar_clientes_binario();
+        printf("\nCliente alterado com sucesso!\n");
     } else {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                          Nenhum cliente encontrado!                             ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("\nNenhum cliente ativo encontrado com o CPF: %s\n", cpf_procurar);
     }
-
     sleep(1);
 }
 
-void menu_deletar_cliente(char cpf_procurar[]) {
-    char nome[60], cpf[60], celular[60], email[60];
-    FILE *busca = fopen("Clientes/clientes.txt", "r");
-    FILE *alterar = fopen("Clientes/alterar.txt", "w");
-    int encontrado = 0;
+void menu_deletar_cliente() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
 
-    if (!busca || !alterar) {
-        printf("Erro ao abrir o arquivo de clientes!\n");
-        return;
-    }
+    system("clear||cls");
+    printf("Digite o CPF do cliente que deseja deletar: ");
+    scanf(" %14[^\n]", cpf_procurar);
+    limpar_buffer();
 
-    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,]\n",
-                  nome, cpf, celular, email) == 4) {
-        if (strcmp(cpf_procurar, cpf) == 0) {
-            encontrado = 1;
-        } else {
-            fprintf(alterar, "%s, %s, %s, %s\n", nome, cpf, celular, email);
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0 && clientes[i].ativo == 1) {
+            encontrado_idx = i;
+            break;
         }
     }
 
-    fclose(busca);
-    fclose(alterar);
-
-    remove("Clientes/clientes.txt");
-    rename("Clientes/alterar.txt", "Clientes/clientes.txt");
-
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("Cliente excluído com sucesso!\n");
+    if (encontrado_idx != -1) {
+        clientes[encontrado_idx].ativo = 0;
+        salvar_clientes_binario();
+        printf("Cliente excluido com sucesso!\n");
     } else {
-        printf("Nenhum cliente encontrado com esse CPF!\n");
+        printf("Nenhum cliente ativo encontrado com esse CPF!\n");
     }
-
     sleep(1);
+}
+
+char menu_cliente(void) {
+    char op;
+    system("clear||cls");
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                    Modulo Clientes                                  ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                                  -> 1 • Pesquisar cliente                           ║\n");
+    printf("║                                  -> 2 • Cadastrar cliente                           ║\n");
+    printf("║                                  -> 3 • Alterar cliente                             ║\n");
+    printf("║                                  -> 4 • Deletar cliente                             ║\n");
+    printf("║                                  -> 5 • Voltar                                      ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Escolha uma opção: ");
+    scanf(" %c", &op);
+    limpar_buffer();
+    return op;
+}
+
+void limpar_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int main() {
+    gerenciar_clientes();
+    return 0;
 }
