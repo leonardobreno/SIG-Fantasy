@@ -1,5 +1,3 @@
-// pedidos.h
-
 #ifndef PEDIDOS_H
 #define PEDIDOS_H
 
@@ -14,4 +12,4 @@ typedef struct {
 
 void gerenciar_pedidos(void);
 
-#endif // PEDIDOS_H
+#endif
