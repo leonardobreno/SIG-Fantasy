@@ -1,5 +1,3 @@
-// clientes.h
-
 #ifndef CLIENTES_H
 #define CLIENTES_H
 
@@ -13,4 +11,4 @@ typedef struct {
 
 void gerenciar_clientes(void);
 
-#endif // CLIENTES_H
+#endif
