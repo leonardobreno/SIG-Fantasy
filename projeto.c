@@ -6,13 +6,14 @@
     // Funções do Linux/Unix
 #include <string.h>  
     // Manipulação de strings
-    
+#include "Clientes/clientes.h"
 #include "Utilidades/utilidades.h"
 #include "Informacoes/informacoes.h"
 #include "Pedidos/pedidos.h"
 #include "Funcionarios/funcionarios.h"
 #include "Fantasias/fantasias.h"
 #include "Clientes/clientes.h"
+#include "Pedidos/pedidos.h"
 
 int main(void) {
     char opc;
@@ -20,16 +21,16 @@ int main(void) {
         opc = menu_principal();
         switch(opc) {
             case '1':
-                modulo_cliente();
+                gerenciar_clientes();
                 break;
             case '2':
-                modulo_fantasia();
+                gerenciar_fantasias();
                 break;
             case '3':
-                modulo_funcionario();
+                gerenciar_funcionarios();
                 break;
             case '4':
-                modulo_pedido();
+                gerenciar_pedidos();
                 break;                
             case '5':
                 modulo_informacoes();

@@ -1,8 +1,29 @@
-//Assinatura das funções do modulo fantasias
+#ifndef FANTASIAS_H
+#define FANTASIAS_H
+
+// ---------- STRUCT ----------
+typedef struct {
+    char nome[50];
+    char tamanho[10];
+    char cor[20];
+    int ativo; // 1 = ativo, 0 = excluído
+} Fantasia;
+
+// ---------- PROTÓTIPOS ----------
+void gerenciar_fantasias(void);
+
 char menu_fantasia(void);
-int menu_pesquisar_fantasia(char fantasia_pesquisar[]);
-void menu_cadastro_fantasia(char[], char[], char[]);
-void menu_alterar_fantasia(char fantasia_pesquisar[]);
-void menu_deletar_fantasia(char fantasia_pesquisar[]);
-void modulo_fantasia(void);
-void cad_fantasia(char nome_fantasia[], char tamanho[], char cor[]);
+
+void menu_cadastro_fantasia(void);
+void menu_pesquisar_fantasia(void);
+void menu_alterar_fantasia(void);
+void menu_excluir_fantasia(void);
+void menu_listar_lixeira_fantasias(void);
+void menu_recuperar_fantasia(void);
+void menu_excluir_fisico_fantasias(void);
+
+void salvar_fantasias_binario(void);
+void carregar_fantasias_binario(void);
+void liberar_memoria_fantasias(void);
+
+#endif // FANTASIAS_H

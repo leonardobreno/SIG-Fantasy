@@ -1,311 +1,373 @@
-#include <stdio.h>   
-    // Entrada e saída
-#include <stdlib.h>  
-    // Funções utilitárias
-#include <unistd.h>  
-    // Funções do Linux/Unix
-#include <string.h>  
-    // Manipulação de strings
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "funcionarios.h"
 #include "../Utilidades/utilidades.h"
 
-char nome_func[60] = "";
-char cpf_func[60] = "";
-char celular_func[60] = "";
-char email_func[60] = "";
-char salario_func[60] = "";
+#ifdef _WIN32
+    #include <windows.h>
+    #define SLEEP(ms) Sleep(ms)
+    #define CLEAR_SCREEN "cls"
+#else
+    #include <unistd.h>
+    #define SLEEP(s) sleep(s)
+    #define CLEAR_SCREEN "clear"
+#endif
 
-void cad_funcinario(char nome_func[], char cpf_func[], char cel_func[], char email_func[], char salario_func[]){
-    FILE *funcionarios = fopen("Funcionarios/funcionarios.txt", "a");
-    if(funcionarios != NULL){
-        fprintf(funcionarios, "%s, %s, %s, %s, %s\n", nome_func, cpf_func, cel_func, email_func, salario_func);
-        fclose(funcionarios);
+Funcionario* funcionarios = NULL;
+int num_funcionarios = 0;
+int capacidade_funcionarios = 0;
+
+void gerenciar_funcionarios(void) {
+    carregar_funcionarios_binario();
+    char op;
+    do {
+        op = menu_funcionario();
+        switch (op) {
+            case '1':
+                menu_pesquisar_funcionario();
+                break;
+            case '2':
+                menu_cadastro_funcionario();
+                break;
+            case '3':
+                menu_alterar_funcionario();
+                break;
+            case '4':
+                menu_excluir_logico_funcionario();
+                break;
+            case '5':
+                menu_listar_excluidos_funcionario();
+                break;
+            case '6':
+                menu_recuperar_funcionario();
+                break;
+            case '7':
+                menu_excluir_fisico_funcionarios();
+                break;
+            case '0':
+                printf("Voltando ao menu principal...\n");
+                break;
+            default:
+                printf("Opção inválida! Tente novamente.\n");
+                SLEEP(1);
+        }
+    } while (op != '0');
+    liberar_memoria_funcionarios();
+}
+
+void salvar_funcionarios_binario() {
+    FILE* arquivo = fopen("Funcionarios/funcionarios.dat", "wb");
+    if (!arquivo) {
+        printf("Erro fatal: Não foi possível abrir o arquivo para escrita!\n");
+        return;
     }
-    else{
-        printf("arquivo nao encontrado!\n");
+    fwrite(funcionarios, sizeof(Funcionario), num_funcionarios, arquivo);
+    fclose(arquivo);
+}
+
+void carregar_funcionarios_binario() {
+    FILE* arquivo = fopen("Funcionarios/funcionarios.dat", "rb");
+    if (!arquivo) {
+        printf("Arquivo de dados 'funcionarios.dat' não encontrado. Iniciando com base de dados vazia.\n");
+        return;
+    }
+
+    fseek(arquivo, 0, SEEK_END);
+    long tamanho_arquivo = ftell(arquivo);
+    rewind(arquivo);
+
+    num_funcionarios = tamanho_arquivo / sizeof(Funcionario);
+    capacidade_funcionarios = num_funcionarios;
+
+    funcionarios = malloc(num_funcionarios * sizeof(Funcionario));
+    if (!funcionarios) {
+        printf("Erro fatal: Falha ao alocar memória!\n");
+        fclose(arquivo);
+        return;
+    }
+
+    fread(funcionarios, sizeof(Funcionario), num_funcionarios, arquivo);
+    fclose(arquivo);
+}
+
+void liberar_memoria_funcionarios() {
+    if (funcionarios) {
+        free(funcionarios);
+        funcionarios = NULL;
+        num_funcionarios = 0;
+        capacidade_funcionarios = 0;
     }
 }
 
-char menu_funcionario(void) {
-    char op;
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                Modulo Funcionario                               ║\n");
-    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                             -> 1 • Listar funcionario                           ║\n");
-    printf("║                             -> 2 • Cadastrar funcionario                        ║\n");
-    printf("║                             -> 3 • Alterar funcionario                          ║\n");
-    printf("║                             -> 4 • Deletar funcionario                          ║\n");
-    printf("║                             -> 5    • Voltar                                    ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Escolha uma opção: ");
-    scanf(" %c", &op);
+void menu_cadastro_funcionario() {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                           Cadastro Funcionario                          ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
+
+    Funcionario novo;
+
+    printf("Digite o nome: ");
+    scanf(" %50[^\n]", novo.nome);
     limpar_buffer();
 
-    return op;
-}
+    printf("Digite o CPF: ");
+    scanf(" %14[^\n]", novo.cpf);
+    limpar_buffer();
 
-int menu_pesquisar_funcionario(char cpf_pesquisar[]) {
-    FILE *busca = fopen("Funcionarios/funcionarios.txt", "r");
-    char nome_temp[60], cpf_temp[60], cel_temp[60], email_temp[60], salario_temp[60];
-    int encontrado = 0;
-
-    if (busca == NULL) {
-        printf("Erro ao abrir arquivo funcionarios\n");
-        return 0;
+    for (int i = 0; i < num_funcionarios; i++) {
+        if (strcmp(novo.cpf, funcionarios[i].cpf) == 0) {
+            printf("\nERRO: Já existe um funcionário (ativo ou inativo) com este CPF!\n");
+            SLEEP(2);
+            return;
+        }
     }
 
-    // Percorre o arquivo linha por linha
-    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,], %59[^\n]\n",
-                  nome_temp, cpf_temp, cel_temp, email_temp, salario_temp) == 5) {
-        if (strcmp(cpf_pesquisar, cpf_temp) == 0) {
-            // Copia para as variáveis globais
-            strcpy(nome_func, nome_temp);
-            strcpy(cpf_func, cpf_temp);
-            strcpy(celular_func, cel_temp);
-            strcpy(email_func, email_temp);
-            strcpy(salario_func, salario_temp);
+    printf("Digite o celular: ");
+    scanf(" %19[^\n]", novo.celular);
+    limpar_buffer();
+
+    printf("Digite o email: ");
+    scanf(" %50[^\n]", novo.email);
+    limpar_buffer();
+
+    printf("Digite o salário: ");
+    scanf(" %19[^\n]", novo.salario);
+    limpar_buffer();
+
+    novo.ativo = 1;
+
+    Funcionario* temp = realloc(funcionarios, (num_funcionarios + 1) * sizeof(Funcionario));
+    if (!temp) {
+        printf("Erro: Não foi possível alocar memória para o novo funcionário!\n");
+        return;
+    }
+    funcionarios = temp;
+
+    funcionarios[num_funcionarios] = novo;
+    num_funcionarios++;
+    capacidade_funcionarios++;
+
+    salvar_funcionarios_binario();
+    printf("\nCadastro realizado com sucesso!\n");
+    SLEEP(1);
+}
+
+void menu_pesquisar_funcionario() {
+    char cpf_procurar[15];
+    int encontrado = 0;
+
+    system(CLEAR_SCREEN);
+    printf("Digite o CPF do funcionário que deseja pesquisar: ");
+    scanf(" %14[^\n]", cpf_procurar);
+    limpar_buffer();
+
+    for (int i = 0; i < num_funcionarios; i++) {
+        if (strcmp(cpf_procurar, funcionarios[i].cpf) == 0 && funcionarios[i].ativo == 1) {
+            system(CLEAR_SCREEN);
+            printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                       Funcionário Encontrado                            ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
+            printf("Nome: %s\nCPF: %s\nCelular: %s\nEmail: %s\nSalário: %s\n",
+                   funcionarios[i].nome,
+                   funcionarios[i].cpf,
+                   funcionarios[i].celular,
+                   funcionarios[i].email,
+                   funcionarios[i].salario);
             encontrado = 1;
             break;
         }
     }
 
-    fclose(busca);
-
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                                  Funcionario Pesquisado                          ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-        printf("Nome do funcionario: %s\n", nome_func);
-        printf("Cpf do funcionario: %s\n", cpf_func);
-        printf("Telefone do funcionario: %s\n", celular_func);
-        printf("Email do funcionario: %s\n", email_func);
-        printf("Salario do funcionario: %s\n", salario_func);
-        return 1;
-    } else {
-        printf("Cpf pesquisado: %s\n", cpf_pesquisar);
-        printf("\nNao tem nenhum funcionario com esse cpf.\n");
-        return 0;
+    if (!encontrado) {
+        printf("\nNenhum funcionário *ativo* encontrado com o CPF: %s\n", cpf_procurar);
     }
-}
 
-
-void menu_cadastro_funcionario(char nome_func[], char cpf_func[], char celular_func[], char email_func[], char salario_func[]){
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Cadastro Funcionario                          ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Digite o nome do funcionario: ");
-    scanf(" %[^\n]", nome_func);
+    printf("\nPressione Enter para continuar...");
     limpar_buffer();
-
-    printf("Digite o cpf do funcionario: ");
-    scanf(" %[^\n]", cpf_func);
-    limpar_buffer();
-
-    printf("Digite o celular do funcionario: ");
-    scanf(" %[^\n]", celular_func);
-    limpar_buffer();
-
-    printf("Digite o email do funcionario: ");
-    scanf(" %[^\n]", email_func);
-    limpar_buffer();
-
-    printf("Digite o salario do funcionario: ");
-    scanf(" %[^\n]", salario_func);
-    limpar_buffer();
-
-    cad_funcinario(nome_func, cpf_func, celular_func, email_func, salario_func);
-
-    printf("\nCadastro realizado!\n");
-    sleep(1);
 }
 
 void menu_alterar_funcionario() {
-    char nome_func[60], celular_func[60], email_func[60], salario_func[60];
-    char cpf_pesquisar[60], cpf_arquivo[60];
-    FILE *busca = fopen("Funcionarios/funcionarios.txt", "r");
-    FILE *alterar = fopen("Funcionarios/alterar.txt", "w");
-    int encontrado = 0;
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
 
-    if (busca == NULL || alterar == NULL) {
-        printf("Erro ao abrir o arquivo de funcionarios!\n");
-        return;
-    }
-
-    system("clear||cls");
-    printf("Digite o CPF do funcionario que deseja alterar: ");
-    scanf(" %[^\n]", cpf_pesquisar);
+    system(CLEAR_SCREEN);
+    printf("Digite o CPF do funcionário que deseja alterar: ");
+    scanf(" %14[^\n]", cpf_procurar);
     limpar_buffer();
 
-    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,], %59[^\n]\n",
-                  nome_func, cpf_arquivo, celular_func, email_func, salario_func) == 5) {
-
-        if (strcmp(cpf_pesquisar, cpf_arquivo) == 0) {
-            system("clear||cls");
-            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-            printf("║                                Alterar Funcionario                              ║\n");
-            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-            printf("Funcionario encontrado!\n\n");
-            printf("Nome: %s\n", nome_func);
-            printf("CPF: %s\n", cpf_arquivo);
-            printf("Celular atual: %s\n", celular_func);
-            printf("Email atual: %s\n", email_func);
-            printf("Salario atual: %s\n\n", salario_func);
-
-            printf("Digite o novo celular: ");
-            scanf(" %[^\n]", celular_func);
-            limpar_buffer();
-
-            printf("Digite o novo email: ");
-            scanf(" %[^\n]", email_func);
-            limpar_buffer();
-
-            printf("Digite o novo salario: ");
-            scanf(" %[^\n]", salario_func);
-            limpar_buffer();
-
-            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome_func, cpf_arquivo, celular_func, email_func, salario_func);
-            encontrado = 1;
-        } else {
-            // mantém os dados do funcionário não alterado
-            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome_func, cpf_arquivo, celular_func, email_func, salario_func);
+    for (int i = 0; i < num_funcionarios; i++) {
+        if (strcmp(cpf_procurar, funcionarios[i].cpf) == 0 && funcionarios[i].ativo == 1) {
+            encontrado_idx = i;
+            break;
         }
     }
 
-    fclose(busca);
-    fclose(alterar);
+    if (encontrado_idx != -1) {
+        system(CLEAR_SCREEN);
+        printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                           Alterar Funcionário                           ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
+        printf("Funcionário encontrado! (Deixe em branco para não alterar)\n\n");
 
-    remove("Funcionarios/funcionarios.txt");
-    rename("Funcionarios/alterar.txt", "Funcionarios/funcionarios.txt");
+        printf("Nome: %s\n", funcionarios[encontrado_idx].nome);
+        printf("CPF: %s\n", funcionarios[encontrado_idx].cpf);
 
-    system("clear||cls");
+        char novo_celular[20], novo_email[51], novo_salario[20];
 
-    if (encontrado) {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                       Funcionario alterado com sucesso!                         ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("Celular atual: %s\n", funcionarios[encontrado_idx].celular);
+        printf("Digite novo celular: ");
+        scanf(" %19[^\n]", novo_celular);
+        limpar_buffer();
+
+        printf("Email atual: %s\n", funcionarios[encontrado_idx].email);
+        printf("Digite novo email: ");
+        scanf(" %50[^\n]", novo_email);
+        limpar_buffer();
+
+        printf("Salário atual: %s\n", funcionarios[encontrado_idx].salario);
+        printf("Digite novo salário: ");
+        scanf(" %19[^\n]", novo_salario);
+        limpar_buffer();
+
+        if (strlen(novo_celular) > 0) strcpy(funcionarios[encontrado_idx].celular, novo_celular);
+        if (strlen(novo_email) > 0) strcpy(funcionarios[encontrado_idx].email, novo_email);
+        if (strlen(novo_salario) > 0) strcpy(funcionarios[encontrado_idx].salario, novo_salario);
+
+        salvar_funcionarios_binario();
+        printf("\nFuncionário alterado com sucesso!\n");
     } else {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                        Nenhum funcionario encontrado!                           ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("\nNenhum funcionário *ativo* encontrado com o CPF: %s\n", cpf_procurar);
     }
 
-    sleep(1);
+    SLEEP(1);
 }
 
+void menu_excluir_logico_funcionario() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
 
-void menu_deletar_funcionario(char cpf_pesquisar[]) {
-    char nome_func[60], cpf_func[60], celular_func[60], email_func[60], salario_func[60];
-    FILE *busca = fopen("Funcionarios/funcionarios.txt", "r");
-    FILE *alterar = fopen("Funcionarios/alterar.txt", "w");
-    int encontrado = 0;
+    system(CLEAR_SCREEN);
+    printf("Digite o CPF do funcionário para exclusão lógica: ");
+    scanf(" %14[^\n]", cpf_procurar);
+    limpar_buffer();
 
-    if (!busca || !alterar) {
-        printf("Erro ao abrir o arquivo de funcionarios!\n");
-        return;
-    }
-
-    while (fscanf(busca, " %59[^,], %59[^,], %59[^,], %59[^,], %59[^\n]\n",
-                  nome_func, cpf_func, celular_func, email_func, salario_func) == 5) {
-        if (strcmp(cpf_pesquisar, cpf_func) == 0) {
-            encontrado = 1;
-        } else {
-            fprintf(alterar, "%s, %s, %s, %s, %s\n", nome_func, cpf_func, celular_func, email_func, salario_func);
+    for (int i = 0; i < num_funcionarios; i++) {
+        if (strcmp(cpf_procurar, funcionarios[i].cpf) == 0 && funcionarios[i].ativo == 1) {
+            encontrado_idx = i;
+            break;
         }
     }
 
-    fclose(busca);
-    fclose(alterar);
-
-    remove("Funcionarios/funcionarios.txt");
-    rename("Funcionarios/alterar.txt", "Funcionarios/funcionarios.txt");
-
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("Funcionario excluído com sucesso!\n");
+    if (encontrado_idx != -1) {
+        funcionarios[encontrado_idx].ativo = 0;
+        salvar_funcionarios_binario();
+        printf("Funcionário excluído logicamente (na lixeira).\n");
     } else {
-        printf("Nenhum funcionario encontrado com esse CPF!\n");
+        printf("Nenhum funcionário ativo encontrado com esse CPF!\n");
     }
 
-    sleep(1);
+    SLEEP(1);
 }
 
+void menu_listar_excluidos_funcionario() {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                           Lixeira de Funcionários                       ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
 
+    int encontrados = 0;
+    for (int i = 0; i < num_funcionarios; i++) {
+        if (funcionarios[i].ativo == 0) {
+            printf("Nome: %s\nCPF: %s\n---------------------------------------------------\n",
+                   funcionarios[i].nome, funcionarios[i].cpf);
+            encontrados++;
+        }
+    }
 
+    if (encontrados == 0) {
+        printf("\nNenhum funcionário excluído encontrado.\n");
+    }
 
-void modulo_funcionario(void) {
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+void menu_recuperar_funcionario() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
+
+    system(CLEAR_SCREEN);
+    printf("Digite o CPF do funcionário para recuperar da lixeira: ");
+    scanf(" %14[^\n]", cpf_procurar);
+    limpar_buffer();
+
+    for (int i = 0; i < num_funcionarios; i++) {
+        if (strcmp(cpf_procurar, funcionarios[i].cpf) == 0) {
+            encontrado_idx = i;
+            break;
+        }
+    }
+
+    if (encontrado_idx == -1) {
+        printf("Nenhum funcionário encontrado com esse CPF!\n");
+    } else {
+        if (funcionarios[encontrado_idx].ativo == 1) {
+            printf("Este funcionário já está ativo!\n");
+        } else {
+            funcionarios[encontrado_idx].ativo = 1;
+            salvar_funcionarios_binario();
+            printf("Funcionário recuperado com sucesso!\n");
+        }
+    }
+
+    SLEEP(1);
+}
+
+void menu_excluir_fisico_funcionarios() {
+    char confirmacao[5];
+
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                         EXCLUSÃO FÍSICA TOTAL                           ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
+    printf("\nATENÇÃO: Isso apagará todos os dados de funcionários, inclusive os da lixeira.\n");
+    printf("Digite 'SIM' para confirmar: ");
+    scanf(" %4[^\n]", confirmacao);
+    limpar_buffer();
+
+    if (strcmp(confirmacao, "SIM") == 0) {
+        liberar_memoria_funcionarios();
+        funcionarios = NULL;
+        num_funcionarios = 0;
+        capacidade_funcionarios = 0;
+        salvar_funcionarios_binario();
+        printf("SUCESSO: Todos os dados de funcionários foram excluídos fisicamente.\n");
+    } else {
+        printf("Operação cancelada.\n");
+    }
+
+    SLEEP(2);
+}
+
+char menu_funcionario(void) {
     char op;
-    char cpf_procurar[50] = "";
-    char op_delete = '2';
-    int funcionario_achado;
-
-    do {
-        op = menu_funcionario();
-        switch(op) {
-            case '1':
-                printf("\nDigite o cpf do cliente que deseja pesquisar: ");
-                scanf("%[^\n]", cpf_procurar);
-                menu_pesquisar_funcionario(cpf_procurar);
-                getchar();
-                printf("\nPressione Enter para voltar...\n");
-                limpar_buffer();                  
-                break;
-            case '2':
-                menu_cadastro_funcionario(nome_func, cpf_func, celular_func, email_func, salario_func);
-                break;
-            case '3':
-                menu_alterar_funcionario(cpf_func);
-                break;
-            case '4':
-                system("clear||cls");
-                printf("\nDigite o cpf do cliente que deseja pesquisar: ");
-                scanf("%[^\n]", cpf_procurar);
-                funcionario_achado = menu_pesquisar_funcionario(cpf_procurar);
-                getchar();
-                if (funcionario_achado == 1)
-                {
-                    printf("\nDeseja excluir esse funcionario?\n");
-                    printf("1 - Sim\n");
-                    printf("2 - Nao\n");
-                    op_delete = getchar();
-                    limpar_buffer();
-                    switch (op_delete){
-                    case '1':
-                        menu_deletar_funcionario(cpf_func);
-                        system("clear||cls");
-                        printf("Funcionario excluido com sucesso!\n");
-                        sleep(1);
-                        break;
-                    
-                    case '2':
-                        printf("Abortando exclusao...\n");
-                        sleep(1);
-                        break;
-                    
-                    default:
-                        printf("Opção inválida!\n");
-                        sleep(1);
-                        break;
-                    }
-                    sleep(1);  
-                }     
-                else
-                {
-                    sleep(1);
-                }
-                     
-                break;
-            case '5':
-                printf("Voltando ao menu principal...\n");
-                sleep(1);
-                break;
-            default:
-                printf("Opção inválida!\n");
-                sleep(1);
-        }
-    } while(op != '5');
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                            Módulo Funcionários                          ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                    -> 1 • Pesquisar funcionário                         ║\n");
+    printf("║                    -> 2 • Cadastrar funcionário                         ║\n");
+    printf("║                    -> 3 • Alterar funcionário                           ║\n");
+    printf("║                    -> 4 • Deletar funcionário (Lixeira)                 ║\n");
+    printf("║                    -> 5 • Listar Lixeira                                ║\n");
+    printf("║                    -> 6 • Recuperar funcionário                         ║\n");
+    printf("║                    -> 7 • Excluir TODOS (Físico)                        ║\n");
+    printf("║                    -> 0 • Voltar                                        ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Escolha uma opção: ");
+    scanf(" %c", &op);
+    limpar_buffer();
+    return op;
 }

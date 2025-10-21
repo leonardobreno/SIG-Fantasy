@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pedidos.h"
+#include "../Utilidades/utilidades.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -15,20 +16,6 @@
 
 Pedido* pedidos = NULL;
 int num_pedidos = 0;
-
-unsigned long get_next_pedido_id();
-void salvar_pedidos_binario();
-void carregar_pedidos_binario();
-void liberar_memoria_pedidos();
-void menu_cadastro_pedido();
-void menu_pesquisar_pedido();
-void menu_alterar_pedido();
-void menu_excluir_logico_pedido();
-void menu_listar_excluidos_pedidos();
-void menu_recuperar_pedido();
-void menu_excluir_fisico_pedidos();
-char menu_pedido(void);
-void limpar_buffer();
 
 void gerenciar_pedidos(void) {
     carregar_pedidos_binario();
@@ -126,7 +113,7 @@ void liberar_memoria_pedidos() {
 void menu_cadastro_pedido() {
     system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                    Cadastro Pedido                                  ║\n");
+    printf("║                                    Cadastro Pedido                              ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
     Pedido novo_pedido;
@@ -219,7 +206,7 @@ void menu_alterar_pedido() {
     if (encontrado_idx != -1) {
         system(CLEAR_SCREEN);
         printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                                    Alterar Pedido                                 ║\n");
+        printf("║                                    Alterar Pedido                               ║\n");
         printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
         printf("Pedido encontrado! (Deixe em branco e pressione Enter para nao alterar)\n\n");
         
@@ -358,7 +345,7 @@ void menu_excluir_fisico_pedidos() {
     char confirmacao[5];
     system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                            EXCLUSAO FISICA TOTAL                              ║\n");
+    printf("║                            EXCLUSAO FISICA TOTAL                                ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\n!!! ATENCAO !!!\n");
     printf("Isso apagara TODOS os dados de pedidos do sistema, inclusive os da lixeira.\n");
@@ -389,24 +376,19 @@ char menu_pedido(void) {
     char op;
     system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                    Modulo Pedidos                                   ║\n");
+    printf("║                                    Modulo Pedidos                               ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                                  -> 1 • Pesquisar pedido                            ║\n");
-    printf("║                                  -> 2 • Cadastrar pedido                            ║\n");
-    printf("║                                  -> 3 • Alterar pedido                              ║\n");
-    printf("║                                  -> 4 • Deletar pedido (Lixeira)                    ║\n");
-    printf("║                                  -> 5 • Listar Lixeira                              ║\n");
-    printf("║                                  -> 6 • Recuperar pedido                            ║\n");
-    printf("║                                  -> 7 • Excluir TODOS (Fisico)                      ║\n");
-    printf("║                                  -> 0 • Voltar                                      ║\n");
+    printf("║                              -> 1 • Pesquisar pedido                            ║\n");
+    printf("║                              -> 2 • Cadastrar pedido                            ║\n");
+    printf("║                              -> 3 • Alterar pedido                              ║\n");
+    printf("║                              -> 4 • Deletar pedido (Lixeira)                    ║\n");
+    printf("║                              -> 5 • Listar Lixeira                              ║\n");
+    printf("║                              -> 6 • Recuperar pedido                            ║\n");
+    printf("║                              -> 7 • Excluir TODOS (Fisico)                      ║\n");
+    printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
     limpar_buffer();
     return op;
-}
-
-void limpar_buffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
 }
