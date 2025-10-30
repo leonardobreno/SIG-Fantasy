@@ -1,4 +1,37 @@
 #include "validacoes.h"
+#include <string.h> 
+#include <ctype.h>  
+#include <locale.h> 
+#include <time.h>   
+#include <stdio.h>  
+
+
+int validar_nome(char *nome) {
+    setlocale(LC_CTYPE, ""); 
+    int tamanho = strlen(nome);
+    int so_espaco = 1;
+
+    if (tamanho == 0 || tamanho > 50) { 
+        return 0; 
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        unsigned char c = nome[i];
+        if (!isalpha(c) && !isspace(c)) {
+            return 0; 
+        }
+        if (!isspace(c)) {
+            so_espaco = 0; 
+        }
+    }
+
+    if (so_espaco) {
+        return 0; 
+    }
+
+    return 1; 
+}
+
 
 int validar_cpf(char *cpf){
     int i;
@@ -16,12 +49,86 @@ int validar_cpf(char *cpf){
     return 1;
 }
 
+
+int validar_celular(char *celular) {
+    int tamanho = strlen(celular);
+
+    if (tamanho < 10 || tamanho > 11) { 
+        return 0;
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        if (!isdigit(celular[i])) {
+            return 0; 
+        }
+    }
+
+    return 1; 
+}
+
+
+int validar_email(char *email) {
+    int tamanho = strlen(email);
+    char *arroba = NULL;
+    char *ponto = NULL;
+
+    if (tamanho == 0 || tamanho > 50) {
+        return 0; 
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        if (isspace(email[i])) {
+            return 0; 
+        }
+    }
+
+    arroba = strchr(email, '@');
+    if (arroba == NULL || arroba == email) {
+        return 0; 
+    }
+
+    ponto = strchr(arroba + 1, '.');
+    if (ponto == NULL || ponto == email + tamanho - 1) {
+        return 0; 
+    }
+
+    return 1; 
+}
+
+
+
+int validar_salario_string(char *salario) {
+    int tamanho = strlen(salario);
+    int ponto_ou_virgula = 0;
+
+    if (tamanho == 0 || tamanho > 19) { 
+        return 0; 
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        if (isdigit(salario[i])) {
+            continue;
+        }
+        if (salario[i] == '.' || salario[i] == ',') {
+            if (ponto_ou_virgula) {
+                return 0; 
+            }
+            ponto_ou_virgula = 1;
+        } else {
+            return 0; 
+        }
+    }
+    return 1; 
+}
+
+
+
 int validar_id_fantasia(const char *obs) {
     setlocale(LC_CTYPE, "");
 
     int tamanho = strlen(obs);
     
-    if (tamanho < 1) { 
+    if (tamanho < 1 || tamanho > 49) { 
         return 0;
     }
 
@@ -38,6 +145,64 @@ int validar_id_fantasia(const char *obs) {
     return 1;
 }
 
+
+int validar_tamanho_fantasia(char *tamanho) {
+    setlocale(LC_CTYPE, "");
+    int tamanho_str = strlen(tamanho);
+    int so_espaco = 1;
+
+    if (tamanho_str == 0 || tamanho_str > 9) { 
+        return 0;
+    }
+
+    for (int i = 0; i < tamanho_str; i++) {
+        unsigned char c = tamanho[i];
+        if (!isalnum(c) && !isspace(c)) { 
+            return 0;
+        }
+        if (!isspace(c)) {
+            so_espaco = 0;
+        }
+    }
+
+    if (so_espaco) {
+        return 0;
+    }
+    
+    return 1;
+}
+
+
+int validar_cor_fantasia(char *cor) {
+    setlocale(LC_CTYPE, "");
+    int tamanho = strlen(cor);
+    int so_espaco = 1;
+
+    if (tamanho == 0 || tamanho > 19) { 
+        return 0;
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        unsigned char c = cor[i];
+        
+        if (!isalpha(c) && !isspace(c) && c != '-') {
+            return 0;
+        }
+        if (!isspace(c)) {
+            so_espaco = 0;
+        }
+    }
+
+    if (so_espaco) {
+        return 0;
+    }
+    
+    return 1;
+}
+
+
+
+
 int validar_preco(float preco) {
     
     if(preco <= 0) {
@@ -50,6 +215,7 @@ int validar_preco(float preco) {
 
     return 1;
 }
+
 
 int ano_bissexto(int ano){
   if(ano % 400 == 0){
@@ -98,6 +264,7 @@ int valida_ano(int ano){
     return 0;
   }
 }
+
 
 int valida_data(char *data){
     int len, dia, mes, ano;
