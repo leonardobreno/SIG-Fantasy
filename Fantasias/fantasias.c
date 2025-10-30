@@ -1,290 +1,365 @@
-#include <stdio.h>   
-    // Entrada e saída
-#include <stdlib.h>  
-    // Funções utilitárias
-#include <unistd.h>  
-    // Funções do Linux/Unix
-#include <string.h>  
-    // Manipulação de strings
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../Utilidades/utilidades.h"
 
-char nome_fantasia[50] = "";
-char tamanho[10] = "";
-char cor[20] = "";
+#ifdef _WIN32
+    #include <windows.h>
+    #define SLEEP(ms) Sleep(ms)
+    #define CLEAR_SCREEN "cls"
+#else
+    #include <unistd.h>
+    #define SLEEP(s) sleep(s)
+    #define CLEAR_SCREEN "clear"
+#endif
+
+typedef struct {
+    char nome[50];
+    char tamanho[10];
+    char cor[20];
+    int ativo; // 1 = ativo, 0 = excluído
+} Fantasia;
+
+Fantasia* fantasias = NULL;
+int num_fantasias = 0;
+int capacidade_fantasias = 0;
+
+// ---------- FUNÇÕES AUXILIARES ----------
+
+void salvar_fantasias_binario() {
+    FILE* arquivo = fopen("Fantasias/fantasias.dat", "wb");
+    if (!arquivo) {
+        printf("Erro ao salvar fantasias!\n");
+        return;
+    }
+    fwrite(fantasias, sizeof(Fantasia), num_fantasias, arquivo);
+    fclose(arquivo);
+}
+
+void carregar_fantasias_binario() {
+    FILE* arquivo = fopen("Fantasias/fantasias.dat", "rb");
+    if (!arquivo) {
+        // Arquivo não existe, inicia vazio
+        fantasias = NULL;
+        num_fantasias = 0;
+        capacidade_fantasias = 0;
+        return;
+    }
+    fseek(arquivo, 0, SEEK_END);
+    long tamanho_arquivo = ftell(arquivo);
+    rewind(arquivo);
+    num_fantasias = tamanho_arquivo / sizeof(Fantasia);
+    capacidade_fantasias = num_fantasias;
+    if (num_fantasias > 0) {
+        fantasias = (Fantasia*)malloc(num_fantasias * sizeof(Fantasia));
+        fread(fantasias, sizeof(Fantasia), num_fantasias, arquivo);
+    }
+    fclose(arquivo);
+}
+
+void liberar_memoria_fantasias() {
+    if (fantasias) {
+        free(fantasias);
+        fantasias = NULL;
+        num_fantasias = 0;
+        capacidade_fantasias = 0;
+    }
+}
+
+// ---------- MENU PRINCIPAL ----------
 
 char menu_fantasia(void) {
     char op;
-    system("clear||cls");
+    system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                    Modulo Fantasias                             ║\n");
+    printf("║                                  Modulo Fantasias                               ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                               -> 1 • Listar fantasia                            ║\n");    
+    printf("║                               -> 1 • Pesquisar fantasia                         ║\n");
     printf("║                               -> 2 • Cadastrar fantasia                         ║\n");
     printf("║                               -> 3 • Alterar fantasia                           ║\n");
     printf("║                               -> 4 • Excluir fantasia                           ║\n");
-    printf("║                               -> 5    • Voltar                                  ║\n");
+    printf("║                               -> 5 • Listar lixeira                             ║\n");
+    printf("║                               -> 6 • Recuperar fantasia                         ║\n");
+    printf("║                               -> 7 • Excluir TODOS (Fisico)                     ║\n");
+    printf("║                               -> 0 • Voltar                                     ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Escolha uma opção: ");
+    printf("Escolha uma opcao: ");
     scanf(" %c", &op);
     limpar_buffer();
     return op;
 }
 
-void cad_fantasia(char nome_fantasia[], char tamanho[], char cor[]){
-    FILE *fantasias = fopen("Fantasias/fantasias.txt", "a");
-    if(fantasias != NULL){
-        fprintf(fantasias, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
-        fclose(fantasias);
-    }else{
-        printf("arquivo nao encontrado!\n");
+// ---------- CADASTRO ----------
+
+void menu_cadastro_fantasia() {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                 Cadastro Fantasia                               ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    Fantasia nova;
+    printf("Digite o nome da fantasia: ");
+    scanf(" %49[^\n]", nova.nome);
+    limpar_buffer();
+    printf("Digite o tamanho: ");
+    scanf(" %9[^\n]", nova.tamanho);
+    limpar_buffer();
+    printf("Digite a cor: ");
+    scanf(" %19[^\n]", nova.cor);
+    limpar_buffer();
+    nova.ativo = 1;
+
+    Fantasia* temp = realloc(fantasias, (num_fantasias + 1) * sizeof(Fantasia));
+    if (!temp) {
+        printf("Erro: Nao foi possivel alocar memoria!\n");
+        SLEEP(2);
+        return;
     }
-    
+    fantasias = temp;
+    fantasias[num_fantasias] = nova;
+    num_fantasias++;
+    capacidade_fantasias++;
+
+    salvar_fantasias_binario();
+    printf("\nCadastro realizado com sucesso!\n");
+    SLEEP(1);
 }
 
+// ---------- PESQUISA ----------
 
-int menu_pesquisar_fantasia(char fantasia_pesquisar[]) {
-    FILE *busca = fopen("Fantasias/fantasias.txt", "r");
+void menu_pesquisar_fantasia() {
+    char nome_procurar[50];
     int encontrado = 0;
-    char nome_temp[50], tamanho_temp[20], cor_temp[20];
 
-    if (busca == NULL) {
-        printf("Erro ao abrir arquivo fantasias\n");
-        return 0;
-    }
+    system(CLEAR_SCREEN);
+    printf("Digite o nome da fantasia que deseja pesquisar: ");
+    scanf(" %49[^\n]", nome_procurar);
+    limpar_buffer();
 
-    while (fscanf(busca, " %49[^,], %19[^,], %19[^\n]\n", nome_temp, tamanho_temp, cor_temp) == 3) {
-        if (strcmp(fantasia_pesquisar, nome_temp) == 0) {
+    for (int i = 0; i < num_fantasias; i++) {
+        if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 1) {
+            system(CLEAR_SCREEN);
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                               Fantasia Encontrada                               ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+            printf("Nome: %s\n", fantasias[i].nome);
+            printf("Tamanho: %s\n", fantasias[i].tamanho);
+            printf("Cor: %s\n", fantasias[i].cor);
             encontrado = 1;
-            strcpy(nome_fantasia, nome_temp);
-            strcpy(tamanho, tamanho_temp);
-            strcpy(cor, cor_temp);
             break;
         }
     }
 
-    fclose(busca);
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                                   Fantasia Pesquisada                           ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-        printf("Nome: %s\n", nome_fantasia);
-        printf("Tamanho: %s\n", tamanho);
-        printf("Cor: %s\n", cor);
-        return 1;
-    } else {
-        printf("Nome pesquisado: %s\n", fantasia_pesquisar);
-        printf("\nNão há nenhuma fantasia com esse nome.\n");
-        return 0;
+    if (!encontrado) {
+        printf("\nNenhuma fantasia ativa encontrada com este nome.\n");
     }
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
 }
 
+// ---------- ALTERAR ----------
 
-void menu_cadastro_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
-    system("clear||cls");
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                   Cadastro Fantasia                             ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Digite o nome da fantasia: ");
-    scanf(" %[^\n]", nome_fantasia);
-    limpar_buffer();
+void menu_alterar_fantasia() {
+    char nome_procurar[50];
+    int idx = -1;
 
-    printf("Digite o tamanho: ");
-    scanf(" %[^\n]", tamanho);
-    limpar_buffer();
-
-    printf("Digite a cor: ");
-    scanf(" %[^\n]", cor);
-    limpar_buffer();
-
-    cad_fantasia(nome_fantasia, tamanho, cor);
-
-    printf("\nCadastro realizado!\n");
-    sleep(1);
-}
-
-void menu_alterar_fantasia(char nome_fantasia[], char tamanho[], char cor[]) {
-    char fantasia_pesquisar[50];
-    FILE *busca = fopen("Fantasias/fantasias.txt", "r");
-    FILE *alterar = fopen("Fantasias/alterar.txt", "w");
-    int encontrado = 0;
-
-    if (busca == NULL || alterar == NULL) {
-        printf("Erro ao abrir o arquivo de fantasias!\n");
-        return;
-    }
-
-    system("clear||cls");
+    system(CLEAR_SCREEN);
     printf("Digite o nome da fantasia que deseja alterar: ");
-    scanf(" %[^\n]", fantasia_pesquisar);
+    scanf(" %49[^\n]", nome_procurar);
     limpar_buffer();
 
-    while (fscanf(busca, " %49[^,], %19[^,], %19[^\n]\n", nome_fantasia, tamanho, cor) == 3) {
-        if (strcmp(fantasia_pesquisar, nome_fantasia) == 0) {
-            system("clear||cls");
-            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-            printf("║                                 Alterar Fantasia                                ║\n");
-            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-            printf("Fantasia encontrada!\n\n");
-            printf("Nome atual: %s\n", nome_fantasia);
-            printf("Tamanho atual: %s\n", tamanho);
-            printf("Cor atual: %s\n\n", cor);
-
-            printf("Digite o novo nome da fantasia: ");
-            scanf(" %[^\n]", nome_fantasia);
-            limpar_buffer();
-
-            printf("Digite o novo tamanho: ");
-            scanf(" %[^\n]", tamanho);
-            limpar_buffer();
-
-            printf("Digite a nova cor: ");
-            scanf(" %[^\n]", cor);
-            limpar_buffer();
-
-            fprintf(alterar, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
-            encontrado = 1;
-        } else {
-            fprintf(alterar, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
+    for (int i = 0; i < num_fantasias; i++) {
+        if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 1) {
+            idx = i;
+            break;
         }
     }
 
-    fclose(busca);
-    fclose(alterar);
-
-    remove("Fantasias/fantasias.txt");
-    rename("Fantasias/alterar.txt", "Fantasias/fantasias.txt");
-
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                         Fantasia alterada com sucesso!                          ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    } else {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                        Nenhuma fantasia encontrada!                             ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    }
-
-    sleep(1);
-}
-
-void menu_deletar_fantasia(char fantasia_pesquisar[]) {
-    FILE *busca = fopen("Fantasias/fantasias.txt", "r");
-    FILE *excluir = fopen("Fantasias/alterar.txt", "w");
-    int encontrado = 0;
-
-    if (busca == NULL || excluir == NULL) {
-        printf("Erro ao abrir arquivo de fantasias!\n");
+    if (idx == -1) {
+        printf("\nNenhuma fantasia ativa encontrada com este nome.\n");
+        SLEEP(1);
         return;
     }
 
-    while (fscanf(busca, " %49[^,], %9[^,], %19[^\n]\n", nome_fantasia, tamanho, cor) == 3) {
-        if (strcmp(fantasia_pesquisar, nome_fantasia) != 0) {
-            fprintf(excluir, "%s, %s, %s\n", nome_fantasia, tamanho, cor);
-        } else {
-            encontrado = 1;
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                               Alterar Fantasia                                  ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    printf("Nome atual: %s\n", fantasias[idx].nome);
+    printf("Tamanho atual: %s\n", fantasias[idx].tamanho);
+    printf("Cor atual: %s\n\n", fantasias[idx].cor);
+
+    char novo_nome[50], novo_tamanho[10], nova_cor[20];
+    printf("Digite o novo nome (Enter para manter): ");
+    scanf(" %49[^\n]", novo_nome);
+    limpar_buffer();
+    printf("Digite o novo tamanho (Enter para manter): ");
+    scanf(" %9[^\n]", novo_tamanho);
+    limpar_buffer();
+    printf("Digite a nova cor (Enter para manter): ");
+    scanf(" %19[^\n]", nova_cor);
+    limpar_buffer();
+
+    if (strlen(novo_nome) > 0) strcpy(fantasias[idx].nome, novo_nome);
+    if (strlen(novo_tamanho) > 0) strcpy(fantasias[idx].tamanho, novo_tamanho);
+    if (strlen(nova_cor) > 0) strcpy(fantasias[idx].cor, nova_cor);
+
+    salvar_fantasias_binario();
+    printf("\nFantasia alterada com sucesso!\n");
+    SLEEP(1);
+}
+
+// ---------- EXCLUIR LOGICO ----------
+
+void menu_excluir_fantasia() {
+    char nome_procurar[50];
+    int idx = -1;
+
+    system(CLEAR_SCREEN);
+    printf("Digite o nome da fantasia que deseja excluir: ");
+    scanf(" %49[^\n]", nome_procurar);
+    limpar_buffer();
+
+    for (int i = 0; i < num_fantasias; i++) {
+        if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 1) {
+            idx = i;
+            break;
         }
     }
 
-    fclose(busca);
-    fclose(excluir);
-
-    remove("Fantasias/fantasias.txt");
-    rename("Fantasias/alterar.txt", "Fantasias/fantasias.txt");
-
-    system("clear||cls");
-
-    if (encontrado) {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                           Fantasia excluída com sucesso!                        ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    } else {
-        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                         Nenhuma fantasia encontrada!                            ║\n");
-        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    if (idx == -1) {
+        printf("\nNenhuma fantasia ativa encontrada com este nome.\n");
+        SLEEP(1);
+        return;
     }
 
-    nome_fantasia[0] = '\0';
-    tamanho[0] = '\0';
-    cor[0] = '\0';
+    fantasias[idx].ativo = 0;
+    salvar_fantasias_binario();
 
-    sleep(1);
+    printf("Fantasia excluida (logicamente) com sucesso! Esta na lixeira.\n");
+    SLEEP(1);
 }
 
-void modulo_fantasia(void) {
-    char op;
-    char nome_procurar[50] = "";
-    char op_delete = '2';
-    int cliente_achado;
+// ---------- LISTAR LIXEIRA ----------
 
+void menu_listar_lixeira_fantasias() {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                               Lixeira de Fantasias                              ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    int encontrados = 0;
+    for (int i = 0; i < num_fantasias; i++) {
+        if (fantasias[i].ativo == 0) {
+            printf("Nome: %s\n", fantasias[i].nome);
+            printf("Tamanho: %s\n", fantasias[i].tamanho);
+            printf("Cor: %s\n", fantasias[i].cor);
+            printf("---------------------------------------------------\n");
+            encontrados++;
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("\nNenhuma fantasia excluida na lixeira.\n");
+    }
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+// ---------- RECUPERAR ----------
+
+void menu_recuperar_fantasia() {
+    char nome_procurar[50];
+    int idx = -1;
+
+    system(CLEAR_SCREEN);
+    printf("Digite o nome da fantasia que deseja recuperar: ");
+    scanf(" %49[^\n]", nome_procurar);
+    limpar_buffer();
+
+    for (int i = 0; i < num_fantasias; i++) {
+        if (strcmp(nome_procurar, fantasias[i].nome) == 0) {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx == -1) {
+        printf("Nenhuma fantasia encontrada com este nome.\n");
+        SLEEP(1);
+        return;
+    }
+
+    if (fantasias[idx].ativo == 1) {
+        printf("Esta fantasia ja esta ativa!\n");
+    } else {
+        fantasias[idx].ativo = 1;
+        salvar_fantasias_binario();
+        printf("Fantasia recuperada com sucesso!\n");
+    }
+    SLEEP(1);
+}
+
+// ---------- EXCLUSAO FISICA ----------
+
+void menu_excluir_fisico_fantasias() {
+    char confirmacao[5];
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                            EXCLUSAO FISICA TOTAL                                ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("\nDigite 'SIM' para confirmar: ");
+    scanf(" %4[^\n]", confirmacao);
+    limpar_buffer();
+
+    if (strcmp(confirmacao, "SIM") == 0) {
+        liberar_memoria_fantasias();
+        salvar_fantasias_binario();
+        printf("Todos os dados de fantasias foram excluidos fisicamente.\n");
+    } else {
+        printf("Operacao cancelada.\n");
+    }
+    SLEEP(2);
+}
+
+// ---------- MÓDULO PRINCIPAL ----------
+
+void gerenciar_fantasias() {
+    carregar_fantasias_binario();
+    char op;
     do {
         op = menu_fantasia();
         switch(op) {
             case '1':
-                printf("\nDigite o nome da fantasia que deseja pesquisar: ");
-                scanf("%[^\n]", nome_procurar);
-                menu_pesquisar_fantasia(nome_procurar);
-                getchar();
-                printf("\nPressione Enter para voltar...\n");
-                limpar_buffer();                
+                menu_pesquisar_fantasia();
                 break;
             case '2':
-                menu_cadastro_fantasia(nome_fantasia, tamanho, cor);
+                menu_cadastro_fantasia();
                 break;
             case '3':
-                menu_alterar_fantasia(nome_fantasia, tamanho, cor);
+                menu_alterar_fantasia();
                 break;
             case '4':
-                system("clear||cls");
-                printf("\nDigite o nome da fantasia que deseja pesquisar: ");
-                scanf("%[^\n]", nome_procurar);
-                cliente_achado = menu_pesquisar_fantasia(nome_procurar);
-                getchar();
-                if (cliente_achado == 1)
-                {
-                    limpar_buffer();
-                    printf("\nDeseja excluir essa fantasia?\n");
-                    printf("1 - Sim\n");
-                    printf("2 - Nao\n");
-                    op_delete = getchar();
-                    limpar_buffer();
-                    switch (op_delete){
-                    case '1':
-                        menu_deletar_fantasia(nome_procurar);
-                        system("clear||cls");
-                        printf("Fantasia excluida com sucesso!\n");
-                        sleep(1);
-                        break;
-                    
-                    case '2':
-                        printf("Abortando exclusao...\n");
-                        sleep(1);
-                        break;
-                    
-                    default:
-                        printf("Opção inválida!\n");
-                        sleep(1);
-                        break;
-                    }
-                    sleep(1);   
-                }
-                else
-                {
-                    sleep(1);
-                }
-                
+                menu_excluir_fantasia();
                 break;
             case '5':
+                menu_listar_lixeira_fantasias();
+                break;
+            case '6':
+                menu_recuperar_fantasia();
+                break;
+            case '7':
+                menu_excluir_fisico_fantasias();
+                break;
+            case '0':
                 printf("Voltando ao menu principal...\n");
-                sleep(1);
+                SLEEP(1);
                 break;
             default:
-                printf("Opção inválida!\n");
-                sleep(1);
+                printf("Opcao invalida! Tente novamente.\n");
+                SLEEP(1);
         }
-    } while(op != '5');
+    } while(op != '0');
+    liberar_memoria_fantasias();
 }

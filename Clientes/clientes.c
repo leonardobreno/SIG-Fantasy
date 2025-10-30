@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "clientes.h"
+#include "../Utilidades/utilidades.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -16,19 +17,6 @@
 Cliente* clientes = NULL;
 int num_clientes = 0;
 int capacidade_clientes = 0;
-
-void salvar_clientes_binario();
-void carregar_clientes_binario();
-void liberar_memoria_clientes();
-void menu_cadastro_cliente();
-void menu_pesquisar_cliente();
-void menu_alterar_cliente();
-void menu_excluir_logico_cliente();
-void menu_listar_excluidos();
-void menu_recuperar_cliente();
-void menu_excluir_fisico_clientes();
-char menu_cliente(void);
-void limpar_buffer();
 
 void gerenciar_clientes(void) {
     carregar_clientes_binario();
@@ -114,7 +102,7 @@ void liberar_memoria_clientes() {
 void menu_cadastro_cliente() {
     system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                    Cadastro Cliente                               ║\n");
+    printf("║                                    Cadastro Cliente                             ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
     Cliente novo_cliente;
@@ -212,7 +200,7 @@ void menu_alterar_cliente() {
     if (encontrado_idx != -1) {
         system(CLEAR_SCREEN);
         printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-        printf("║                                    Alterar Cliente                                ║\n");
+        printf("║                                    Alterar Cliente                              ║\n");
         printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
         printf("Cliente encontrado! (Deixe em branco e pressione Enter para nao alterar)\n\n");
         
@@ -363,24 +351,19 @@ char menu_cliente(void) {
     char op;
     system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                                    Modulo Clientes                                  ║\n");
+    printf("║                                    Modulo Clientes                              ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                                  -> 1 • Pesquisar cliente                           ║\n");
-    printf("║                                  -> 2 • Cadastrar cliente                           ║\n");
-    printf("║                                  -> 3 • Alterar cliente                             ║\n");
-    printf("║                                  -> 4 • Deletar cliente (Lixeira)                   ║\n");
-    printf("║                                  -> 5 • Listar Lixeira                              ║\n");
-    printf("║                                  -> 6 • Recuperar cliente                           ║\n");
-    printf("║                                  -> 7 • Excluir TODOS (Fisico)                      ║\n");
-    printf("║                                  -> 0 • Voltar                                      ║\n");
+    printf("║                                  -> 1 • Pesquisar cliente                       ║\n");
+    printf("║                                  -> 2 • Cadastrar cliente                       ║\n");
+    printf("║                                  -> 3 • Alterar cliente                         ║\n");
+    printf("║                                  -> 4 • Deletar cliente (Lixeira)               ║\n");
+    printf("║                                  -> 5 • Listar Lixeira                          ║\n");
+    printf("║                                  -> 6 • Recuperar cliente                       ║\n");
+    printf("║                                  -> 7 • Excluir TODOS (Fisico)                  ║\n");
+    printf("║                                  -> 0 • Voltar                                  ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opção: ");
     scanf(" %c", &op);
     limpar_buffer();
     return op;
-}
-
-void limpar_buffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
 }

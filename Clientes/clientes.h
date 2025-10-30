@@ -9,6 +9,18 @@ typedef struct {
     int ativo;
 } Cliente;
 
+// Funções do módulo clientes
 void gerenciar_clientes(void);
+void salvar_clientes_binario(void);
+void carregar_clientes_binario(void);
+void liberar_memoria_clientes(void);
+void menu_cadastro_cliente(void);
+void menu_pesquisar_cliente(void);
+void menu_alterar_cliente(void);
+void menu_excluir_logico_cliente(void);
+void menu_listar_excluidos(void);
+void menu_recuperar_cliente(void);
+void menu_excluir_fisico_clientes(void);
+char menu_cliente(void);
 
 #endif
