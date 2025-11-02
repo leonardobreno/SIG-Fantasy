@@ -1,3 +1,11 @@
+ifeq ($(OS),Windows_NT)
+	REMOVE = del /Q
+	EXE = projeto.exe
+else
+	REMOVE = rm -f
+	EXE = projeto
+endif
+
 all:
 	gcc -c -Wall Validacoes/validacoes.c
 	gcc -c -Wall Utilidades/utilidades.c
@@ -7,10 +15,10 @@ all:
 	gcc -c -Wall Pedidos/pedidos.c
 	gcc -c -Wall Informacoes/informacoes.c
 	gcc -c -Wall projeto.c
-	gcc -o projeto.exe *.o
+	gcc -o $(EXE) *.o
 
 run: all
-	./projeto.exe
+	./$(EXE)
 
 clean:
-	rm -f *.o
+	-$(REMOVE) *.o
