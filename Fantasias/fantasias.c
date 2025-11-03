@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../Utilidades/utilidades.h"
+#include "../Validacoes/validacoes.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -98,30 +99,74 @@ void menu_cadastro_fantasia() {
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
     Fantasia nova;
-    printf("Digite o nome da fantasia: ");
-    scanf(" %49[^\n]", nova.nome);
-    limpar_buffer();
-    printf("Digite o tamanho: ");
-    scanf(" %9[^\n]", nova.tamanho);
-    limpar_buffer();
-    printf("Digite a cor: ");
-    scanf(" %19[^\n]", nova.cor);
-    limpar_buffer();
+
+    // ===== Validação do nome =====
+    do {
+        printf("Digite o nome da fantasia: ");
+        scanf(" %49[^\n]", nova.nome);
+        limpar_buffer();
+
+        if (!validar_nome(nova.nome)) {
+            printf("\n⚠️  Nome inválido! Use apenas letras e espaços (até 50 caracteres).\n");
+            SLEEP(2);
+            system(CLEAR_SCREEN);
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                 Cadastro Fantasia                               ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        }
+    } while (!validar_nome(nova.nome));
+
+    // ===== Validação do tamanho =====
+    do {
+        printf("Digite o tamanho da fantasia: ");
+        scanf(" %9[^\n]", nova.tamanho);
+        limpar_buffer();
+
+        if (!validar_tamanho_fantasia(nova.tamanho)) {
+            printf("\n⚠️  Tamanho inválido! Use até 9 caracteres (ex: P, M, G, GG, 40, etc.).\n");
+            SLEEP(2);
+            system(CLEAR_SCREEN);
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                 Cadastro Fantasia                               ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+            printf("Nome: %s\n", nova.nome);
+        }
+    } while (!validar_tamanho_fantasia(nova.tamanho));
+
+    // ===== Validação da cor =====
+    do {
+        printf("Digite a cor da fantasia: ");
+        scanf(" %19[^\n]", nova.cor);
+        limpar_buffer();
+
+        if (!validar_cor_fantasia(nova.cor)) {
+            printf("\n⚠️  Cor inválida! Use apenas letras e hífen (até 19 caracteres).\n");
+            SLEEP(2);
+            system(CLEAR_SCREEN);
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                 Cadastro Fantasia                               ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+            printf("Nome: %s\nTamanho: %s\n", nova.nome, nova.tamanho);
+        }
+    } while (!validar_cor_fantasia(nova.cor));
+
     nova.ativo = 1;
 
+    // ===== Alocação dinâmica =====
     Fantasia* temp = realloc(fantasias, (num_fantasias + 1) * sizeof(Fantasia));
     if (!temp) {
         printf("Erro: Nao foi possivel alocar memoria!\n");
         SLEEP(2);
         return;
     }
+
     fantasias = temp;
     fantasias[num_fantasias] = nova;
     num_fantasias++;
     capacidade_fantasias++;
 
     salvar_fantasias_binario();
-    printf("\nCadastro realizado com sucesso!\n");
+    printf("\n✅ Cadastro realizado com sucesso!\n");
     SLEEP(1);
 }
 
@@ -132,9 +177,21 @@ void menu_pesquisar_fantasia() {
     int encontrado = 0;
 
     system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                 Pesquisar Fantasia                              ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
     printf("Digite o nome da fantasia que deseja pesquisar: ");
     scanf(" %49[^\n]", nome_procurar);
     limpar_buffer();
+
+    // 🔍 Validação do nome
+    if (!validar_nome(nome_procurar)) {
+        printf("\nERRO: Nome inválido! Use apenas letras e espaços (máx. 50 caracteres).\n");
+        printf("Pressione Enter para voltar...");
+        limpar_buffer();
+        return;
+    }
 
     for (int i = 0; i < num_fantasias; i++) {
         if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 1) {
@@ -153,9 +210,11 @@ void menu_pesquisar_fantasia() {
     if (!encontrado) {
         printf("\nNenhuma fantasia ativa encontrada com este nome.\n");
     }
+
     printf("\nPressione Enter para continuar...");
     limpar_buffer();
 }
+
 
 // ---------- ALTERAR ----------
 
@@ -164,9 +223,20 @@ void menu_alterar_fantasia() {
     int idx = -1;
 
     system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                               Alterar Fantasia                                  ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
     printf("Digite o nome da fantasia que deseja alterar: ");
     scanf(" %49[^\n]", nome_procurar);
     limpar_buffer();
+
+    // 🔍 Validação do nome digitado para busca
+    if (!validar_nome(nome_procurar)) {
+        printf("\nERRO: Nome inválido! Use apenas letras e espaços.\n");
+        SLEEP(2);
+        return;
+    }
 
     for (int i = 0; i < num_fantasias; i++) {
         if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 1) {
@@ -177,7 +247,7 @@ void menu_alterar_fantasia() {
 
     if (idx == -1) {
         printf("\nNenhuma fantasia ativa encontrada com este nome.\n");
-        SLEEP(1);
+        SLEEP(2);
         return;
     }
 
@@ -190,25 +260,51 @@ void menu_alterar_fantasia() {
     printf("Tamanho atual: %s\n", fantasias[idx].tamanho);
     printf("Cor atual: %s\n\n", fantasias[idx].cor);
 
-    char novo_nome[50], novo_tamanho[10], nova_cor[20];
-    printf("Digite o novo nome (Enter para manter): ");
-    scanf(" %49[^\n]", novo_nome);
-    limpar_buffer();
-    printf("Digite o novo tamanho (Enter para manter): ");
-    scanf(" %9[^\n]", novo_tamanho);
-    limpar_buffer();
-    printf("Digite a nova cor (Enter para manter): ");
-    scanf(" %19[^\n]", nova_cor);
-    limpar_buffer();
+    char novo_nome[50] = "", novo_tamanho[10] = "", nova_cor[20] = "";
 
-    if (strlen(novo_nome) > 0) strcpy(fantasias[idx].nome, novo_nome);
-    if (strlen(novo_tamanho) > 0) strcpy(fantasias[idx].tamanho, novo_tamanho);
-    if (strlen(nova_cor) > 0) strcpy(fantasias[idx].cor, nova_cor);
+    printf("Digite o novo nome (Enter para manter): ");
+    fgets(novo_nome, sizeof(novo_nome), stdin);
+    novo_nome[strcspn(novo_nome, "\n")] = '\0';  // remove \n
+
+    printf("Digite o novo tamanho (Enter para manter): ");
+    fgets(novo_tamanho, sizeof(novo_tamanho), stdin);
+    novo_tamanho[strcspn(novo_tamanho, "\n")] = '\0';
+
+    printf("Digite a nova cor (Enter para manter): ");
+    fgets(nova_cor, sizeof(nova_cor), stdin);
+    nova_cor[strcspn(nova_cor, "\n")] = '\0';
+
+    // 🔍 Validações apenas se o usuário digitar algo
+    if (strlen(novo_nome) > 0) {
+        if (!validar_nome(novo_nome)) {
+            printf("\nERRO: Nome inválido! A alteração foi cancelada.\n");
+            SLEEP(2);
+            return;
+        }
+        strcpy(fantasias[idx].nome, novo_nome);
+    }
+
+   if (!validar_tamanho_fantasia(novo_tamanho)) {
+    printf("\nERRO: Tamanho inválido! Use apenas letras, números e espaços.\n");
+    SLEEP(2);
+    return;
+}
+
+
+    if (strlen(nova_cor) > 0) {
+        if (!validar_nome(nova_cor)) {
+            printf("\nERRO: Cor inválida! Use apenas letras e espaços.\n");
+            SLEEP(2);
+            return;
+        }
+        strcpy(fantasias[idx].cor, nova_cor);
+    }
 
     salvar_fantasias_binario();
     printf("\nFantasia alterada com sucesso!\n");
     SLEEP(1);
 }
+
 
 // ---------- EXCLUIR LOGICO ----------
 
@@ -217,9 +313,20 @@ void menu_excluir_fantasia() {
     int idx = -1;
 
     system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                             Exclusão Lógica Fantasia                             ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
     printf("Digite o nome da fantasia que deseja excluir: ");
-    scanf(" %49[^\n]", nome_procurar);
-    limpar_buffer();
+    fgets(nome_procurar, sizeof(nome_procurar), stdin);
+    nome_procurar[strcspn(nome_procurar, "\n")] = '\0'; // remove \n
+
+    // 🔍 Validação do nome
+    if (!validar_nome(nome_procurar)) {
+        printf("\nERRO: Nome inválido! A exclusão foi cancelada.\n");
+        SLEEP(2);
+        return;
+    }
 
     for (int i = 0; i < num_fantasias; i++) {
         if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 1) {
@@ -230,16 +337,30 @@ void menu_excluir_fantasia() {
 
     if (idx == -1) {
         printf("\nNenhuma fantasia ativa encontrada com este nome.\n");
+        SLEEP(2);
+        return;
+    }
+
+    // 🔹 Confirmação do usuário
+    char confirmacao[5];
+    printf("\nTem certeza que deseja excluir a fantasia '%s'? (SIM/NAO): ", fantasias[idx].nome);
+    fgets(confirmacao, sizeof(confirmacao), stdin);
+    confirmacao[strcspn(confirmacao, "\n")] = '\0';
+
+    if (strcmp(confirmacao, "SIM") != 0) {
+        printf("Operação cancelada.\n");
         SLEEP(1);
         return;
     }
 
+    // 🔹 Exclusão lógica
     fantasias[idx].ativo = 0;
     salvar_fantasias_binario();
 
-    printf("Fantasia excluida (logicamente) com sucesso! Esta na lixeira.\n");
-    SLEEP(1);
+    printf("Fantasia excluída (logicamente) com sucesso! Está na lixeira.\n");
+    SLEEP(2);
 }
+
 
 // ---------- LISTAR LIXEIRA ----------
 
@@ -261,45 +382,72 @@ void menu_listar_lixeira_fantasias() {
     }
 
     if (encontrados == 0) {
-        printf("\nNenhuma fantasia excluida na lixeira.\n");
+        printf("\nNenhuma fantasia excluída na lixeira.\n");
+    } else {
+        printf("\nTotal de fantasias excluídas: %d\n", encontrados);
     }
+
     printf("\nPressione Enter para continuar...");
     limpar_buffer();
 }
 
+
 // ---------- RECUPERAR ----------
 
 void menu_recuperar_fantasia() {
-    char nome_procurar[50];
-    int idx = -1;
+char nome_procurar[50];
+int idx = -1;
 
-    system(CLEAR_SCREEN);
-    printf("Digite o nome da fantasia que deseja recuperar: ");
-    scanf(" %49[^\n]", nome_procurar);
-    limpar_buffer();
+system(CLEAR_SCREEN);
+printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+printf("║                             Recuperar Fantasia                                   ║\n");
+printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
-    for (int i = 0; i < num_fantasias; i++) {
-        if (strcmp(nome_procurar, fantasias[i].nome) == 0) {
-            idx = i;
-            break;
-        }
-    }
+printf("Digite o nome da fantasia que deseja recuperar: ");
+fgets(nome_procurar, sizeof(nome_procurar), stdin);
+nome_procurar[strcspn(nome_procurar, "\n")] = '\0'; // remove \n
 
-    if (idx == -1) {
-        printf("Nenhuma fantasia encontrada com este nome.\n");
-        SLEEP(1);
-        return;
-    }
-
-    if (fantasias[idx].ativo == 1) {
-        printf("Esta fantasia ja esta ativa!\n");
-    } else {
-        fantasias[idx].ativo = 1;
-        salvar_fantasias_binario();
-        printf("Fantasia recuperada com sucesso!\n");
-    }
-    SLEEP(1);
+// 🔍 Validação do nome
+if (!validar_nome(nome_procurar)) {
+    printf("\nERRO: Nome inválido! A recuperação foi cancelada.\n");
+    SLEEP(2);
+    return;
 }
+
+for (int i = 0; i < num_fantasias; i++) {
+    if (strcmp(nome_procurar, fantasias[i].nome) == 0 && fantasias[i].ativo == 0) {
+        idx = i;
+        break;
+    }
+}
+
+if (idx == -1) {
+    printf("\nNenhuma fantasia encontrada na lixeira com este nome.\n");
+    SLEEP(2);
+    return;
+}
+
+// 🔹 Confirmação do usuário
+char confirmacao[5];
+printf("\nTem certeza que deseja recuperar a fantasia '%s'? (SIM/NAO): ", fantasias[idx].nome);
+fgets(confirmacao, sizeof(confirmacao), stdin);
+confirmacao[strcspn(confirmacao, "\n")] = '\0';
+
+if (strcmp(confirmacao, "SIM") != 0) {
+    printf("Operação cancelada.\n");
+    SLEEP(1);
+    return;
+}
+
+// 🔹 Recuperação lógica
+fantasias[idx].ativo = 1;
+salvar_fantasias_binario();
+
+printf("Fantasia recuperada com sucesso!\n");
+SLEEP(2);
+
+}
+
 
 // ---------- EXCLUSAO FISICA ----------
 
@@ -310,8 +458,8 @@ void menu_excluir_fisico_fantasias() {
     printf("║                            EXCLUSAO FISICA TOTAL                                ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nDigite 'SIM' para confirmar: ");
-    scanf(" %4[^\n]", confirmacao);
-    limpar_buffer();
+    fgets(confirmacao, sizeof(confirmacao), stdin);
+    confirmacao[strcspn(confirmacao, "\n")] = '\0'; // remove \n
 
     if (strcmp(confirmacao, "SIM") == 0) {
         liberar_memoria_fantasias();
@@ -322,6 +470,7 @@ void menu_excluir_fisico_fantasias() {
     }
     SLEEP(2);
 }
+
 
 // ---------- MÓDULO PRINCIPAL ----------
 
