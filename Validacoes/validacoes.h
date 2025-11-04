@@ -11,5 +11,9 @@ int validar_tamanho_fantasia(char *tamanho);
 int validar_cor_fantasia(char *cor);
 int validar_preco(float preco);
 int valida_data(char *data);
+int validar_texto_geral(char *texto, int max_tamanho);
+int validar_data(char *data);
+int validar_id_numerico_string(char *id);
+
 
 #endif

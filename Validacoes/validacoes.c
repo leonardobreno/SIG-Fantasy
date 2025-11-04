@@ -309,3 +309,38 @@ int valida_data(char *data){
   
   return 1; 
 }
+
+int validar_texto_geral(char *texto, int max_tamanho) {
+    int tamanho = strlen(texto);
+    int so_espaco = 1;
+
+    if (tamanho == 0 || tamanho > max_tamanho)
+        return 0;
+
+    for (int i = 0; i < tamanho; i++) {
+        unsigned char c = texto[i];
+        if (!isalpha(c) && !isdigit(c) && !isspace(c))
+            return 0;
+        if (!isspace(c))
+            so_espaco = 0;
+    }
+
+    return !so_espaco;
+}
+
+int validar_data(char *data) {
+    return valida_data(data); // apenas chama sua função existente
+}
+
+int validar_id_numerico_string(char *id) {
+    int tamanho = strlen(id);
+    if (tamanho == 0 || tamanho > 10)
+        return 0;
+
+    for (int i = 0; i < tamanho; i++) {
+        if (!isdigit(id[i]))
+            return 0;
+    }
+
+    return 1;
+}
