@@ -6,6 +6,9 @@
     // Funções do Linux/Unix
 #include <string.h>  
     // Manipulação de strings
+#include <locale.h>    
+    // Configuração regional para suporte a acentuação
+
 #include "Clientes/clientes.h"
 #include "Utilidades/utilidades.h"
 #include "Informacoes/informacoes.h"
@@ -16,6 +19,7 @@
 #include "Pedidos/pedidos.h"
 
 int main(void) {
+    setlocale(LC_ALL, "Portuguese");
     char opc;
     do {
         opc = menu_principal();
