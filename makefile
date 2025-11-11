@@ -6,19 +6,16 @@ else
     EXE = projeto
 endif
 
-
-CFLAGS = -Wall -finput-charset=UTF-8 -fexec-charset=UTF-8
-
 all:
-    gcc -c $(CFLAGS) Validacoes/validacoes.c
-    gcc -c $(CFLAGS) Utilidades/utilidades.c
-    gcc -c $(CFLAGS) Clientes/clientes.c
-    gcc -c $(CFLAGS) Fantasias/fantasias.c
-    gcc -c $(CFLAGS) Funcionarios/funcionarios.c
-    gcc -c $(CFLAGS) Pedidos/pedidos.c
-    gcc -c $(CFLAGS) Informacoes/informacoes.c
-    gcc -c $(CFLAGS) projeto.c
-    gcc -o $(EXE) *.o $(CFLAGS)
+    gcc -c -Wall Validacoes/validacoes.c
+    gcc -c -Wall Utilidades/utilidades.c
+    gcc -c -Wall Clientes/clientes.c
+    gcc -c -Wall Fantasias/fantasias.c
+    gcc -c -Wall Funcionarios/funcionarios.c
+    gcc -c -Wall Pedidos/pedidos.c
+    gcc -c -Wall Informacoes/informacoes.c
+    gcc -c -Wall projeto.c
+    gcc -o $(EXE) *.o
 
 run: all
     ./$(EXE)
