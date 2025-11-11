@@ -21,3 +21,6 @@ pedro.araujo.716@ufrn.edu.br
 
 Thiago Gomes de Oliveira
 thiago.oliveira.712@ufrn.edu.br
+
+Maria Luíza Severo Lima
+maria.severo.063@ufrn.edu.br
