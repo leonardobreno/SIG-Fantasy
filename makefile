@@ -14,6 +14,7 @@ all:
 	gcc -c -Wall Funcionarios/funcionarios.c
 	gcc -c -Wall Pedidos/pedidos.c
 	gcc -c -Wall Informacoes/informacoes.c
+	gcc -c -Wall Relatorios/relatorios.c
 	gcc -c -Wall projeto.c
 	gcc -o $(EXE) *.o
 

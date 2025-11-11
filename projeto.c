@@ -15,6 +15,7 @@
 #include "Fantasias/fantasias.h"
 #include "Clientes/clientes.h"
 #include "Pedidos/pedidos.h"
+#include "Relatorios/relatorios.h"
 
 int main(void) {
     char opc;
@@ -37,9 +38,7 @@ int main(void) {
                 modulo_informacoes();
                 break;
             case '6':
-                printf("\nModulo em processo de criacao.");
-                printf("\nVoltando ao menu...");
-                sleep(2);
+                modulo_relatorios();
                 break;
             case '0':
                 opc = saida_programa();
