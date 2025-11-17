@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../Fantasias/fantasias.h"
-#include "../Funcionarios/funcionarios.h"
-#include "../Pedidos/pedidos.h"
-#include "../Clientes/clientes.h" 
+#include "clientes.h"
 #include "../Utilidades/utilidades.h"
+#include "../Validacoes/validacoes.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -17,230 +15,435 @@
     #define CLEAR_SCREEN "clear"
 #endif
 
-// ----- Variáveis e Funções Externas (Fantasias) -----
-extern Fantasia* fantasias;
-extern int num_fantasias;
-extern void carregar_fantasias_binario(void);
-extern void liberar_memoria_fantasias(void);
+Cliente* clientes = NULL;
+int num_clientes = 0;
+int capacidade_clientes = 0;
 
-// ----- Variáveis e Funções Externas (Funcionários) -----
-extern Funcionario* funcionarios;
-extern int num_funcionarios;     
-extern void carregar_funcionarios_binario(void);
-extern void liberar_memoria_funcionarios(void);
-
-// ----- Variáveis e Funções Externas (Pedidos) -----
-extern Pedido* pedidos;
-extern int num_pedidos;
-extern void carregar_pedidos_binario(void);
-extern void liberar_memoria_pedidos(void);
-
-// ----- Variáveis e Funções Externas (Clientes) -----
-extern Cliente* clientes;
-extern int num_clientes;
-extern void carregar_clientes_binario(void);
-extern void liberar_memoria_clientes(void);
-
-
-// ---------- MENU DE RELATÓRIOS ----------
-
-char menu_relatorios(void) {
-    char op;
-    system(CLEAR_SCREEN);
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                              📁 Modulo Relatórios                               ║\n");
-    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                              -> 1 • Fantasias Ativas                            ║\n");
-    printf("║                              -> 2 • Funcionários Ativos                         ║\n");
-    printf("║                              -> 3 • Pedidos Ativos                              ║\n");
-    printf("║                              -> 4 • Clientes Ativos                             ║\n");
-    printf("║                              -> 0 • Voltar                                      ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-    printf("Escolha uma opcao: ");
-    scanf(" %c", &op);
-    limpar_buffer();
-    return op;
-}
-
-// ---------- RELATÓRIO DE FANTASIAS ATIVAS (Listagem) ----------
-
-void relatorio_fantasias_ativas(void) {
-    system(CLEAR_SCREEN);
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                          Relatório de Fantasias Ativas                          ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-    carregar_fantasias_binario(); 
-    
-    int ativos = 0;
-
-    printf("\n%-45s %-10s %-20s\n", "NOME", "TAMANHO", "COR");
-    printf("-------------------------------------------------------------------------------\n");
-
-    for (int i = 0; i < num_fantasias; i++) {
-        if (fantasias[i].ativo == 1) {
-            printf("%-45s %-10s %-20s\n", 
-                   fantasias[i].nome, 
-                   fantasias[i].tamanho, 
-                   fantasias[i].cor);
-            ativos++;
-        }
-    }
-
-    if (ativos == 0) {
-        printf("\nNenhuma fantasia ativa encontrada.\n");
-    } else {
-        printf("\nTotal de fantasias ativas listadas: %d\n", ativos);
-    }
-
-    liberar_memoria_fantasias(); 
-
-    printf("\nPressione Enter para continuar...");
-    limpar_buffer();
-}
-
-// ---------- RELATÓRIO DE FUNCIONÁRIOS ATIVOS (Listagem) ----------
-
-void relatorio_funcionarios_ativos(void) {
-    system(CLEAR_SCREEN);
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                         Relatório de Funcionários Ativos                        ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-    carregar_funcionarios_binario(); 
-    
-    int ativos = 0;
-
-    printf("\n%-30s %-15s %-20s %-30s\n", "NOME", "CPF", "CELULAR", "EMAIL");
-    printf("-----------------------------------------------------------------------------------------------------------------\n");
-
-    for (int i = 0; i < num_funcionarios; i++) {
-        if (funcionarios[i].ativo == 1) {
-            printf("%-30s %-15s %-20s %-30s\n", 
-                   funcionarios[i].nome, 
-                   funcionarios[i].cpf, 
-                   funcionarios[i].celular, 
-                   funcionarios[i].email);
-            ativos++;
-        }
-    }
-
-    if (ativos == 0) {
-        printf("\nNenhum funcionário ativo encontrado.\n");
-    } else {
-        printf("\nTotal de funcionários ativos listados: %d\n", ativos);
-    }
-    
-    liberar_memoria_funcionarios(); 
-
-    printf("\nPressione Enter para continuar...");
-    limpar_buffer();
-}
-
-// ---------- RELATÓRIO DE PEDIDOS ATIVOS (Listagem) ----------
-
-void relatorio_pedidos_ativos(void) {
-    system(CLEAR_SCREEN);
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                           Relatório de Pedidos Ativos                           ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-    carregar_pedidos_binario(); 
-    
-    int ativos = 0;
-
-    printf("\n%-10s %-15s %-20s %-10s %-12s\n", "ID PEDIDO", "CPF CLIENTE", "FANTASIA", "PRECO", "DATA");
-    printf("-------------------------------------------------------------------------------\n");
-
-    for (int i = 0; i < num_pedidos; i++) {
-        if (pedidos[i].ativo == 1) {
-            printf("%-10lu %-15s %-20s R$%-8.2f %-12s\n", 
-                   pedidos[i].id_pedido, 
-                   pedidos[i].cpf_cliente,
-                   pedidos[i].id_fantasia,
-                   pedidos[i].preco,
-                   pedidos[i].data_pedido);
-            ativos++;
-        }
-    }
-
-    if (ativos == 0) {
-        printf("\nNenhum pedido ativo encontrado.\n");
-    } else {
-        printf("\nTotal de pedidos ativos listados: %d\n", ativos);
-    }
-    
-    liberar_memoria_pedidos(); 
-
-    printf("\nPressione Enter para continuar...");
-    limpar_buffer();
-}
-
-// ---------- RELATÓRIO DE CLIENTES ATIVOS (Listagem) ----------
-
-void relatorio_clientes_ativos(void) {
-    system(CLEAR_SCREEN);
-    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
-    printf("║                           Relatório de Clientes Ativos                          ║\n");
-    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
-
-    carregar_clientes_binario(); 
-    
-    int ativos = 0;
-
-    printf("\n%-30s %-15s %-20s %-30s\n", "NOME", "CPF", "CELULAR", "EMAIL");
-    printf("-----------------------------------------------------------------------------------------------------------------\n");
-
-    for (int i = 0; i < num_clientes; i++) {
-        if (clientes[i].ativo == 1) {
-            printf("%-30s %-15s %-20s %-30s\n", 
-                   clientes[i].nome, 
-                   clientes[i].cpf, 
-                   clientes[i].celular, 
-                   clientes[i].email);
-            ativos++;
-        }
-    }
-
-    if (ativos == 0) {
-        printf("\nNenhum cliente ativo encontrado.\n");
-    } else {
-        printf("\nTotal de clientes ativos listados: %d\n", ativos);
-    }
-    
-    liberar_memoria_clientes(); 
-
-    printf("\nPressione Enter para continuar...");
-    limpar_buffer();
-}
-
-
-// ---------- MÓDULO PRINCIPAL DE RELATÓRIOS ----------
-
-void modulo_relatorios() {
+void gerenciar_clientes(void) {
+    carregar_clientes_binario();
     char op;
     do {
-        op = menu_relatorios();
-        switch(op) {
+        op = menu_cliente();
+        switch (op) {
             case '1':
-                relatorio_fantasias_ativas();
+                menu_pesquisar_cliente();
                 break;
             case '2':
-                relatorio_funcionarios_ativos();
+                menu_cadastro_cliente();
                 break;
             case '3':
-                relatorio_pedidos_ativos();
+                menu_alterar_cliente();
                 break;
-            case '4': 
-                relatorio_clientes_ativos();
+            case '4':
+                menu_excluir_logico_cliente();
+                break;
+            case '5':
+                menu_listar_excluidos();
+                break;
+            case '6':
+                menu_recuperar_cliente();
+                break;
+            case '7':
+                menu_excluir_fisico_clientes();
                 break;
             case '0':
                 printf("Voltando ao menu principal...\n");
-                SLEEP(1);
                 break;
             default:
-                printf("Opcao invalida! Tente novamente.\n");
+                printf("Opção inválida! Tente novamente.\n");
                 SLEEP(1);
         }
-    } while(op != '0');
+    } while (op != '0');
+    liberar_memoria_clientes();
+}
+
+void salvar_clientes_binario() {
+    FILE* arquivo = fopen("Clientes/clientes.dat", "wb");
+    if (arquivo == NULL) {
+        printf("Erro fatal: Nao foi possivel abrir o arquivo para escrita!\n");
+        return;
+    }
+    fwrite(clientes, sizeof(Cliente), num_clientes, arquivo);
+    fclose(arquivo);
+}
+
+void carregar_clientes_binario() {
+    FILE* arquivo = fopen("Clientes/clientes.dat", "rb");
+    if (arquivo == NULL) {
+        printf("Arquivo de dados 'clientes.dat' nao encontrado. Iniciando com base de dados vazia.\n");
+        return;
+    }
+
+    fseek(arquivo, 0, SEEK_END);
+    long tamanho_arquivo = ftell(arquivo);
+    rewind(arquivo);
+
+    num_clientes = tamanho_arquivo / sizeof(Cliente);
+    capacidade_clientes = num_clientes;
+
+    clientes = (Cliente*) malloc(num_clientes * sizeof(Cliente));
+    if (clientes == NULL) {
+        printf("Erro fatal: Falha ao alocar memoria!\n");
+        fclose(arquivo);
+        return;
+    }
+    fread(clientes, sizeof(Cliente), num_clientes, arquivo);
+    fclose(arquivo);
+}
+
+void liberar_memoria_clientes() {
+    if (clientes != NULL) {
+        free(clientes);
+        clientes = NULL;
+        num_clientes = 0;
+        capacidade_clientes = 0;
+    }
+}
+
+void menu_cadastro_cliente() {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                 Cadastro Cliente                                ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    Cliente novo_cliente;
+
+    do {
+        printf("Digite o nome: ");
+        scanf(" %50[^\n]", novo_cliente.nome);
+        limpar_buffer();
+        if (!validar_nome(novo_cliente.nome)) {
+            printf("ERRO: Nome inválido! Use apenas letras e espaços (1-50 caracteres).\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+    do {
+        printf("Digite o CPF (11 números): ");
+        scanf(" %14[^\n]", novo_cliente.cpf);
+        limpar_buffer();
+
+        if (!validar_cpf(novo_cliente.cpf)) {
+            printf("ERRO: CPF inválido! Deve conter exatamente 11 números.\n");
+            continue;
+        }
+
+        int duplicado = 0;
+        for (int i = 0; i < num_clientes; i++) {
+            if (strcmp(novo_cliente.cpf, clientes[i].cpf) == 0) {
+                printf("\nERRO: Ja existe um cliente (ativo ou inativo) com este CPF!\n");
+                duplicado = 1;
+                break;
+            }
+        }
+        if (!duplicado) {
+            break;
+        }
+    } while (1);
+    
+    do {
+        printf("Digite o numero de celular (10 ou 11 números): ");
+        scanf(" %19[^\n]", novo_cliente.celular);
+        limpar_buffer();
+        if (!validar_celular(novo_cliente.celular)) {
+            printf("ERRO: Celular inválido! Use apenas números com 10 ou 11 dígitos.\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+    do {
+        printf("Digite o Email: ");
+        scanf(" %50[^\n]", novo_cliente.email);
+        limpar_buffer();
+        if (!validar_email(novo_cliente.email)) {
+            printf("ERRO: Email inválido! Verifique o formato (max 50 caracteres).\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+    novo_cliente.ativo = 1;
+
+    Cliente* temp = realloc(clientes, (num_clientes + 1) * sizeof(Cliente));
+    if (temp == NULL) {
+        printf("Erro: Nao foi possivel alocar memoria para o novo cliente!\n");
+        return;
+    }
+    clientes = temp;
+
+    clientes[num_clientes] = novo_cliente;
+    num_clientes++;
+    capacidade_clientes++;
+
+    salvar_clientes_binario();
+
+    printf("\nCadastro realizado com sucesso!\n");
+    SLEEP(1);
+}
+
+void menu_pesquisar_cliente() {
+    char cpf_procurar[15];
+    int encontrado = 0;
+
+    system(CLEAR_SCREEN);
+    
+    do {
+        printf("Digite o CPF do cliente que deseja pesquisar: ");
+        scanf(" %14[^\n]", cpf_procurar);
+        limpar_buffer();
+        if (!validar_cpf(cpf_procurar)) {
+            printf("ERRO: Formato de CPF inválido! Digite 11 números.\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0 && clientes[i].ativo == 1) {
+            system(CLEAR_SCREEN);
+            printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+            printf("║                                Cliente Encontrado                               ║\n");
+            printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+            printf("Nome: %s\n", clientes[i].nome);
+            printf("CPF: %s\n", clientes[i].cpf);
+            printf("Celular: %s\n", clientes[i].celular);
+            printf("Email: %s\n", clientes[i].email);
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("\nNenhum cliente *ativo* encontrado com o CPF: %s\n", cpf_procurar);
+    }
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+void menu_alterar_cliente() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
+
+    system(CLEAR_SCREEN);
+
+    do {
+        printf("Digite o CPF do cliente que deseja alterar: ");
+        scanf(" %14[^\n]", cpf_procurar);
+        limpar_buffer();
+        if (!validar_cpf(cpf_procurar)) {
+            printf("ERRO: Formato de CPF inválido! Digite 11 números.\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0 && clientes[i].ativo == 1) {
+            encontrado_idx = i;
+            break;
+        }
+    }
+
+    if (encontrado_idx != -1) {
+        system(CLEAR_SCREEN);
+        printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+        printf("║                                 Alterar Cliente                                 ║\n");
+        printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+        printf("Cliente encontrado! (Deixe em branco e pressione Enter para nao alterar)\n\n");
+        
+        printf("Nome: %s\n", clientes[encontrado_idx].nome);
+        printf("CPF: %s\n", clientes[encontrado_idx].cpf);
+
+        char novo_celular[20], novo_email[51];
+
+        do {
+            printf("Celular atual: %s\n", clientes[encontrado_idx].celular);
+            printf("Digite o novo celular: ");
+            scanf(" %19[^\n]", novo_celular);
+            limpar_buffer();
+            if (strlen(novo_celular) == 0) break;
+            if (!validar_celular(novo_celular)) {
+                printf("ERRO: Celular inválido! Tente novamente.\n");
+            } else {
+                strcpy(clientes[encontrado_idx].celular, novo_celular);
+                break;
+            }
+        } while (1);
+
+        do {
+            printf("Email atual: %s\n", clientes[encontrado_idx].email);
+            printf("Digite o novo email: ");
+            scanf(" %50[^\n]", novo_email);
+            limpar_buffer();
+            if (strlen(novo_email) == 0) break;
+            if (!validar_email(novo_email)) {
+                printf("ERRO: Email inválido! Tente novamente.\n");
+            } else {
+                strcpy(clientes[encontrado_idx].email, novo_email);
+                break;
+            }
+        } while (1);
+        
+        salvar_clientes_binario();
+        printf("\nCliente alterado com sucesso!\n");
+    } else {
+        printf("\nNenhum cliente *ativo* encontrado com o CPF: %s\n", cpf_procurar);
+    }
+    SLEEP(1);
+}
+
+void menu_excluir_logico_cliente() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
+
+    system(CLEAR_SCREEN);
+
+    do {
+        printf("Digite o CPF do cliente que deseja deletar (Exclusao Logica): ");
+        scanf(" %14[^\n]", cpf_procurar);
+        limpar_buffer();
+        if (!validar_cpf(cpf_procurar)) {
+            printf("ERRO: Formato de CPF inválido! Digite 11 números.\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0 && clientes[i].ativo == 1) {
+            encontrado_idx = i;
+            break;
+        }
+    }
+
+    if (encontrado_idx != -1) {
+        clientes[encontrado_idx].ativo = 0; 
+        
+        salvar_clientes_binario();
+        printf("Cliente excluido (logicamente) com sucesso! Ele esta na lixeira.\n");
+    } else {
+        printf("Nenhum cliente ativo encontrado com esse CPF!\n");
+    }
+    SLEEP(1);
+}
+
+void menu_listar_excluidos() {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                               Lixeira de Clientes                               ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    int encontrados = 0;
+    for (int i = 0; i < num_clientes; i++) {
+        if (clientes[i].ativo == 0) {
+            printf("Nome: %s\n", clientes[i].nome);
+            printf("CPF: %s\n", clientes[i].cpf);
+            printf("---------------------------------------------------\n");
+            encontrados++;
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("\nNenhum cliente excluido encontrado na lixeira.\n");
+    }
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+void menu_recuperar_cliente() {
+    char cpf_procurar[15];
+    int encontrado_idx = -1;
+
+    system(CLEAR_SCREEN);
+
+    do {
+        printf("Digite o CPF do cliente que deseja RECUPERAR da lixeira: ");
+        scanf(" %14[^\n]", cpf_procurar);
+        limpar_buffer();
+        if (!validar_cpf(cpf_procurar)) {
+            printf("ERRO: Formato de CPF inválido! Digite 11 números.\n");
+        } else {
+            break;
+        }
+    } while (1);
+
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (strcmp(cpf_procurar, clientes[i].cpf) == 0) {
+            encontrado_idx = i;
+            break;
+        }
+    }
+
+    if (encontrado_idx == -1) {
+        printf("Nenhum cliente (ativo ou inativo) encontrado com esse CPF!\n");
+    } else {
+        if (clientes[encontrado_idx].ativo == 1) {
+            printf("Este cliente ja esta ativo! Nao precisa recuperar.\n");
+        } else {
+            clientes[encontrado_idx].ativo = 1;
+            salvar_clientes_binario();
+            printf("Cliente recuperado com sucesso!\n");
+        }
+    }
+    SLEEP(1);
+}
+
+void menu_excluir_fisico_clientes() {
+    char confirmacao[5];
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                             EXCLUSAO FISICA TOTAL                               ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("\n!!! ATENCAO !!!\n");
+    printf("Isso apagara TODOS os dados de clientes do sistema, inclusive os da lixeira.\n");
+    printf("Esta acao NAO PODE ser desfeita.\n");
+    printf("O arquivo 'clientes.dat' sera esvaziado.\n\n");
+    printf("Digite 'SIM' (em maiusculas) para confirmar: ");
+    scanf(" %4[^\n]", confirmacao);
+    limpar_buffer();
+
+    if (strcmp(confirmacao, "SIM") == 0) {
+        
+        liberar_memoria_clientes(); 
+        
+        clientes = NULL;
+        num_clientes = 0;
+        capacidade_clientes = 0;
+
+        salvar_clientes_binario(); 
+
+        printf("SUCESSO: Todos os dados de clientes foram excluidos fisicamente.\n");
+    } else {
+        printf("Operacao cancelada.\n");
+    }
+    SLEEP(2);
+}
+
+
+char menu_cliente(void) {
+    char op;
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                                 Modulo Clientes                                 ║\n");
+    printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
+    printf("║                               -> 1 • Pesquisar cliente                          ║\n");
+    printf("║                               -> 2 • Cadastrar cliente                          ║\n");
+    printf("║                               -> 3 • Alterar cliente                            ║\n");
+    printf("║                               -> 4 • Deletar cliente (Lixeira)                    ║\n");
+    printf("║                               -> 5 • Listar Lixeira                             ║\n");
+    printf("║                               -> 6 • Recuperar cliente                          ║\n");
+    printf("║                               -> 7 • Excluir TODOS (Fisico)                     ║\n");
+    printf("║                               -> 0 • Voltar                                     ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Escolha uma opção: ");
+    scanf(" %c", &op);
+    limpar_buffer();
+    return op;
 }
