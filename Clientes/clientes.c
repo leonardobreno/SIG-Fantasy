@@ -3,6 +3,8 @@
 #include <string.h>
 #include "../Fantasias/fantasias.h"
 #include "../Funcionarios/funcionarios.h"
+#include "../Pedidos/pedidos.h"
+#include "../Clientes/clientes.h" 
 #include "../Utilidades/utilidades.h"
 
 #ifdef _WIN32
@@ -15,16 +17,29 @@
     #define CLEAR_SCREEN "clear"
 #endif
 
-// acess as variáveis e funções declaradas como extern em fantasias.h
+// ----- Variáveis e Funções Externas (Fantasias) -----
 extern Fantasia* fantasias;
 extern int num_fantasias;
 extern void carregar_fantasias_binario(void);
 extern void liberar_memoria_fantasias(void);
 
+// ----- Variáveis e Funções Externas (Funcionários) -----
 extern Funcionario* funcionarios;
 extern int num_funcionarios;     
 extern void carregar_funcionarios_binario(void);
 extern void liberar_memoria_funcionarios(void);
+
+// ----- Variáveis e Funções Externas (Pedidos) -----
+extern Pedido* pedidos;
+extern int num_pedidos;
+extern void carregar_pedidos_binario(void);
+extern void liberar_memoria_pedidos(void);
+
+// ----- Variáveis e Funções Externas (Clientes) -----
+extern Cliente* clientes;
+extern int num_clientes;
+extern void carregar_clientes_binario(void);
+extern void liberar_memoria_clientes(void);
 
 
 // ---------- MENU DE RELATÓRIOS ----------
@@ -37,6 +52,8 @@ char menu_relatorios(void) {
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
     printf("║                              -> 1 • Fantasias Ativas                            ║\n");
     printf("║                              -> 2 • Funcionários Ativos                         ║\n");
+    printf("║                              -> 3 • Pedidos Ativos                              ║\n");
+    printf("║                              -> 4 • Clientes Ativos                             ║\n");
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
@@ -82,30 +99,6 @@ void relatorio_fantasias_ativas(void) {
     limpar_buffer();
 }
 
-// ---------- MÓDULO PRINCIPAL DE RELATÓRIOS ----------
-
-void modulo_relatorios() {
-    char op;
-    do {
-        op = menu_relatorios();
-        switch(op) {
-            case '1':
-                relatorio_fantasias_ativas();
-                break;
-            case '2':
-                relatorio_funcionarios_ativos();
-                break;
-            case '0':
-                printf("Voltando ao menu principal...\n");
-                SLEEP(1);
-                break;
-            default:
-                printf("Opcao invalida! Tente novamente.\n");
-                SLEEP(1);
-        }
-    } while(op != '0');
-}
-
 // ---------- RELATÓRIO DE FUNCIONÁRIOS ATIVOS (Listagem) ----------
 
 void relatorio_funcionarios_ativos(void) {
@@ -114,12 +107,10 @@ void relatorio_funcionarios_ativos(void) {
     printf("║                         Relatório de Funcionários Ativos                        ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
 
-    // Garante que os dados estejam carregados na memória
     carregar_funcionarios_binario(); 
     
     int ativos = 0;
 
-    // Cabeçalho da tabela
     printf("\n%-30s %-15s %-20s %-30s\n", "NOME", "CPF", "CELULAR", "EMAIL");
     printf("-----------------------------------------------------------------------------------------------------------------\n");
 
@@ -140,9 +131,116 @@ void relatorio_funcionarios_ativos(void) {
         printf("\nTotal de funcionários ativos listados: %d\n", ativos);
     }
     
-    // Libera a memória para evitar vazamentos
     liberar_memoria_funcionarios(); 
 
     printf("\nPressione Enter para continuar...");
     limpar_buffer();
+}
+
+// ---------- RELATÓRIO DE PEDIDOS ATIVOS (Listagem) ----------
+
+void relatorio_pedidos_ativos(void) {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                           Relatório de Pedidos Ativos                           ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    carregar_pedidos_binario(); 
+    
+    int ativos = 0;
+
+    printf("\n%-10s %-15s %-20s %-10s %-12s\n", "ID PEDIDO", "CPF CLIENTE", "FANTASIA", "PRECO", "DATA");
+    printf("-------------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_pedidos; i++) {
+        if (pedidos[i].ativo == 1) {
+            printf("%-10lu %-15s %-20s R$%-8.2f %-12s\n", 
+                   pedidos[i].id_pedido, 
+                   pedidos[i].cpf_cliente,
+                   pedidos[i].id_fantasia,
+                   pedidos[i].preco,
+                   pedidos[i].data_pedido);
+            ativos++;
+        }
+    }
+
+    if (ativos == 0) {
+        printf("\nNenhum pedido ativo encontrado.\n");
+    } else {
+        printf("\nTotal de pedidos ativos listados: %d\n", ativos);
+    }
+    
+    liberar_memoria_pedidos(); 
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+// ---------- RELATÓRIO DE CLIENTES ATIVOS (Listagem) ----------
+
+void relatorio_clientes_ativos(void) {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                           Relatório de Clientes Ativos                          ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    carregar_clientes_binario(); 
+    
+    int ativos = 0;
+
+    printf("\n%-30s %-15s %-20s %-30s\n", "NOME", "CPF", "CELULAR", "EMAIL");
+    printf("-----------------------------------------------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (clientes[i].ativo == 1) {
+            printf("%-30s %-15s %-20s %-30s\n", 
+                   clientes[i].nome, 
+                   clientes[i].cpf, 
+                   clientes[i].celular, 
+                   clientes[i].email);
+            ativos++;
+        }
+    }
+
+    if (ativos == 0) {
+        printf("\nNenhum cliente ativo encontrado.\n");
+    } else {
+        printf("\nTotal de clientes ativos listados: %d\n", ativos);
+    }
+    
+    liberar_memoria_clientes(); 
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+
+// ---------- MÓDULO PRINCIPAL DE RELATÓRIOS ----------
+
+void modulo_relatorios() {
+    char op;
+    do {
+        op = menu_relatorios();
+        switch(op) {
+            case '1':
+                relatorio_fantasias_ativas();
+                break;
+            case '2':
+                relatorio_funcionarios_ativos();
+                break;
+            case '3':
+                relatorio_pedidos_ativos();
+                break;
+            case '4': 
+                relatorio_clientes_ativos();
+                break;
+            case '0':
+                printf("Voltando ao menu principal...\n");
+                SLEEP(1);
+                break;
+            default:
+                printf("Opcao invalida! Tente novamente.\n");
+                SLEEP(1);
+        }
+    } while(op != '0');
 }
