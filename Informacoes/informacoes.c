@@ -54,12 +54,18 @@ void menu_equipe(void) {
     printf("║                        Este projeto foi desenvolvido por:                       ║\n");
     printf("║                                 Leonardo Breno da Silva Santos,                 ║\n");
     printf("║                                 Pedro Lucas da Silva Araújo                     ║\n");
+    printf("║                                 Thiago Gomes de Oliveira                        ║\n");
+    printf("║                                 Maria Luíza Severo Lima                         ║\n");
     printf("║                                                                                 ║\n");
     printf("║                        E-mails: leonardodbreno@gmail.com,                       ║\n");
     printf("║                                 pedro.araujo.716@ufrn.edu.br                    ║\n");
+    printf("║                                 thiago.oliveira.712@ufrn.edu.br                 ║\n");
+    printf("║                                 maria.severo.063@ufrn.edu.br                    ║\n");
     printf("║                                                                                 ║\n");
     printf("║                        GitHub: https://github.com/leonardobreno                 ║\n");
     printf("║                                https://github.com/Pedro1349                     ║\n");
+    printf("║                            https://github.com/thiagogomes1805                   ║\n");
+    printf("║                               https://github.com/mluizasevero                   ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
     limpar_buffer();
