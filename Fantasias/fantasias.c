@@ -82,6 +82,7 @@ char menu_fantasia(void) {
     printf("║                               -> 5 • Listar lixeira                             ║\n");
     printf("║                               -> 6 • Recuperar fantasia                         ║\n");
     printf("║                               -> 7 • Excluir TODOS (Fisico)                     ║\n");
+    printf("║                               -> 8 • Gerar Relatórios (Filtro)                    ║\n");
     printf("║                               -> 0 • Voltar                                     ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
@@ -471,6 +472,55 @@ void menu_excluir_fisico_fantasias() {
     SLEEP(2);
 }
 
+void menu_relatorio_fantasias() {
+    char filtro_tamanho[10]; 
+    int encontrados = 0;
+
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                           Relatório de Fantasias                           ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Total de fantasias cadastradas: %d\n\n", num_fantasias);
+
+    printf("Digite o TAMANHO para filtrar (Ex: P, M, G, GG):\n"); // Aviso de entrada clara
+    printf("Opção especial: Digite 'todos' para listar todas (incl. inativas).\n");
+    printf(">>> Filtro por Tamanho: ");
+    scanf(" %9[^\n]", filtro_tamanho);
+    limpar_buffer();
+
+    printf("\n------------------------------------------------------------------------------------\n");
+    printf("| %-30s | %-10s | %-10s | %-10s |\n", "NOME DA FANTASIA", "TAMANHO", "COR", "STATUS");
+    printf("------------------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_fantasias; i++) {
+        int imprimir = 0;
+        
+
+        // 1. Filtro 'todos' (case sensitive: 'todos')
+        if (strcmp(filtro_tamanho, "todos") == 0) {
+            imprimir = 1;
+        } 
+        // 2. Filtro por Tamanho (P, M, G)
+        else if (strcmp(fantasias[i].tamanho, filtro_tamanho) == 0) {
+            imprimir = 1; 
+        }
+
+        if (imprimir) {
+            printf("| %-30s | %-10s | %-10s | %-10s |\n", 
+                   fantasias[i].nome, 
+                   fantasias[i].tamanho, 
+                   fantasias[i].cor, 
+                   fantasias[i].ativo == 1 ? "Ativa" : "Inativa");
+            encontrados++;
+        }
+    }
+    printf("------------------------------------------------------------------------------------\n");
+    printf("\nForam encontradas %d fantasias que atendem ao filtro.\n", encontrados);
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
 
 // ---------- MÓDULO PRINCIPAL ----------
 
@@ -501,7 +551,11 @@ void gerenciar_fantasias() {
             case '7':
                 menu_excluir_fisico_fantasias();
                 break;
+            case '8':  //para o Relatório
+                menu_relatorio_fantasias();
+                break;
             case '0':
+
                 printf("Voltando ao menu principal...\n");
                 SLEEP(1);
                 break;

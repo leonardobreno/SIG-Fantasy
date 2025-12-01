@@ -32,4 +32,5 @@ void salvar_fantasias_binario(void);
 void carregar_fantasias_binario(void);
 void liberar_memoria_fantasias(void);
 
+
 #endif // FANTASIAS_H
