@@ -10,6 +10,11 @@ typedef struct {
     int ativo;
 } Pedido;
 
+extern Pedido* pedidos;
+extern int num_pedidos;
+extern int capacidade_pedidos;
+
+
 // Funções do módulo pedidos
 unsigned long get_next_pedido_id(void);
 void salvar_pedidos_binario(void);

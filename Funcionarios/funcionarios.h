@@ -19,6 +19,7 @@ typedef struct {
 
 extern Funcionario* funcionarios;
 extern int num_funcionarios;
+extern int capacidade_funcionarios;
 
 
 void gerenciar_funcionarios(void);
@@ -31,12 +32,14 @@ void menu_excluir_logico_funcionario(void);
 void menu_listar_excluidos_funcionario(void);
 void menu_recuperar_funcionario(void);
 void menu_excluir_fisico_funcionarios(void);
+void menu_relatorio_funcionario(void);
 
 // Funções auxiliares
 void salvar_funcionarios_binario(void);
 void carregar_funcionarios_binario(void);
 void liberar_memoria_funcionarios(void);
 void menu_relatorio_funcionario(void); 
+
 
 // Funções auxiliares
 void salvar_funcionarios_binario(void);

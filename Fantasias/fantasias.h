@@ -10,6 +10,8 @@ typedef struct {
 
 extern Fantasia* fantasias;
 extern int num_fantasias;
+extern int capacidade_fantasias;
+
 
 void gerenciar_fantasias(void);
 

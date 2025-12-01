@@ -9,6 +9,11 @@ typedef struct {
     int ativo;
 } Cliente;
 
+extern Cliente* clientes;
+extern int num_clientes;
+extern int capacidade_clientes;
+
+
 // Funções do módulo clientes
 void gerenciar_clientes(void);
 void salvar_clientes_binario(void);
