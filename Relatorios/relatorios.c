@@ -17,32 +17,31 @@
     #define CLEAR_SCREEN "clear"
 #endif
 
-// ----- Variáveis e Funções Externas (Fantasias) -----
+
 extern Fantasia* fantasias;
 extern int num_fantasias;
 extern void carregar_fantasias_binario(void);
 extern void liberar_memoria_fantasias(void);
 
-// ----- Variáveis e Funções Externas (Funcionários) -----
+
 extern Funcionario* funcionarios;
 extern int num_funcionarios;     
 extern void carregar_funcionarios_binario(void);
 extern void liberar_memoria_funcionarios(void);
 
-// ----- Variáveis e Funções Externas (Pedidos) -----
+
 extern Pedido* pedidos;
 extern int num_pedidos;
 extern void carregar_pedidos_binario(void);
 extern void liberar_memoria_pedidos(void);
 
-// ----- Variáveis e Funções Externas (Clientes) -----
+
 extern Cliente* clientes;
 extern int num_clientes;
 extern void carregar_clientes_binario(void);
 extern void liberar_memoria_clientes(void);
 
 
-// ---------- MENU DE RELATÓRIOS ----------
 
 char menu_relatorios(void) {
     char op;
@@ -62,7 +61,6 @@ char menu_relatorios(void) {
     return op;
 }
 
-// ---------- RELATÓRIO DE FANTASIAS ATIVAS (Listagem) ----------
 
 void relatorio_fantasias_ativas(void) {
     system(CLEAR_SCREEN);
@@ -99,7 +97,6 @@ void relatorio_fantasias_ativas(void) {
     limpar_buffer();
 }
 
-// ---------- RELATÓRIO DE FUNCIONÁRIOS ATIVOS (Listagem) ----------
 
 void relatorio_funcionarios_ativos(void) {
     system(CLEAR_SCREEN);
@@ -137,7 +134,6 @@ void relatorio_funcionarios_ativos(void) {
     limpar_buffer();
 }
 
-// ---------- RELATÓRIO DE PEDIDOS ATIVOS (Listagem) ----------
 
 void relatorio_pedidos_ativos(void) {
     system(CLEAR_SCREEN);
@@ -176,7 +172,6 @@ void relatorio_pedidos_ativos(void) {
     limpar_buffer();
 }
 
-// ---------- RELATÓRIO DE CLIENTES ATIVOS (Listagem) ----------
 
 void relatorio_clientes_ativos(void) {
     system(CLEAR_SCREEN);
@@ -215,7 +210,6 @@ void relatorio_clientes_ativos(void) {
 }
 
 
-// ---------- MÓDULO PRINCIPAL DE RELATÓRIOS ----------
 
 void modulo_relatorios() {
     char op;
