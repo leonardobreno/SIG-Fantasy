@@ -1,7 +1,6 @@
 #ifndef FANTASIAS_H
 #define FANTASIAS_H
 
-// ---------- STRUCT ----------
 typedef struct {
     char nome[50];
     char tamanho[10];
@@ -9,13 +8,9 @@ typedef struct {
     int ativo; // 1 = ativo, 0 = excluído
 } Fantasia;
 
-// adicionado a declaração "extern" p/ variaveis globais
-// o modulo relatorios pode as utilizar
-// ---------- ACESSO EXTERNO PARA RELATÓRIOS ----------
 extern Fantasia* fantasias;
 extern int num_fantasias;
 
-// ---------- PROTÓTIPOS ----------
 void gerenciar_fantasias(void);
 
 char menu_fantasia(void);

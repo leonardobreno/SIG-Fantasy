@@ -169,7 +169,6 @@ do {
     }
 } while (1);
 
-// Salário
 do {
     printf("Digite o salário: ");
     scanf(" %19[^\n]", novo.salario);
@@ -264,7 +263,7 @@ if (encontrado_idx != -1) {
 
     char novo_celular[20], novo_email[51], novo_salario[20];
 
-    // Celular
+
     do {
         printf("Celular atual: %s\n", funcionarios[encontrado_idx].celular);
         printf("Digite novo celular: ");
@@ -279,7 +278,7 @@ if (encontrado_idx != -1) {
         }
     } while (1);
 
-    // Email
+
     do {
         printf("Email atual: %s\n", funcionarios[encontrado_idx].email);
         printf("Digite novo email: ");
@@ -294,7 +293,7 @@ if (encontrado_idx != -1) {
         }
     } while (1);
 
-    // Salário
+
     do {
         printf("Salário atual: %s\n", funcionarios[encontrado_idx].salario);
         printf("Digite novo salário: ");
@@ -434,7 +433,6 @@ SLEEP(2);
 }
 
 void menu_relatorio_funcionario() {
-    // MAX_NOME é usado como um tamanho seguro para o buffer de filtro
     char filtro[MAX_NOME]; 
     int encontrados = 0;
 
@@ -450,25 +448,23 @@ void menu_relatorio_funcionario() {
     scanf(" %50[^\n]", filtro);
     limpar_buffer();
 
-    // Cabeçalho da Lista Dinâmica (organizada)
     printf("\n----------------------------------------------------------------------------------------------------------------\n");
     printf("| %-15s | %-30s | %-12s | %-20s | %-10s | %-8s |\n", 
            "CPF", "NOME", "CELULAR", "EMAIL", "SALARIO", "STATUS");
     printf("----------------------------------------------------------------------------------------------------------------\n");
 
-    // Lógica de Filtragem e Exibição (Lista Dinâmica)
     for (int i = 0; i < num_funcionarios; i++) {
         int imprimir = 0;
         
-        // 1. Filtro 'todos': Imprime tudo
+
         if (strcmp(filtro, "todos") == 0) {
             imprimir = 1;
         } 
-        // 2. Filtro 'ativos': Imprime apenas os ativos
+
         else if (strcmp(filtro, "ativos") == 0 && funcionarios[i].ativo == 1) {
             imprimir = 1;
         }
-        // 3. Filtro por texto: Busca a string em CPF ou Nome (case-sensitive)
+
         else if (strstr(funcionarios[i].cpf, filtro) != NULL || strstr(funcionarios[i].nome, filtro) != NULL) {
             imprimir = 1; 
         }

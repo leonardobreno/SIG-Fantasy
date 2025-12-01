@@ -16,12 +16,11 @@ typedef struct {
     int ativo; // 1 = ativo, 0 = excluído
 } Funcionario;
 
-// ---------- ACESSO EXTERNO PARA RELATÓRIOS ----------
+
 extern Funcionario* funcionarios;
 extern int num_funcionarios;
 
 
-// Funções principais do módulo
 void gerenciar_funcionarios(void);
 
 // Funções de CRUD
