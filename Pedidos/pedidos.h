@@ -15,7 +15,6 @@ extern int num_pedidos;
 extern int capacidade_pedidos;
 
 
-// Funções do módulo pedidos
 unsigned long get_next_pedido_id(void);
 void salvar_pedidos_binario(void);
 void carregar_pedidos_binario(void);

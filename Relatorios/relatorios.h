@@ -8,5 +8,6 @@ void relatorio_fantasias_ativas(void);
 void relatorio_funcionarios_ativos(void);
 void relatorio_pedidos_ativos(void);
 void relatorio_clientes_ativos(void);
+void relatorio_clientes_por_letra(void);
 
 #endif
