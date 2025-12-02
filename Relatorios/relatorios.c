@@ -86,6 +86,62 @@ void relatorio_clientes_por_letra(void) {
     limpar_buffer();
 }
 
+
+void relatorio_pedidos_por_preco(void) {
+    float min_val, max_val;
+    
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                      Filtro: Pedidos por Faixa de Preço                         ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    
+    printf("Digite o valor MINIMO (ex: 50.00): R$ ");
+    scanf("%f", &min_val);
+    limpar_buffer();
+
+    printf("Digite o valor MAXIMO (ex: 200.00): R$ ");
+    scanf("%f", &max_val);
+    limpar_buffer();
+
+    if (min_val > max_val) {
+        printf("\nErro: O valor minimo nao pode ser maior que o maximo!\n");
+        SLEEP(2);
+        return;
+    }
+
+    carregar_pedidos_binario();
+
+    int encontrados = 0;
+    
+    printf("\n=== PEDIDOS ENTRE R$ %.2f E R$ %.2f ===\n", min_val, max_val);
+    printf("%-10s %-20s %-15s %-10s\n", "ID", "FANTASIA", "DATA", "VALOR");
+    printf("-------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_pedidos; i++) {
+        if (pedidos[i].ativo == 1) {
+            if (pedidos[i].preco >= min_val && pedidos[i].preco <= max_val) {
+                printf("%-10lu %-20s %-15s R$ %.2f\n", 
+                       pedidos[i].id_pedido, 
+                       pedidos[i].id_fantasia, 
+                       pedidos[i].data_pedido,
+                       pedidos[i].preco);
+                encontrados++;
+            }
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("\nNenhum pedido encontrado nessa faixa de preco.\n");
+    } else {
+        printf("\nTotal listado: %d\n", encontrados);
+    }
+
+    liberar_memoria_pedidos();
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+
 char menu_relatorios(void) {
     char op;
     system(CLEAR_SCREEN);
@@ -97,6 +153,7 @@ char menu_relatorios(void) {
     printf("║                              -> 3 • Pedidos Ativos                              ║\n");
     printf("║                              -> 4 • Clientes Ativos                             ║\n");
     printf("║                              -> 5 • Clientes por Letra                          ║\n");
+    printf("║                              -> 6 • Pedidos por Faixa de Preço                  ║\n");
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
@@ -274,6 +331,9 @@ void modulo_relatorios() {
                 break;
             case '5':
                 relatorio_clientes_por_letra();
+                break;
+            case '6':
+                relatorio_pedidos_por_preco();
                 break;
             case '0':
                 printf("Voltando ao menu principal...\n");
