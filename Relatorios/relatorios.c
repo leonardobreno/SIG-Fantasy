@@ -42,6 +42,49 @@ extern void carregar_clientes_binario(void);
 extern void liberar_memoria_clientes(void);
 
 
+void relatorio_clientes_por_letra(void) {
+    char letra;
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                      Filtro: Clientes por Inicial do Nome                       ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    
+    printf("Digite a letra inicial para filtrar: ");
+    scanf(" %c", &letra);
+    limpar_buffer();
+
+    letra = toupper(letra);
+
+    carregar_clientes_binario();
+
+    int encontrados = 0;
+    printf("\n%-30s %-15s %-20s\n", "NOME", "CPF", "CELULAR");
+    printf("-------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (clientes[i].ativo == 1) {
+            char inicial_cliente = toupper(clientes[i].nome[0]);
+
+            if (inicial_cliente == letra) {
+                printf("%-30s %-15s %-20s\n", 
+                       clientes[i].nome, 
+                       clientes[i].cpf, 
+                       clientes[i].celular);
+                encontrados++;
+            }
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("\nNenhum cliente encontrado com a inicial '%c'.\n", letra);
+    } else {
+        printf("\nTotal listado: %d\n", encontrados);
+    }
+
+    liberar_memoria_clientes();
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
 
 char menu_relatorios(void) {
     char op;
@@ -53,6 +96,7 @@ char menu_relatorios(void) {
     printf("║                              -> 2 • Funcionários Ativos                         ║\n");
     printf("║                              -> 3 • Pedidos Ativos                              ║\n");
     printf("║                              -> 4 • Clientes Ativos                             ║\n");
+    printf("║                              -> 5 • Clientes por Letra                          ║\n");
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
@@ -227,6 +271,9 @@ void modulo_relatorios() {
                 break;
             case '4': 
                 relatorio_clientes_ativos();
+                break;
+            case '5':
+                relatorio_clientes_por_letra();
                 break;
             case '0':
                 printf("Voltando ao menu principal...\n");
