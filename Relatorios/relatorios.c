@@ -141,6 +141,114 @@ void relatorio_pedidos_por_preco(void) {
     limpar_buffer();
 }
 
+void relatorio_pedidos_detalhado(void) {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                   Relatório Detalhado de Pedidos (Cruzamento)                   ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    carregar_pedidos_binario();
+    carregar_clientes_binario();
+    carregar_fantasias_binario();
+
+    int encontrados = 0;
+
+    printf("\n%-6s %-12s %-25s %-25s %-10s\n", "ID", "DATA", "CLIENTE", "FANTASIA", "VALOR");
+    printf("------------------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_pedidos; i++) {
+        if (pedidos[i].ativo == 1) {
+            
+            char nome_cliente_atual[50] = "-- Nao Encontrado --";
+            char nome_fantasia_atual[50] = "-- Nao Encontrado --";
+
+            for(int c = 0; c < num_clientes; c++) {
+                if(strcmp(clientes[c].cpf, pedidos[i].cpf_cliente) == 0) {
+                    strcpy(nome_cliente_atual, clientes[c].nome);
+                    break;
+                }
+            }
+
+            for(int f = 0; f < num_fantasias; f++) {
+                if(strcmp(fantasias[f].nome, pedidos[i].id_fantasia) == 0) { 
+                    strcpy(nome_fantasia_atual, fantasias[f].nome);
+                    break;
+                }
+            }
+
+            printf("%-6lu %-12s %-25s %-25s R$ %-8.2f\n", 
+                   pedidos[i].id_pedido, 
+                   pedidos[i].data_pedido,
+                   nome_cliente_atual,
+                   nome_fantasia_atual,
+                   pedidos[i].preco);
+            
+            encontrados++;
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("\nNenhum pedido ativo encontrado.\n");
+    } else {
+        printf("\nTotal de registros cruzados: %d\n", encontrados);
+    }
+
+    liberar_memoria_pedidos();
+    liberar_memoria_clientes();
+    liberar_memoria_fantasias();
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
+
+void relatorio_clientes_financeiro(void) {
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                 Relatório Financeiro por Cliente (Cruzamento)                   ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    carregar_clientes_binario();
+    carregar_pedidos_binario();
+
+    int clientes_listados = 0;
+
+    printf("\n%-30s %-15s %-15s %-15s\n", "CLIENTE", "CPF", "QTD PEDIDOS", "TOTAL GASTO");
+    printf("--------------------------------------------------------------------------------\n");
+
+    for (int i = 0; i < num_clientes; i++) {
+        if (clientes[i].ativo == 1) {
+            
+            int qtd_pedidos = 0;
+            float total_gasto = 0.0;
+
+            for (int j = 0; j < num_pedidos; j++) {
+                if (pedidos[j].ativo == 1 && strcmp(pedidos[j].cpf_cliente, clientes[i].cpf) == 0) {
+                    qtd_pedidos++;
+                    total_gasto += pedidos[j].preco;
+                }
+            }
+
+            printf("%-30s %-15s %-15d R$ %-10.2f\n", 
+                   clientes[i].nome, 
+                   clientes[i].cpf, 
+                   qtd_pedidos, 
+                   total_gasto);
+            
+            clientes_listados++;
+        }
+    }
+
+    if (clientes_listados == 0) {
+        printf("\nNenhum cliente ativo encontrado.\n");
+    }
+
+    liberar_memoria_clientes();
+    liberar_memoria_pedidos();
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
 
 char menu_relatorios(void) {
     char op;
@@ -148,12 +256,22 @@ char menu_relatorios(void) {
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                              📁 Modulo Relatórios                               ║\n");
     printf("╠═════════════════════════════════════════════════════════════════════════════════╣\n");
-    printf("║                              -> 1 • Fantasias Ativas                            ║\n");
-    printf("║                              -> 2 • Funcionários Ativos                         ║\n");
-    printf("║                              -> 3 • Pedidos Ativos                              ║\n");
-    printf("║                              -> 4 • Clientes Ativos                             ║\n");
-    printf("║                              -> 5 • Clientes por Letra                          ║\n");
-    printf("║                              -> 6 • Pedidos por Faixa de Preço                  ║\n");
+    printf("║                              --- CLIENTES ---                                   ║\n");
+    printf("║                              -> 1 • Listar Ativos                               ║\n");
+    printf("║                              -> 2 • Filtrar por Letra                           ║\n");
+    printf("║                              -> 3 • Histórico Financeiro                        ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                              --- FANTASIAS ---                                  ║\n");
+    printf("║                              -> 4 • Listar Ativas                               ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                              --- FUNCIONÁRIOS ---                               ║\n");
+    printf("║                              -> 5 • Listar Ativos                               ║\n");
+    printf("║                                                                                 ║\n");
+    printf("║                              --- PEDIDOS ---                                    ║\n");
+    printf("║                              -> 6 • Listar Ativos                               ║\n");
+    printf("║                              -> 7 • Filtrar por Faixa de Preço                  ║\n");
+    printf("║                              -> 8 • Relatório Detalhado (Combinado)             ║\n");
+    printf("║                                                                                 ║\n");
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
@@ -161,7 +279,6 @@ char menu_relatorios(void) {
     limpar_buffer();
     return op;
 }
-
 
 void relatorio_fantasias_ativas(void) {
     system(CLEAR_SCREEN);
@@ -318,22 +435,28 @@ void modulo_relatorios() {
         op = menu_relatorios();
         switch(op) {
             case '1':
-                relatorio_fantasias_ativas();
-                break;
-            case '2':
-                relatorio_funcionarios_ativos();
-                break;
-            case '3':
-                relatorio_pedidos_ativos();
-                break;
-            case '4': 
                 relatorio_clientes_ativos();
                 break;
-            case '5':
+            case '2':
                 relatorio_clientes_por_letra();
                 break;
+            case '3':
+                relatorio_clientes_financeiro();
+                break;
+            case '4':
+                relatorio_fantasias_ativas();
+                break;
+            case '5':
+                relatorio_funcionarios_ativos();
+                break;
             case '6':
+                relatorio_pedidos_ativos();
+                break;
+            case '7':
                 relatorio_pedidos_por_preco();
+                break;
+            case '8':
+                relatorio_pedidos_detalhado();
                 break;
             case '0':
                 printf("Voltando ao menu principal...\n");
