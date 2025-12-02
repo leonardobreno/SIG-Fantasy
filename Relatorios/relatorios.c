@@ -17,6 +17,10 @@
     #define CLEAR_SCREEN "clear"
 #endif
 
+typedef struct pedido_no {
+    Pedido dados;
+    struct pedido_no *prox;
+} PedidoNo;
 
 extern Fantasia* fantasias;
 extern int num_fantasias;
@@ -250,6 +254,83 @@ void relatorio_clientes_financeiro(void) {
     limpar_buffer();
 }
 
+void relatorio_pedidos_cliente_lista(void) {
+    char cpf_filtro[15];
+    FILE *arquivo;
+    Pedido temp;
+    PedidoNo *inicio_lista = NULL; 
+    PedidoNo *novo_no;
+    PedidoNo *atual;
+    PedidoNo *aux;
+    int contador = 0;
+    float total_gasto = 0.0;
+
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                 Histórico do Cliente (Lista Dinâmica na Memória)                ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+
+    printf("Digite o CPF do cliente: ");
+    scanf(" %14[^\n]", cpf_filtro);
+    limpar_buffer();
+
+    arquivo = fopen("Pedidos/pedidos.dat", "rb");
+    if (arquivo == NULL) {
+        printf("\nErro: Arquivo de pedidos nao encontrado.\n");
+        SLEEP(2);
+        return;
+    }
+
+    while (fread(&temp, sizeof(Pedido), 1, arquivo)) {
+        if (temp.ativo == 1 && strcmp(temp.cpf_cliente, cpf_filtro) == 0) {
+            novo_no = (PedidoNo*) malloc(sizeof(PedidoNo));
+            
+            if (novo_no == NULL) {
+                printf("Erro critico: Memoria insuficiente!\n");
+                break;
+            }
+
+            novo_no->dados = temp;
+            novo_no->prox = inicio_lista;
+            inicio_lista = novo_no;
+            
+            total_gasto += temp.preco;
+            contador++;
+        }
+    }
+    fclose(arquivo);
+
+    if (inicio_lista == NULL) {
+        printf("\nNenhum pedido encontrado para o CPF: %s\n", cpf_filtro);
+    } else {
+        printf("\n=== ITENS ENCONTRADOS NO HISTORICO ===\n");
+        printf("%-10s %-20s %-12s %-10s\n", "ID", "FANTASIA", "DATA", "VALOR");
+        printf("------------------------------------------------------------\n");
+
+        atual = inicio_lista;
+        while (atual != NULL) {
+            printf("%-10lu %-20s %-12s R$ %-10.2f\n", 
+                   atual->dados.id_pedido, 
+                   atual->dados.id_fantasia, 
+                   atual->dados.data_pedido,
+                   atual->dados.preco);
+            atual = atual->prox; 
+        }
+        printf("\n------------------------------------------------------------\n");
+        printf("Total de Pedidos: %d\n", contador);
+        printf("Soma Total Gasta: R$ %.2f\n", total_gasto);
+    }
+
+    while (inicio_lista != NULL) {
+        aux = inicio_lista;
+        inicio_lista = inicio_lista->prox;
+        free(aux);
+    }
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
 char menu_relatorios(void) {
     char op;
     system(CLEAR_SCREEN);
@@ -260,17 +341,18 @@ char menu_relatorios(void) {
     printf("║                              -> 1 • Listar Ativos                               ║\n");
     printf("║                              -> 2 • Filtrar por Letra                           ║\n");
     printf("║                              -> 3 • Histórico Financeiro                        ║\n");
+    printf("║                              -> 4 • Histórico de Cliente                        ║\n");
     printf("║                                                                                 ║\n");
     printf("║                              --- FANTASIAS ---                                  ║\n");
-    printf("║                              -> 4 • Listar Ativas                               ║\n");
+    printf("║                              -> 5 • Listar Ativas                               ║\n");
     printf("║                                                                                 ║\n");
     printf("║                              --- FUNCIONÁRIOS ---                               ║\n");
-    printf("║                              -> 5 • Listar Ativos                               ║\n");
+    printf("║                              -> 6 • Listar Ativos                               ║\n");
     printf("║                                                                                 ║\n");
     printf("║                              --- PEDIDOS ---                                    ║\n");
-    printf("║                              -> 6 • Listar Ativos                               ║\n");
-    printf("║                              -> 7 • Filtrar por Faixa de Preço                  ║\n");
-    printf("║                              -> 8 • Relatório Detalhado (Combinado)             ║\n");
+    printf("║                              -> 7 • Listar Ativos                               ║\n");
+    printf("║                              -> 8 • Filtrar por Faixa de Preço                  ║\n");
+    printf("║                              -> 9 • Relatório Detalhado (Combinado)             ║\n");
     printf("║                                                                                 ║\n");
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
@@ -444,18 +526,21 @@ void modulo_relatorios() {
                 relatorio_clientes_financeiro();
                 break;
             case '4':
-                relatorio_fantasias_ativas();
+                relatorio_pedidos_cliente_lista();
                 break;
             case '5':
-                relatorio_funcionarios_ativos();
+                relatorio_fantasias_ativas();
                 break;
             case '6':
-                relatorio_pedidos_ativos();
+                relatorio_funcionarios_ativos();
                 break;
             case '7':
-                relatorio_pedidos_por_preco();
+                relatorio_pedidos_ativos();
                 break;
             case '8':
+                relatorio_pedidos_por_preco();
+                break;
+            case '9':
                 relatorio_pedidos_detalhado();
                 break;
             case '0':
