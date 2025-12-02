@@ -10,5 +10,7 @@ void relatorio_pedidos_ativos(void);
 void relatorio_clientes_ativos(void);
 void relatorio_clientes_por_letra(void);
 void relatorio_pedidos_por_preco(void);
+void relatorio_pedidos_detalhado(void);
+void relatorio_clientes_financeiro(void);
 
 #endif
