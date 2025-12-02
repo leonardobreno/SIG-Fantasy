@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../Fantasias/fantasias.h"
 #include "../Funcionarios/funcionarios.h"
 #include "../Pedidos/pedidos.h"
@@ -439,7 +440,7 @@ void relatorio_pedidos_ordenados_preco(void) {
     limpar_buffer();
 }
 
-char menu_relatorios(void) {
+int menu_relatorios(void) {
     char op;
     system(CLEAR_SCREEN);
     printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
@@ -465,7 +466,7 @@ char menu_relatorios(void) {
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
-    scanf(" %c", &op);
+    scanf(" %d", &op);
     limpar_buffer();
     return op;
 }
@@ -620,40 +621,41 @@ void relatorio_clientes_ativos(void) {
 
 
 void modulo_relatorios() {
-    char op;
+    int op;
     do {
         op = menu_relatorios();
         switch(op) {
-            case '1':
+            case 1:
                 relatorio_clientes_ativos();
                 break;
-            case '2':
+            case 2:
                 relatorio_clientes_por_letra();
                 break;
-            case '3':
+            case 3:
                 relatorio_clientes_financeiro();
                 break;
-            case '4':
+            case 4:
                 relatorio_pedidos_cliente_lista();
                 break;
-            case '5':
+            case 5:
                 relatorio_fantasias_ativas();
                 break;
-            case '6':
+            case 6:
                 relatorio_funcionarios_ativos();
                 break;
-            case '7':
+            case 7:
                 relatorio_pedidos_ativos();
                 break;
-            case '8':
+            case 8:
                 relatorio_pedidos_por_preco();
                 break;
-            case '9':
+            case 9:
                 relatorio_pedidos_detalhado();
                 break;
-            case '10':
+            case 10:
                 relatorio_pedidos_ordenados_preco();
-            case '0':
+                break;
+            case 0:
                 printf("Voltando ao menu principal...\n");
                 SLEEP(1);
                 break;
@@ -661,5 +663,5 @@ void modulo_relatorios() {
                 printf("Opcao invalida! Tente novamente.\n");
                 SLEEP(1);
         }
-    } while(op != '0');
+    } while(op != 0);
 }
