@@ -331,6 +331,114 @@ void relatorio_pedidos_cliente_lista(void) {
     limpar_buffer();
 }
 
+void relatorio_pedidos_ordenados_preco(void) {
+    int opcao_ordem;
+    FILE *arquivo;
+    Pedido temp;
+    PedidoNo *inicio_lista = NULL; 
+    PedidoNo *novo_no;
+    PedidoNo *atual;
+    PedidoNo *aux;
+    int contador = 0;
+
+    system(CLEAR_SCREEN);
+    printf("╔═════════════════════════════════════════════════════════════════════════════════╗\n");
+    printf("║                 Relatório de Pedidos Ordenados (Por Preço)                      ║\n");
+    printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
+    printf("Escolha a ordem de exibicao:\n");
+    printf("1 - Direta (Menor Valor -> Maior Valor)\n");
+    printf("2 - Inversa (Maior Valor -> Menor Valor)\n");
+    printf("Opcao: ");
+    scanf("%d", &opcao_ordem);
+    limpar_buffer();
+
+    if (opcao_ordem != 1 && opcao_ordem != 2) {
+        printf("Opcao invalida.\n");
+        SLEEP(1);
+        return;
+    }
+
+    arquivo = fopen("Pedidos/pedidos.dat", "rb");
+    if (arquivo == NULL) {
+        printf("\nErro: Arquivo de pedidos nao encontrado.\n");
+        SLEEP(2);
+        return;
+    }
+
+    while (fread(&temp, sizeof(Pedido), 1, arquivo)) {
+        if (temp.ativo == 1) {
+            novo_no = (PedidoNo*) malloc(sizeof(PedidoNo));
+            
+            if (novo_no == NULL) break;
+
+            novo_no->dados = temp;
+            novo_no->prox = NULL;
+
+            int deve_inserir_antes = 0;
+
+            if (inicio_lista == NULL) {
+                deve_inserir_antes = 1; 
+            } else {
+                if (opcao_ordem == 1) { 
+                    if (novo_no->dados.preco < inicio_lista->dados.preco) deve_inserir_antes = 1;
+                } else { 
+                    if (novo_no->dados.preco > inicio_lista->dados.preco) deve_inserir_antes = 1;
+                }
+            }
+
+            if (deve_inserir_antes) {
+                novo_no->prox = inicio_lista;
+                inicio_lista = novo_no;
+            } else {
+                atual = inicio_lista;
+                int parou = 0;
+
+                while (atual->prox != NULL && !parou) {
+                    if (opcao_ordem == 1) { 
+                        if (novo_no->dados.preco < atual->prox->dados.preco) parou = 1; 
+                        else atual = atual->prox;
+                    } else { 
+                        if (novo_no->dados.preco > atual->prox->dados.preco) parou = 1; 
+                        else atual = atual->prox;
+                    }
+                }
+                novo_no->prox = atual->prox;
+                atual->prox = novo_no;
+            }
+            contador++;
+        }
+    }
+    fclose(arquivo);
+
+    if (inicio_lista == NULL) {
+        printf("\nNenhum pedido ativo para ordenar.\n");
+    } else {
+        printf("\n%-10s %-15s %-20s %-15s\n", "POSICAO", "ID PEDIDO", "FANTASIA", "VALOR");
+        printf("-------------------------------------------------------------------\n");
+
+        atual = inicio_lista;
+        int posicao = 1;
+        while (atual != NULL) {
+            printf("%-10d %-15lu %-20s R$ %-10.2f\n", 
+                   posicao++,
+                   atual->dados.id_pedido, 
+                   atual->dados.id_fantasia, 
+                   atual->dados.preco);
+            atual = atual->prox; 
+        }
+        printf("\nTotal ordenado: %d\n", contador);
+    }
+
+    while (inicio_lista != NULL) {
+        aux = inicio_lista;
+        inicio_lista = inicio_lista->prox;
+        free(aux);
+    }
+
+    printf("\nPressione Enter para continuar...");
+    limpar_buffer();
+}
+
 char menu_relatorios(void) {
     char op;
     system(CLEAR_SCREEN);
@@ -352,8 +460,8 @@ char menu_relatorios(void) {
     printf("║                              --- PEDIDOS ---                                    ║\n");
     printf("║                              -> 7 • Listar Ativos                               ║\n");
     printf("║                              -> 8 • Filtrar por Faixa de Preço                  ║\n");
-    printf("║                              -> 9 • Relatório Detalhado (Combinado)             ║\n");
-    printf("║                                                                                 ║\n");
+    printf("║                              -> 9 • Relatório Detalhado                         ║\n");
+    printf("║                              -> 10 • Listar Ordenado (Direta/Inversa)           ║\n");
     printf("║                              -> 0 • Voltar                                      ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("Escolha uma opcao: ");
@@ -543,6 +651,8 @@ void modulo_relatorios() {
             case '9':
                 relatorio_pedidos_detalhado();
                 break;
+            case '10':
+                relatorio_pedidos_ordenados_preco();
             case '0':
                 printf("Voltando ao menu principal...\n");
                 SLEEP(1);
