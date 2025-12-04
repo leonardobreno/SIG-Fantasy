@@ -18,14 +18,13 @@ typedef struct {
     char nome[50];
     char tamanho[10];
     char cor[20];
-    int ativo; // 1 = ativo, 0 = excluído
+    int ativo;
 } Fantasia;
 
 Fantasia* fantasias = NULL;
 int num_fantasias = 0;
 int capacidade_fantasias = 0;
 
-//  FUNÇÕES AUXILIARES 
 
 void salvar_fantasias_binario() {
     FILE* arquivo = fopen("Fantasias/fantasias.dat", "wb");
@@ -40,7 +39,6 @@ void salvar_fantasias_binario() {
 void carregar_fantasias_binario() {
     FILE* arquivo = fopen("Fantasias/fantasias.dat", "rb");
     if (!arquivo) {
-        // Arquivo não existe, inicia vazio
         fantasias = NULL;
         num_fantasias = 0;
         capacidade_fantasias = 0;
@@ -100,7 +98,6 @@ void menu_cadastro_fantasia() {
 
     Fantasia nova;
 
-    // para validar nome
     do {
         printf("Digite o nome da fantasia: ");
         scanf(" %49[^\n]", nova.nome);
@@ -116,7 +113,7 @@ void menu_cadastro_fantasia() {
         }
     } while (!validar_nome(nova.nome));
 
-    // para validar tamanho
+  
     do {
         printf("Digite o tamanho da fantasia: ");
         scanf(" %9[^\n]", nova.tamanho);
@@ -133,7 +130,7 @@ void menu_cadastro_fantasia() {
         }
     } while (!validar_tamanho_fantasia(nova.tamanho));
 
-    // para validar cor
+
     do {
         printf("Digite a cor da fantasia: ");
         scanf(" %19[^\n]", nova.cor);
@@ -152,7 +149,7 @@ void menu_cadastro_fantasia() {
 
     nova.ativo = 1;
 
-    // ===== Alocação dinâmica =====
+
     Fantasia* temp = realloc(fantasias, (num_fantasias + 1) * sizeof(Fantasia));
     if (!temp) {
         printf("Erro: Nao foi possivel alocar memoria!\n");
@@ -185,7 +182,7 @@ void menu_pesquisar_fantasia() {
     scanf(" %49[^\n]", nome_procurar);
     limpar_buffer();
 
-    //  Validação do nome
+
     if (!validar_nome(nome_procurar)) {
         printf("\nERRO: Nome inválido! Use apenas letras e espaços (máx. 50 caracteres).\n");
         printf("Pressione Enter para voltar...");
@@ -317,9 +314,8 @@ void menu_excluir_fantasia() {
 
     printf("Digite o nome da fantasia que deseja excluir: ");
     fgets(nome_procurar, sizeof(nome_procurar), stdin);
-    nome_procurar[strcspn(nome_procurar, "\n")] = '\0'; // remove \n
+    nome_procurar[strcspn(nome_procurar, "\n")] = '\0'; 
 
-    // 🔍 Validação do nome
     if (!validar_nome(nome_procurar)) {
         printf("\nERRO: Nome inválido! A exclusão foi cancelada.\n");
         SLEEP(2);
@@ -542,7 +538,7 @@ void gerenciar_fantasias() {
             case '7':
                 menu_excluir_fisico_fantasias();
                 break;
-            case '8':  //para o Relatório
+            case '8': 
                 menu_relatorio_fantasias();
                 break;
             case '0':

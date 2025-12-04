@@ -5,7 +5,7 @@ typedef struct {
     char nome[50];
     char tamanho[10];
     char cor[20];
-    int ativo; // 1 = ativo, 0 = excluído
+    int ativo;
 } Fantasia;
 
 extern Fantasia* fantasias;
@@ -30,4 +30,4 @@ void carregar_fantasias_binario(void);
 void liberar_memoria_fantasias(void);
 
 
-#endif // FANTASIAS_H
+#endif

@@ -46,7 +46,7 @@ void gerenciar_funcionarios(void) {
             case '7':
                 menu_excluir_fisico_funcionarios();
                 break;
-            case '8': //Relatório Filtrado
+            case '8': 
                 menu_relatorio_funcionario();
                 break;
             case '0':
@@ -113,7 +113,7 @@ printf("╚═══════════════════════
 
 Funcionario novo;
 
-// Nome
+
 do {
     printf("Digite o nome: ");
     scanf(" %50[^\n]", novo.nome);
@@ -125,7 +125,7 @@ do {
     }
 } while (1);
 
-// CPF
+
 do {
     printf("Digite o CPF (apenas números, 11 dígitos): ");
     scanf(" %14[^\n]", novo.cpf);
@@ -157,7 +157,6 @@ do {
     }
 } while (1);
 
-// Email
 do {
     printf("Digite o email: ");
     scanf(" %50[^\n]", novo.email);
@@ -336,7 +335,7 @@ for (int i = 0; i < num_funcionarios; i++) {
 }
 
 if (encontrado_idx != -1) {
-    funcionarios[encontrado_idx].ativo = 0;  // Exclusão lógica
+    funcionarios[encontrado_idx].ativo = 0;  //exclusão lógica
     salvar_funcionarios_binario();
     printf("Funcionário excluído logicamente (na lixeira).\n");
 } else {

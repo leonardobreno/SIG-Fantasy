@@ -64,8 +64,8 @@ void menu_equipe(void) {
     printf("║                                                                                 ║\n");
     printf("║                        GitHub: https://github.com/leonardobreno                 ║\n");
     printf("║                                https://github.com/Pedro1349                     ║\n");
-    printf("║                            https://github.com/thiagogomes1805                   ║\n");
-    printf("║                               https://github.com/mluizasevero                   ║\n");
+    printf("║                                https://github.com/thiagogomes1805               ║\n");
+    printf("║                                https://github.com/mluizasevero                  ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════════════╝\n");
     printf("\nPressione Enter para voltar...\n");
     limpar_buffer();
